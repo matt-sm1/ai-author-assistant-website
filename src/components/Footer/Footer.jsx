@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import logo from "../../assests/logo.webp";
+import logo from "../../assests/logo.png";
 import Image from "next/image";
 
 const pages = [
@@ -35,10 +35,10 @@ export default function Footer() {
           <div className="w-full lg:w-[580px] lg:shrink-0">
             <Image
               src={logo}
-              alt="Logo"
-              width={40}
-              height={40}
-              className="h-8 w-8 rounded-lg sm:h-10 sm:w-10"
+              alt="Author AI Assistant"
+              width={160}
+              height={54}
+              className="h-8 w-auto object-contain sm:h-10"
             />
 
             <p className="mt-5 max-w-[380px] font-sans text-[16px] font-normal leading-[24.8px] tracking-[-0.2px] text-[var(--theme-hex-333743)]">

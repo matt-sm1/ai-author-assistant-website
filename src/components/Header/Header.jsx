@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "@/assests/logo.webp";
+import logo from "@/assests/logo.png";
 import { Button } from "../ui";
 
 const links = [
@@ -71,7 +71,7 @@ export default function Header() {
         {/* Left: logo */}
         <div className="flex items-center justify-self-start">
           <Link href="#home" onClick={closeMenu} aria-label="AuthorBot home" className="flex items-center">
-            <Image src={logo} alt="AuthorBot" priority className="h-[35px] w-[35px] object-contain sm:h-11 sm:w-11" />
+            <Image src={logo} alt="Author AI Assistant" priority className="h-9 w-auto object-contain sm:h-11" />
           </Link>
         </div>
 
