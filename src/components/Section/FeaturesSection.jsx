@@ -1,36 +1,5 @@
 import Image from "next/image";
-import card1 from "../../assests/feature_1.webp"
-import card2 from "../../assests/feature_2.webp"
-import card3 from "../../assests/feature_3.webp"
-import card4 from "../../assests/feature_4.webp"
-import SectionInfo from "../SectionInfo/SectionInfo";
-
-const features = [
-  {
-    title: "AI That Knows Your Books",
-    description:
-      "Upload your titles and let AuthorBot answer questions, explain your books, and recommend the right title based on each reader's interests.",
-    image: card1, // e.g. "/images/card-1.webp"
-  },
-  {
-    title: "Understand Every Reader Better",
-    description:
-      "Track reader conversations, activity, and book interactions so you can create more personalised experiences and recognize buying intent.",
-    image: card2, // e.g. "/images/card-2.webp"
-  },
-  {
-    title: "One AI Across Every Channel",
-    description:
-      "Connect AuthorBot to your website and supported communication channels so readers can get the same intelligent assistance wherever they reach you.",
-    image: card3, // e.g. "/images/card-3.webp"
-  },
-  {
-    title: "Turn Reader Activity Into Insights",
-    description:
-      "See how readers interact with your AI, which books get attention, what readers are asking, and which conversations lead to book-link clicks.",
-    image: card4, // e.g. "/images/card-4.webp"
-  },
-];
+import SectionInfo from "@/components/SectionInfo/SectionInfo";
 
 function FeatureCard({ title, description, image }) {
   return (
@@ -59,20 +28,22 @@ function FeatureCard({ title, description, image }) {
   );
 }
 
-export default function FeaturesSection() {
+export default function FeaturesSection({
+  badge,
+  heading,
+  description,
+  headingClassName,
+  features = [],
+}) {
   return (
     <section id="features" className="section">
       <div className="container">
 
         <SectionInfo
-          badge="Core Features"
-          heading={
-            <>
-              Everything You Need to Engage Readers & Sell More Books
-            </>
-          }
-          description="AuthorBot brings book knowledge, reader conversations, sales insights, and omnichannel engagement into one intelligent platform built for authors."
-          headingClassName="max-w-[900px]"
+          badge={badge}
+          heading={heading}
+          description={description}
+          headingClassName={headingClassName}
         />
 
         <div className="mt-5 sm:mt-16 grid grid-cols-1 gap-5 md:grid-cols-12">

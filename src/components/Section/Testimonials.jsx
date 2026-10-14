@@ -1,69 +1,14 @@
-// components/Testimonials.jsx
-
 import Image from "next/image";
-import SectionInfo from "../SectionInfo/SectionInfo";
-import test1 from "../../assests/test_1.webp";
-import test2 from "../../assests/test_2.webp";
-import test3 from "../../assests/test_3.webp";
-import test4 from "../../assests/test_4.webp";
-
-const lorem =
-  "Imperdiet elit ultrices sed porta tincidunt lectus. Viverra elementum nunc molestie diam massa dignissim eu erat libero ipsum dolor sit amet consectetur.";
-
-const defaultTestimonials = [
-  {
-    variant: "featured",
-    quote: `“Lorem ipsum dolor sit amet consectetur. Imperdiet elit lacus ultrices sed porta tincidunt lectus. Viverra elementum nunc molestie diam massa dignissim eu erat libero ipsum dolor sit amet consectetur. Imperdiet elit lacus ultrices sed porta tincidunt lectus. Viverra elementum nunc molestie diam massa dignissim eu erat libero.”`,
-    name: "David K. Kelly",
-    role: "Author",
-    image: test1,
-    bg: "bg-[var(--theme-hex-d6c6f1)]",
-  },
-  {
-    variant: "featured",
-    quote: `“Lorem ipsum dolor sit amet consectetur. ${lorem}”`,
-    name: "Sophia Jackson",
-    role: "Author",
-    image: test2,
-    bg: "bg-[var(--theme-hex-b8f5e0)]",
-  },
-  {
-    variant: "compact",
-    quote:
-      "“Lorem ipsum dolor sit amet consectetur. Imperdiet elit ultrices sed porta tincidunt lectus. Viverra elementum nunc molestie diam massa dignissim eu erat libero ipsum dolor sit amet consectetur.”",
-    name: "David K. Kelly",
-    role: "Author",
-    image: test3,
-    bg: "bg-[var(--theme-hex-ffc8da)]",
-  },
-  {
-    variant: "compact",
-    quote:
-      "“Lorem ipsum dolor sit amet consectetur. Imperdiet elit ultrices sed porta tincidunt lectus. Viverra elementum nunc molestie diam massa dignissim eu erat libero ipsum dolor sit amet consectetur.”",
-    name: "David K. Kelly",
-    role: "Author",
-    image: test4,
-    bg: "bg-[var(--theme-hex-fff0df)]",
-  },
-  {
-    variant: "compact",
-    quote:
-      "“Lorem ipsum dolor sit amet consectetur. Imperdiet elit ultrices sed porta tincidunt lectus. Viverra elementum nunc molestie diam massa dignissim eu erat libero ipsum dolor sit amet consectetur.”",
-    name: "David K. Kelly",
-    role: "Author",
-    image: null,
-    bg: "bg-[var(--theme-hex-9bd3ff)]",
-  },
-];
+import SectionInfo from "@/components/SectionInfo/SectionInfo";
 
 function Person({ name, role }) {
   return (
     <div className="min-w-0">
-      <p className="font-sans text-[16px] font-semibold leading-[24px] tracking-normal capitalize text-[var(--theme-hex-0f1214)] sm:text-[18px] sm:leading-[28.8px]">
+      <p className="font-sans text-[16px] font-semibold leading-[24px] tracking-normal capitalize text-[var(--theme-text-strong)] sm:text-[18px] sm:leading-[28.8px]">
         {name}
       </p>
 
-      <p className="font-sans text-[13px] font-medium leading-[21px] tracking-normal text-[var(--theme-hex-55546d)] sm:text-[14px] sm:leading-[24.5px]">
+      <p className="font-sans text-[13px] font-medium leading-[21px] tracking-normal text-[var(--theme-text-muted)] sm:text-[14px] sm:leading-[24.5px]">
         {role}
       </p>
     </div>
@@ -84,7 +29,6 @@ function FeaturedCard({ quote, name, role, image, bg }) {
         <Person name={name} role={role} />
       </div>
 
-      {/* Image */}
       <div className="relative h-[210px] w-full shrink-0 overflow-hidden rounded-[10px] sm:h-[230px] md:h-full md:w-[40%]">
         {image && (
           <Image
@@ -105,7 +49,7 @@ function CompactCard({ quote, name, role, image, bg }) {
     <article
       className={`flex min-h-[300px] w-full flex-col justify-between rounded-[12px] p-5 sm:min-h-[322px] sm:p-6 md:col-span-2 ${bg}`}
     >
-      <p className="font-sans text-[14px] font-medium leading-[22px] tracking-normal text-[var(--theme-hex-0f1214)] sm:text-[15px] sm:leading-[24.5px]">
+      <p className="font-sans text-[14px] font-medium leading-[22px] tracking-normal text-[var(--theme-text-strong)] sm:text-[15px] sm:leading-[24.5px]">
         {quote}
       </p>
 
@@ -128,23 +72,21 @@ function CompactCard({ quote, name, role, image, bg }) {
   );
 }
 
-export default function Testimonials({
-  testimonials = defaultTestimonials,
-}) {
+export default function Testimonials({ badge, heading, testimonials = [] }) {
   return (
     <section className="section">
       <div className="container">
         <SectionInfo
-          badge="Testimonials"
-          heading={<>Trusted by 2500+ Authors</>}
+          badge={badge}
+          heading={heading}
         />
 
         <div className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 md:grid-cols-6">
-          {testimonials.map((t, i) =>
+          {testimonials.map((t) =>
             t.variant === "featured" ? (
-              <FeaturedCard key={i} {...t} />
+              <FeaturedCard key={t.id} {...t} />
             ) : (
-              <CompactCard key={i} {...t} />
+              <CompactCard key={t.id} {...t} />
             )
           )}
         </div>
@@ -152,3 +94,5 @@ export default function Testimonials({
     </section>
   );
 }
+
+

@@ -1,12 +1,13 @@
 {
-  "name": "nextjs-ui-starter",
+  "name": "ai-author-assistant-website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint",
+    "check": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "next": "^15.5.0",

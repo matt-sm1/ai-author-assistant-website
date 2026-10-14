@@ -9,11 +9,11 @@ export default function AdvantageCard({
   return (
     <article
       className={cn(
-        "flex h-[241.4px] flex-col justify-between rounded-[14px] border-[0.8px] border-[var(--theme-hex-e1e1e1)] bg-white p-6",
+        "flex h-[241.4px] flex-col justify-between rounded-[14px] border-[0.8px] border-[var(--theme-border)] bg-white p-5 md:p-6",
         className
       )}
     >
-      <span className="flex h-[61.6px] w-[61.6px] shrink-0 items-center justify-center rounded-[14px] border-[0.8px] border-[var(--theme-hex-eae8ec)] bg-[var(--theme-hex-8546ef)] p-[14px] shadow-[var(--shadow-icon)]">
+      <span className="flex h-13 w-13 md:h-[61.6px] md:w-[61.6px] shrink-0 items-center justify-center rounded-[14px] border-[0.8px] border-[var(--theme-border-subtle)] bg-[var(--theme-purple-brand)] p-[14px] shadow-[var(--shadow-icon)]">
         <Icon className="h-full w-full text-white" aria-hidden="true" />
       </span>
 

@@ -3,16 +3,7 @@
 import { useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 
-/*
-  Har section ke badge, heading, paragraph, list item aur card ko khud tag karta hai
-  aur scroll par reveal karta hai. Hero (#home) is se bahar hai, kyunke uski
-  load animations data-enter se chalti hain.
 
-  Manual control chahiye to kisi bhi element par lagao:
-    data-reveal-item                      -> reveal mein shamil karo
-    data-reveal-from="left|right|zoom"    -> direction badlo
-    data-no-reveal                        -> is element ko chhodo
-*/
 const SELECTOR = [
   "main h1",
   "main h2",
@@ -21,14 +12,12 @@ const SELECTOR = [
   "main p",
   "main li",
   "main article",
-  "main span[class*='rounded-[30px]']", // badge pill
   "main [data-badge]",
   "main [data-reveal]",
   "main [data-reveal-from]",
   "main [data-reveal-item]",
 ].join(",");
-
-const STAGGER = 90; // ms, same parent ke elements ke beech
+const STAGGER = 90; 
 const MAX_DELAY = 450;
 
 export default function ScrollReveal() {
@@ -56,7 +45,6 @@ export default function ScrollReveal() {
       targets.push(el);
     });
 
-    // Pehle se data-scroll-reveal wale elements bhi observe karo
     document.querySelectorAll("[data-scroll-reveal]:not([data-revealed])").forEach((el) => {
       if (!targets.includes(el)) targets.push(el);
     });
@@ -70,7 +58,6 @@ export default function ScrollReveal() {
           const el = entry.target;
           io.unobserve(el);
 
-          // Hidden state ko pehle paint kar ke reveal transition start karo.
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               if (!el.isConnected) return;

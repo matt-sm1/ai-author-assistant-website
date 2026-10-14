@@ -6,7 +6,7 @@ export default function Badge({
   return (
     <span
       data-badge
-      className={`inline-flex rounded-[160px] bg-gradient-to-r from-[var(--theme-hex-f5c6ea)] via-[var(--theme-hex-c9a9f5)] to-[var(--theme-hex-9b72f2)] p-px ${className}`}
+      className={`inline-flex rounded-[160px] bg-gradient-to-r from-[var(--theme-pink-pale)] via-[var(--theme-purple-pale)] to-[var(--theme-purple-light)] p-px ${className}`}
       {...props}
     >
       <span

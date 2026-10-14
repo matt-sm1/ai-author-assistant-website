@@ -6,7 +6,7 @@ function ArticleCard({ title, date, href, image, imageAlt }) {
   const content = (
     <>
       {/* IMAGE */}
-      <div className="relative aspect-[1.45] w-full overflow-hidden rounded-lg bg-[linear-gradient(135deg,var(--theme-hex-f5c6ea),var(--theme-hex-c9a9f5),var(--theme-hex-9b72f2))] sm:aspect-[1.5] lg:aspect-[1.6]">
+      <div className="relative aspect-[1.45] w-full overflow-hidden rounded-lg bg-[linear-gradient(135deg,var(--theme-pink-pale),var(--theme-purple-pale),var(--theme-purple-light))] sm:aspect-[1.5] lg:aspect-[1.6]">
         {image && (
           <Image
             src={image}
@@ -20,7 +20,7 @@ function ArticleCard({ title, date, href, image, imageAlt }) {
 
       {/* CONTENT */}
       <div className="flex min-h-[150px] flex-col px-4 pb-4 pt-5 sm:min-h-[154px] sm:px-5 sm:pb-5 sm:pt-6 lg:min-h-[158px] lg:pl-[23.2px] lg:pr-5">
-        <time className="font-sans text-[13px] leading-[20px] font-normal tracking-normal text-[var(--theme-hex-333743)] sm:text-[14px] sm:leading-[21.7px]">
+        <time className="font-sans text-[13px] leading-[20px] font-normal tracking-normal text-[var(--theme-copy)] sm:text-[14px] sm:leading-[21.7px]">
           {date}
         </time>
 

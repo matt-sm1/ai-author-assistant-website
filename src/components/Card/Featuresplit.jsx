@@ -1,4 +1,3 @@
-// components/FeatureSplit.jsx
 import Image from "next/image";
 import { FaCheck } from "react-icons/fa";
 import { Paragraph } from "../ui";
@@ -51,7 +50,6 @@ export default function FeatureSplit({
           )}
         </div>
 
-        {/* Image */}
         <div
           className={`relative aspect-[1.1] w-full overflow-hidden rounded-xl ${
             reverse ? "md:order-1" : ""
@@ -66,7 +64,7 @@ export default function FeatureSplit({
               className="object-cover"
             />
           ) : (
-            <div className="h-full w-full bg-[linear-gradient(135deg,var(--theme-hex-f5c6ea),var(--theme-hex-c9a9f5),var(--theme-hex-9b72f2))]" />
+            <div className="h-full w-full bg-[linear-gradient(135deg,var(--theme-pink-pale),var(--theme-purple-pale),var(--theme-purple-light))]" />
           )}
         </div>
       </div>

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import logo from "../../assests/logo.png";
+import logo from "@/assets/logo.png";
 import Image from "next/image";
 
 const pages = [
-  { label: "Home", href: "#home" },
+  { label: "Home", href: "/" },
   { label: "Product", href: "#integrations" },
   { label: "Features", href: "#features" },
   { label: "Pricing", href: "#contact" },
@@ -19,19 +19,18 @@ const utilityPages = [
 ];
 
 const socials = [
-  { label: "Facebook", icon: FaFacebookF },
-  { label: "Instagram", icon: FaInstagram },
-  { label: "Twitter", icon: FaXTwitter },
-  { label: "LinkedIn", icon: FaLinkedinIn },
+  { label: "Facebook", icon: FaFacebookF, href: "" },
+  { label: "Instagram", icon: FaInstagram, href: "" },
+  { label: "Twitter", icon: FaXTwitter, href: "" },
+  { label: "LinkedIn", icon: FaLinkedinIn, href: "" },
 ];
 
 export default function Footer() {
   return (
     <footer className="section white">
       <div className="mx-auto w-full max-w-[1344px] border-x border-[var(--line)] px-5 pt-16 sm:pt-20 md:pt-24">
-        {/* Top Content */}
+
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-[120px]">
-          {/* Left: Logo + Newsletter */}
           <div className="w-full lg:w-[580px] lg:shrink-0">
             <Image
               src={logo}
@@ -41,7 +40,7 @@ export default function Footer() {
               className="h-8 w-auto object-contain sm:h-10"
             />
 
-            <p className="mt-5 max-w-[380px] font-sans text-[16px] font-normal leading-[24.8px] tracking-[-0.2px] text-[var(--theme-hex-333743)]">
+            <p className="mt-5 max-w-[380px] font-sans text-[16px] font-normal leading-[24.8px] tracking-[-0.2px] text-[var(--theme-copy)]">
               Join our newsletter to stay up to date on features and releases.
             </p>
 
@@ -49,23 +48,23 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="min-h-[44px] min-w-0 flex-1 rounded-[8px] border-[0.8px] border-white bg-[var(--theme-hex-f8f8f8)] px-[11.2px] py-2 text-[14px] text-[var(--theme-hex-333743)] outline-none placeholder:text-[var(--theme-hex-333743)]/60"
+                className="min-h-[44px] min-w-0 flex-1 rounded-[8px] border-[0.8px] border-white bg-[var(--theme-surface-muted)] px-[11.2px] py-2 text-[14px] text-[var(--theme-copy)] outline-none placeholder:text-[var(--theme-copy)]/60"
               />
 
               <button
                 type="submit"
-                className="min-h-[44px] shrink-0 rounded-[8px] bg-[var(--theme-hex-333743)] px-5 py-2 text-[14px] font-medium text-white transition hover:opacity-90"
+                className="min-h-[44px] shrink-0 rounded-[8px] bg-[var(--theme-copy)] px-5 py-2 text-[14px] font-medium text-white transition hover:opacity-90"
               >
                 Subscribe
               </button>
             </form>
           </div>
 
-          {/* Right: Link Columns */}
+
           <div className="grid w-full grid-cols-2 gap-10 sm:grid-cols-3 sm:gap-16 lg:flex-1 lg:justify-between">
             {/* Main Pages */}
             <div>
-              <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-hex-09041d)]">
+              <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-heading)]">
                 Main Pages
               </h4>
 
@@ -74,7 +73,7 @@ export default function Footer() {
                   <li key={p.label}>
                     <Link
                       href={p.href}
-                      className="font-sans text-base leading-[24.8px] text-[var(--theme-hex-333743)] transition hover:text-[var(--theme-hex-09041d)]"
+                      className="font-sans text-base leading-[24.8px] text-[var(--theme-copy)] transition hover:text-[var(--theme-heading)]"
                     >
                       {p.label}
                     </Link>
@@ -85,7 +84,7 @@ export default function Footer() {
 
             {/* Utility Pages */}
             <div>
-              <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-hex-09041d)]">
+              <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-heading)]">
                 Explore
               </h4>
 
@@ -94,7 +93,7 @@ export default function Footer() {
                   <li key={p.label}>
                     <Link
                       href={p.href}
-                      className="font-sans text-base leading-[24.8px] text-[var(--theme-hex-333743)] transition hover:text-[var(--theme-hex-09041d)]"
+                      className="font-sans text-base leading-[24.8px] text-[var(--theme-copy)] transition hover:text-[var(--theme-heading)]"
                     >
                       {p.label}
                     </Link>
@@ -103,19 +102,31 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Socials */}
             <div>
-              <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-hex-09041d)]">
+              <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-heading)]">
                 Follow us
               </h4>
 
               <ul className="mt-5 space-y-4">
-                {socials.map(({ label, icon: Icon }) => (
+                {socials.map(({ label, icon: Icon, href }) => (
                   <li key={label}>
-                    <span className="flex items-center gap-3 font-sans text-base font-semibold leading-[24.8px] text-[var(--theme-hex-09041d)]">
-                      <Icon size={16} />
-                      {label}
-                    </span>
+                    {href ? (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Visit our ${label} page`}
+                        className="flex items-center gap-3 font-sans text-base font-semibold leading-[24.8px] text-[var(--theme-heading)] transition hover:opacity-70"
+                      >
+                        <Icon size={16} aria-hidden="true" />
+                        {label}
+                      </a>
+                    ) : (
+                      <span className="flex items-center gap-3 font-sans text-base font-semibold leading-[24.8px] text-[var(--theme-heading)]">
+                        <Icon size={16} aria-hidden="true" />
+                        {label}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -132,14 +143,14 @@ export default function Footer() {
           <div className="flex flex-wrap gap-6">
             <Link
               href="#faq"
-              className="font-sans text-[14px] leading-[21.7px] text-[var(--theme-hex-333743)] transition hover:text-[var(--theme-hex-09041d)]"
+              className="font-sans text-[14px] leading-[21.7px] text-[var(--theme-copy)] transition hover:text-[var(--theme-heading)]"
             >
               FAQ
             </Link>
 
             <Link
               href="#contact"
-              className="font-sans text-[14px] leading-[21.7px] text-[var(--theme-hex-333743)] transition hover:text-[var(--theme-hex-09041d)]"
+              className="font-sans text-[14px] leading-[21.7px] text-[var(--theme-copy)] transition hover:text-[var(--theme-heading)]"
             >
               Contact
             </Link>

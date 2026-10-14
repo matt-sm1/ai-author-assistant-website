@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "@/assests/logo.png";
-import { Button } from "../ui";
+import logo from "@/assets/logo.png";
+import { Button } from "@/components/ui";
 
 const links = [
-  { label: "Home", href: "#home" },
+  { label: "Home", href: "/" },
   { label: "Product", href: "#integrations" },
   { label: "Features", href: "#features" },
   { label: "Pricing", href: "#contact" },
@@ -16,17 +16,17 @@ const links = [
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeHref, setActiveHref] = useState("#home");
+  const [activeHref, setActiveHref] = useState("/");
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
-    const syncActiveLink = () => setActiveHref(window.location.hash || "#home");
+    const syncActiveLink = () => setActiveHref(window.location.hash || "/");
     syncActiveLink();
     window.addEventListener("hashchange", syncActiveLink);
     return () => window.removeEventListener("hashchange", syncActiveLink);
   }, []);
 
-  // scroll par white background
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
@@ -34,7 +34,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // menu khula ho to scroll lock + Escape se close
+
   useEffect(() => {
     if (!menuOpen) return;
     const prev = document.body.style.overflow;
@@ -47,7 +47,7 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // desktop size par jaye to menu band
+  
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 640px)");
     const onChange = (e) => e.matches && setMenuOpen(false);
@@ -60,7 +60,7 @@ export default function Header() {
   return (
     <header
   data-enter="navbar"
-  className={`sticky top-0 z-50 -mb-20 h-20 w-full border-b border-[var(--theme-hex-eae8ec)] transition-[background-color,box-shadow] duration-300 ${
+  className={`sticky top-0 z-50 -mb-20 h-20 w-full border-b border-[var(--theme-border-subtle)] transition-[background-color,box-shadow] duration-300 ${
     scrolled || menuOpen
       ? "bg-white shadow-sm"
       : "bg-transparent"
@@ -68,14 +68,14 @@ export default function Header() {
 
     >
       <div className="relative mx-auto flex h-20 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:grid sm:w-[calc(100%-3rem)] sm:grid-cols-[1fr_auto_1fr]">
-        {/* Left: logo */}
+
         <div className="flex items-center justify-self-start">
           <Link href="#home" onClick={closeMenu} aria-label="AuthorBot home" className="flex items-center">
             <Image src={logo} alt="Author AI Assistant" priority className="h-9 w-auto object-contain sm:h-11" />
           </Link>
         </div>
 
-        {/* Center: desktop links */}
+
         <nav className="hidden items-center justify-center gap-8 sm:flex" aria-label="Main navigation">
           {links.map(({ label, href }) => (
             <Link
@@ -91,7 +91,7 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Right: desktop button + mobile toggle */}
+
         <div className="flex items-center justify-self-end">
           <div className="hidden sm:block">
                 <Button href="#contact" className="h-9 w-[112px] px-3 py-0 text-xs md:h-10 md:w-[128px] md:text-[13px]">
@@ -116,7 +116,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile: backdrop */}
+    
       <div
         onClick={closeMenu}
         aria-hidden="true"
@@ -125,7 +125,7 @@ export default function Header() {
         }`}
       />
 
-      {/* Mobile: panel */}
+      
       <nav
         id="mobile-navigation"
         aria-label="Mobile navigation"

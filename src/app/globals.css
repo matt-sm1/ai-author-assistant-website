@@ -1,85 +1,76 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-heading: var(--theme-hex-09041d);
-  --color-copy: var(--theme-hex-333743);
-  --color-accent: var(--theme-hex-a72ff2);
-  --color-background: var(--theme-hex-f7f6f7);
+  --color-heading: var(--theme-heading);
+  --color-copy: var(--theme-copy);
+  --color-accent: var(--theme-accent);
+  --color-background: var(--theme-background);
+  --color-white: var(--theme-white);
+  --color-black: var(--theme-black);
 
   --font-sans: var(--font-inter), sans-serif;
   --font-display: var(--font-host-grotesk), sans-serif;
 }
 
 :root {
-  --theme-hex-000: #000;
-  --theme-hex-0000003d: #0000003D;
-  --theme-hex-09041d: #09041D;
-  --theme-hex-0a8cff: #0A8CFF;
-  --theme-hex-0f1214: #0F1214;
-  --theme-hex-12101326: #12101326;
-  --theme-hex-1b93d2: #1B93D2;
-  --theme-hex-1d7bff: #1D7BFF;
-  --theme-hex-1e88e5: #1E88E5;
-  --theme-hex-25d366: #25D366;
-  --theme-hex-262236: #262236;
-  --theme-hex-285aeb: #285AEB;
-  --theme-hex-29242c1f: #29242C1F;
-  --theme-hex-29242c26: #29242C26;
-  --theme-hex-2eb67d: #2EB67D;
-  --theme-hex-333743: #333743;
-  --theme-hex-36224e: #36224E;
-  --theme-hex-36c5f0: #36C5F0;
-  --theme-hex-3bb6ee: #3BB6EE;
-  --theme-hex-3d3d3d1a: #3D3D3D1A;
-  --theme-hex-4caf50: #4CAF50;
-  --theme-hex-514c60: #514C60;
-  --theme-hex-55546d: #55546D;
-  --theme-hex-5865f2: #5865F2;
-  --theme-hex-666477: #666477;
-  --theme-hex-7a3cf5: #7A3CF5;
-  --theme-hex-8546ef: #8546EF;
-  --theme-hex-9b72f2: #9B72F2;
-  --theme-hex-9bd3ff: #9BD3FF;
-  --theme-hex-a06ef3: #A06EF3;
-  --theme-hex-a72ff2: #A72FF2;
-  --theme-hex-b821ea14: #B821EA14;
-  --theme-hex-b8b8c0: #B8B8C0;
-  --theme-hex-b8f5e0: #B8F5E0;
-  --theme-hex-c03bf5: #C03BF5;
-  --theme-hex-c62828: #C62828;
-  --theme-hex-c6caca80: #C6CACA80;
-  --theme-hex-c72ee8: #C72EE8;
-  --theme-hex-c9a9f5: #C9A9F5;
-  --theme-hex-d6249f: #D6249F;
-  --theme-hex-d6c6f1: #D6C6F1;
-  --theme-hex-e01e5a: #E01E5A;
-  --theme-hex-e1e1e1: #E1E1E1;
-  --theme-hex-e53935: #E53935;
-  --theme-hex-e5e4e9: #E5E4E9;
-  --theme-hex-eae8ec: #EAE8EC;
-  --theme-hex-ecb22e: #ECB22E;
-  --theme-hex-f5c6ea: #F5C6EA;
-  --theme-hex-f6e6ff: #F6E6FF;
-  --theme-hex-f7f5f8: #F7F5F8;
-  --theme-hex-f7f6f7: #F7F6F7;
-  --theme-hex-f8f8f8: #F8F8F8;
-  --theme-hex-faf9fc: #FAF9FC;
-  --theme-hex-fbc02d: #FBC02D;
-  --theme-hex-fbf9fc: #FBF9FC;
-  --theme-hex-fcc7d7: #FCC7D7;
-  --theme-hex-fcdbe5: #FCDBE5;
-  --theme-hex-fd5949: #FD5949;
-  --theme-hex-fdf497: #FDF497;
-  --theme-hex-ff6a5c: #FF6A5C;
-  --theme-hex-ffc8da: #FFC8DA;
-  --theme-hex-fff0df: #FFF0DF;
-  --theme-hex-ffffff: #FFFFFF;
-  --line: var(--theme-hex-e1e1e1);
-  --surface-glow: rgba(213, 177, 246, 0.28);
+  --theme-heading: #09041d;
+  --theme-copy: #333743;
+  --theme-accent: #a72ff2;
+  --theme-background: #f7f6f7;
+  --theme-background-soft: #f7f5f8;
+  --theme-surface: #ffffff;
+  --theme-surface-muted: #f8f8f8;
+  --theme-surface-hover: #faf9fc;
+  --theme-border: #e1e1e1;
+  --theme-border-subtle: #eae8ec;
+  --theme-text-strong: #0f1214;
+  --theme-text-muted: #55546d;
+  --theme-text-rating: #514c60;
+  --theme-black: #000000;
+  --theme-white: #ffffff;
+  --theme-ink-purple: #262236;
+  --theme-blue-sky: #0a8cff;
+  --theme-blue-link: #1b93d2;
+  --theme-blue-social: #1d7bff;
+  --theme-blue-google: #1e88e5;
+  --theme-blue-instagram: #285aeb;
+  --theme-blue-slack: #36c5f0;
+  --theme-blue-social-light: #3bb6ee;
+  --theme-blue-pale: #9bd3ff;
+  --theme-green-whatsapp: #25d366;
+  --theme-green-slack: #2eb67d;
+  --theme-green-google: #4caf50;
+  --theme-indigo-discord: #5865f2;
+  --theme-purple-vivid: #7a3cf5;
+  --theme-purple-brand: #8546ef;
+  --theme-purple-light: #9b72f2;
+  --theme-purple-medium: #a06ef3;
+  --theme-purple-bright: #c03bf5;
+  --theme-purple-star: #c72ee8;
+  --theme-purple-pale: #c9a9f5;
+  --theme-purple-tint: #d6c6f1;
+  --theme-purple-wash: #f6e6ff;
+  --theme-pink-instagram: #d6249f;
+  --theme-pink-slack: #e01e5a;
+  --theme-pink-pale: #f5c6ea;
+  --theme-pink-rose: #fcc7d7;
+  --theme-pink-wash: #fcdbe5;
+  --theme-pink-soft: #ffc8da;
+  --theme-red-dark: #c62828;
+  --theme-red-google: #e53935;
+  --theme-red-instagram: #fd5949;
+  --theme-coral-brand: #ff6a5c;
+  --theme-yellow-slack: #ecb22e;
+  --theme-yellow-google: #fbc02d;
+  --theme-yellow-instagram: #fdf497;
+  --theme-mint-pale: #b8f5e0;
+  --theme-orange-soft: #fff0df;
+  --theme-shadow-inset-dark: #3d3d3d1a;
+  --theme-shadow-inset-purple: #b821ea14;
+  --line: var(--theme-border);
   --shadow-card: 0 4px 24px rgba(20, 20, 60, 0.08);
   --shadow-card-sm: 0 2px 5px rgba(41, 36, 44, 0.12);
   --shadow-card-raised: 0 6px 16px rgba(41, 36, 44, 0.15);
-  --shadow-card-content: 0 10px 28px rgba(48, 30, 69, 0.05);
   --shadow-icon: 0 2px 12px rgba(198, 202, 202, 0.5);
   --shadow-badge: 0 1px 5px rgba(18, 16, 19, 0.15);
   --shadow-social: 0 6px 16px rgba(124, 92, 230, 0.16);
@@ -111,7 +102,7 @@ body {
 }
 
 .white{
-  background: white !important;
+  background: var(--theme-surface) !important;
 }
 .container {
   width: 100%;
@@ -200,11 +191,6 @@ body {
 @keyframes gentle-float {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(0, -4px, 0); }
-}
-
-@keyframes marquee-slide {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
 }
 
 @keyframes hero-bounce {

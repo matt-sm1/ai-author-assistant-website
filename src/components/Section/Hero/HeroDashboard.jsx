@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Dashboard from "@/assests/hero_banner.webp";
+import Dashboard from "@/assets/hero_banner.webp";
 
 export default function HeroDashboard() {
   return (

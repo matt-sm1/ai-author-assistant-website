@@ -1,7 +1,7 @@
 import Image from "next/image";
-import bot from "@/assests/hero_bot.webp";
-import Trends from "@/assests/hero_banner_1.webp";
-import Progress from "@/assests/hero_banner_2.webp";
+import bot from "@/assets/hero_bot.webp";
+import Trends from "@/assets/hero_banner_1.webp";
+import Progress from "@/assets/hero_banner_2.webp";
 
 function MetricCard({ image, alt, className, delay }) {
   return (
