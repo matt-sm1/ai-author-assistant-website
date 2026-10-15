@@ -276,7 +276,7 @@ body {
   }
 
   /* ---------- Premium button ---------- */
-  /* Button component ke root element par data-btn lagao */
+  /* Attach data-btn on the Button component root element */
   [data-btn] {
     position: relative;
     overflow: hidden;

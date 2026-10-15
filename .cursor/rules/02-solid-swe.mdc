@@ -1,0 +1,20 @@
+---
+description: SOLID and core SWE principles applied to real changes
+alwaysApply: true
+---
+
+# SOLID + SWE (apply, don’t recite)
+
+| Principle | Practice |
+|-----------|----------|
+| **S** | Split UI chrome from domain behavior; one PR concern per cohesive change. |
+| **O** | Extend via props/slots/composition; avoid editing closed cores for every variant. |
+| **L** | Subtypes must honor the parent contract; no surprise side effects. |
+| **I** | Narrow props/APIs; don’t force callers to pass unused baggage. |
+| **D** | Depend on stable abstractions (interfaces, hooks, ports) — not concrete fetchers/DB clients deep in UI. |
+
+## SWE non-negotiables
+- Correctness > cleverness; readability > novelty.
+- Explicit over implicit; immutable data by default where cheap.
+- Errors are part of the API: surface, log context, recover or fail.
+- Complexity budget: if a change needs a diagram to explain, draw it before merging the idea.

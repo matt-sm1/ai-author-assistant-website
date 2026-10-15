@@ -3,21 +3,20 @@
 import { useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 
-
 const SELECTOR = [
   "main h1",
   "main h2",
   "main h3",
   "main h4",
-  "main p",
-  "main li",
   "main article",
   "main [data-badge]",
   "main [data-reveal]",
   "main [data-reveal-from]",
   "main [data-reveal-item]",
+  "main [data-reveal-step]",
 ].join(",");
-const STAGGER = 90; 
+
+const STAGGER = 90;
 const MAX_DELAY = 450;
 
 export default function ScrollReveal() {
@@ -33,7 +32,7 @@ export default function ScrollReveal() {
     document.querySelectorAll(SELECTOR).forEach((el) => {
       if (el.hasAttribute("data-scroll-reveal")) return;
       if (el.closest("[data-no-reveal], #home, [data-enter], [data-bounce], [data-marquee]")) return;
-      // card ke andar wale elements card ke saath hi aate hain
+      // Nested content inside an already-revealed card animates with the card
       if (el.parentElement?.closest("[data-scroll-reveal]")) return;
 
       const parent = el.parentElement;
@@ -62,7 +61,7 @@ export default function ScrollReveal() {
             requestAnimationFrame(() => {
               if (!el.isConnected) return;
               el.setAttribute("data-revealed", "");
-              // Reveal stagger sirf entrance par ho; hover turant respond kare.
+              // Clear stagger after entrance so hover responds immediately
               window.setTimeout(() => el.style.setProperty("--reveal-delay", "0ms"), 1400);
             });
           });

@@ -4,8 +4,7 @@ import { useState } from "react";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { Paragraph } from "@/components/ui";
 import SectionInfo from "@/components/SectionInfo/SectionInfo";
-
-
+import { faqContent } from "@/content/home/faq";
 
 function PlusMinus({ open }) {
   const Icon = open ? FiMinus : FiPlus;
@@ -60,12 +59,12 @@ function FaqItem({ id, question, answer, open, onToggle }) {
 }
 
 export default function Faq({
-  badge,
-  heading,
-  description,
-  faqs = [],
+  badge = faqContent.badge,
+  heading = faqContent.heading,
+  description = faqContent.description,
+  faqs = faqContent.faqs,
   defaultOpen = null,
-}) {
+} = {}) {
   const [openIndex, setOpenIndex] = useState(defaultOpen);
   const faqList = Array.isArray(faqs) ? faqs : [];
 

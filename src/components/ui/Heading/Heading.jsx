@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 export default function Heading({
-  as: Tag = "h1",
+  as: Tag = "h2",
   children,
   className = "",
   ...props

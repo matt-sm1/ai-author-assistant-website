@@ -1,0 +1,30 @@
+---
+description: Testing strategy and BDD — behavior first, risk-based depth
+alwaysApply: true
+---
+
+# Testing & BDD
+
+## Risk pyramid
+- **Unit**: pure logic, reducers, parsers, utils — fast, isolated.
+- **Component/integration**: user-visible behavior with realistic props/state.
+- **E2E**: only critical paths (hero CTA, nav, form submit). Do not E2E everything.
+
+## BDD habit
+For non-trivial behavior, write scenarios before or with the code:
+
+```gherkin
+Feature: Hero CTA
+  Scenario: Visitor starts trial
+    Given the landing page is loaded
+    When they click "Get started"
+    Then they land on the signup flow
+```
+
+Map Given → arrange, When → act, Then → assert. Name tests as behavior, not methods.
+
+## Rules of thumb
+- Assert outcomes users care about, not implementation details.
+- No flaky sleeps; prefer queries, events, fake timers.
+- Bug fix ⇒ regression test when feasible.
+- Skip tests only when change is pure markup/CSS with no behavior — say so explicitly.

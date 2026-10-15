@@ -1,11 +1,12 @@
 import Image from "next/image";
-import HeroBottom from "@/assets/hero_bottom.webp";
+import { homeImages } from "@/content/media";
+import { heroContent as defaultHeroContent } from "@/content/home/hero";
 import TrustedBy from "@/components/Section/TrustedBy";
 import HeroContent from "@/components/Section/Hero/HeroContent";
 import HeroDashboard from "@/components/Section/Hero/HeroDashboard";
 import HeroDecorations from "@/components/Section/Hero/HeroDecorations";
 
-export default function HeroSection({ heroContent }) {
+export default function HeroSection({ heroContent = defaultHeroContent } = {}) {
   return (
     <>
       <section
@@ -18,9 +19,11 @@ export default function HeroSection({ heroContent }) {
           <HeroDashboard />
         </div>
         <Image
-          src={HeroBottom}
+          src={homeImages.heroBottom}
           alt=""
           aria-hidden="true"
+          width={1920}
+          height={200}
           sizes="100vw"
           className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-auto w-full"
         />

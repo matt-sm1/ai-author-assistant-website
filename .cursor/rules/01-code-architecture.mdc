@@ -1,0 +1,22 @@
+---
+description: How to write and manage code — boundaries, cohesion, change safety
+alwaysApply: true
+---
+
+# Write & manage code
+
+## Write
+- One module = one reason to change. Prefer composition over inheritance.
+- Name by domain role (`FeatureRow`), not tech accident (`Helper2`).
+- Pure logic at the core; I/O, UI, and frameworks at the edges.
+- Explicit inputs/outputs; no hidden globals; fail loud with typed/clear errors.
+- Match local style (imports, components, CSS modules). Duplicate patterns over inventing new abstractions.
+
+## Manage
+- Keep folders by feature/section when the app is UI-led; share only true primitives in `ui/` / `lib/`.
+- Public surface small: export barrels only for stable APIs.
+- Delete dead code; avoid commented-out graves and speculative “for later” hooks.
+- Refactor only behind green behavior (tests or manual checklist), in small commits of intent.
+
+## Reject
+- God components, prop drilling through 4+ layers without a local seam, premature micro-libs, config sprawl.

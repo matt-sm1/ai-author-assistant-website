@@ -1,0 +1,15 @@
+---
+description: Expert defaults for every task — architecture bar, plan-first, efficiency
+alwaysApply: true
+---
+
+# Expert defaults (always)
+
+Before coding, treat every request as architecture work unless the user asks for a throwaway spike.
+
+1. **Read before write**: map existing structure, naming, and seams; extend them — do not invent parallel patterns.
+2. **Plan then ship**: for multi-file or behavior changes, state a short plan (goal → constraints → steps → risks → done). Skip ceremony for one-liners.
+3. **Load guides when relevant**: `.cursor/guides/` — `code-architecture.md`, `solid-and-swe.md`, `testing-and-bdd.md`, `planning.md`, `diagrams.md`, `resource-efficiency.md`.
+4. **Minimal blast radius**: smallest correct change; no drive-by refactors; no new deps without clear need.
+5. **Prove it**: prefer tests / BDD scenarios for behavior; diagrams when structure or flow is non-obvious.
+6. **Efficiency**: fewest tokens, files, and tool calls that still produce expert output — deep where it matters, terse elsewhere.

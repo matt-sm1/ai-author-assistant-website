@@ -1,0 +1,22 @@
+---
+description: How to plan work and write plans before implementation
+alwaysApply: true
+---
+
+# Plan & write the plan
+
+## When to plan
+Multi-file, new feature, architecture touch, unclear requirements, or >~30 minutes of work.
+
+## Plan shape (keep short)
+1. **Goal** — one sentence outcome
+2. **Constraints** — stack, design system, perf, “don’t break X”
+3. **Current state** — what exists (files/seams)
+4. **Approach** — 3–7 ordered steps; mark risky steps
+5. **Done** — observable acceptance (BDD-style if behavior)
+6. **Out of scope** — explicit non-goals
+
+## Planning behavior
+- Prefer clarifying one sharp question over guessing product intent.
+- Choose the design that minimizes future rewrites for the known next change.
+- After approval (or if user said “just do it”), execute the plan without re-litigating unless blocked.

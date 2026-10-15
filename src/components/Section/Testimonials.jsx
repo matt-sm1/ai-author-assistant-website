@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SectionInfo from "@/components/SectionInfo/SectionInfo";
+import { testimonialsContent } from "@/content/home/testimonials";
 
 function Person({ name, role }) {
   return (
@@ -72,7 +73,11 @@ function CompactCard({ quote, name, role, image, bg }) {
   );
 }
 
-export default function Testimonials({ badge, heading, testimonials = [] }) {
+export default function Testimonials({
+  badge = testimonialsContent.badge,
+  heading = testimonialsContent.heading,
+  testimonials = testimonialsContent.testimonials,
+} = {}) {
   return (
     <section className="section">
       <div className="container">

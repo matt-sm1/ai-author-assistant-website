@@ -1,0 +1,20 @@
+---
+description: Diagrams/graphs and high-output low-resource execution
+alwaysApply: true
+---
+
+# Diagrams & resource efficiency
+
+## Graphs / diagrams
+- Use Mermaid for flows, sequences, ERDs, component trees; tables for comparisons.
+- One diagram = one question. Label edges. No decorative nodes.
+- Prefer: architecture context → sequence for runtime → state for modes.
+- See `.cursor/guides/diagrams.md` for templates.
+
+## Less resource, excellent output
+- Batch independent tool calls; don’t re-read files you already have.
+- Search narrowly (`rg`/glob) before wide exploration.
+- Edit surgically; don’t regenerate whole files for small diffs.
+- Depth only on the critical path; skip optional polish unless asked.
+- Cache decisions in the plan; don’t re-derive architecture mid-task.
+- Prefer reuse of existing components/tokens over new abstractions.

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "@/assets/logo.png";
+import { brandLogo } from "@/content/media";
 import { Button } from "@/components/ui";
 
 const links = [
@@ -26,14 +26,12 @@ export default function Header() {
     return () => window.removeEventListener("hashchange", syncActiveLink);
   }, []);
 
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -47,7 +45,6 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 640px)");
     const onChange = (e) => e.matches && setMenuOpen(false);
@@ -59,30 +56,40 @@ export default function Header() {
 
   return (
     <header
-  data-enter="navbar"
-  className={`sticky top-0 z-50 -mb-20 h-20 w-full border-b border-[var(--theme-border-subtle)] transition-[background-color,box-shadow] duration-300 ${
-    scrolled || menuOpen
-      ? "bg-white shadow-sm"
-      : "bg-transparent"
-  }`}
-
+      data-enter="navbar"
+      className={`sticky top-0 z-50 -mb-20 h-20 w-full border-b border-[var(--theme-hex-eae8ec)] transition-[background-color,box-shadow] duration-300 ${
+        scrolled || menuOpen ? "bg-white shadow-sm" : "bg-transparent"
+      }`}
     >
       <div className="relative mx-auto flex h-20 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:grid sm:w-[calc(100%-3rem)] sm:grid-cols-[1fr_auto_1fr]">
-
         <div className="flex items-center justify-self-start">
-          <Link href="#home" onClick={closeMenu} aria-label="AuthorBot home" className="flex items-center">
-            <Image src={logo} alt="Author AI Assistant" priority className="h-9 w-auto object-contain sm:h-11" />
+          <Link
+            href="#home"
+            onClick={closeMenu}
+            aria-label="AuthorBot home"
+            className="flex items-center"
+          >
+            <Image
+              src={brandLogo}
+              alt="Author AI Assistant"
+              width={160}
+              height={54}
+              priority
+              className="h-9 w-auto object-contain sm:h-11"
+            />
           </Link>
         </div>
 
-
-        <nav className="hidden items-center justify-center gap-8 sm:flex" aria-label="Main navigation">
+        <nav
+          className="hidden items-center justify-center gap-8 sm:flex"
+          aria-label="Main navigation"
+        >
           {links.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
               onClick={closeMenu}
-              className={`relative rounded-md px-1 py-2 font-sans text-[13px] font-medium no-underline transition-[color,opacity] duration-200 hover:text-accent  md:text-[16px] ${
+              className={`relative rounded-md px-1 py-2 font-sans text-[13px] font-medium no-underline transition-[color,opacity] duration-200 hover:text-accent md:text-[16px] ${
                 isActive(href) ? "text-accent" : "text-heading"
               }`}
             >
@@ -91,10 +98,12 @@ export default function Header() {
           ))}
         </nav>
 
-
         <div className="flex items-center justify-self-end">
           <div className="hidden sm:block">
-                <Button href="#contact" className="h-9 w-[112px] px-3 py-0 text-xs md:h-10 md:w-[128px] md:text-[13px]">
+            <Button
+              href="#contact"
+              className="h-9 w-[112px] px-3 py-0 text-xs md:h-10 md:w-[128px] md:text-[13px]"
+            >
               Get Started
             </Button>
           </div>
@@ -108,15 +117,26 @@ export default function Header() {
             aria-controls="mobile-navigation"
           >
             <span className="flex flex-col gap-1" aria-hidden="true">
-              <span className={`h-0.5 w-5 rounded bg-current transition-transform duration-300 ${menuOpen ? "translate-y-1.5 rotate-45" : ""}`} />
-              <span className={`h-0.5 w-5 rounded bg-current transition-opacity duration-200 ${menuOpen ? "opacity-0" : "opacity-100"}`} />
-              <span className={`h-0.5 w-5 rounded bg-current transition-transform duration-300 ${menuOpen ? "-translate-y-1.5 -rotate-45" : ""}`} />
+              <span
+                className={`h-0.5 w-5 rounded bg-current transition-transform duration-300 ${
+                  menuOpen ? "translate-y-1.5 rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`h-0.5 w-5 rounded bg-current transition-opacity duration-200 ${
+                  menuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`h-0.5 w-5 rounded bg-current transition-transform duration-300 ${
+                  menuOpen ? "-translate-y-1.5 -rotate-45" : ""
+                }`}
+              />
             </span>
           </button>
         </div>
       </div>
 
-    
       <div
         onClick={closeMenu}
         aria-hidden="true"
@@ -125,13 +145,14 @@ export default function Header() {
         }`}
       />
 
-      
       <nav
         id="mobile-navigation"
         aria-label="Mobile navigation"
         aria-hidden={!menuOpen}
         className={`absolute inset-x-0 top-full origin-top border-t border-heading/10 bg-white px-4 pb-5 pt-3 shadow-xl transition-[opacity,transform,visibility] duration-300 ease-out sm:hidden ${
-          menuOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-2 opacity-0"
+          menuOpen
+            ? "visible translate-y-0 opacity-100"
+            : "invisible -translate-y-2 opacity-0"
         }`}
       >
         <ul className="flex flex-col">
@@ -141,11 +162,15 @@ export default function Header() {
                 href={href}
                 onClick={closeMenu}
                 className={`flex items-center justify-between rounded-lg px-3 py-3.5 text-base font-medium no-underline transition-colors active:bg-accent/5 ${
-                  isActive(href) ? "bg-accent/5 text-accent" : "text-heading hover:bg-accent/5"
+                  isActive(href)
+                    ? "bg-accent/5 text-accent"
+                    : "text-heading hover:bg-accent/5"
                 }`}
               >
                 {label}
-                <span aria-hidden="true" className="text-heading/30">›</span>
+                <span aria-hidden="true" className="text-heading/30">
+                  ›
+                </span>
               </Link>
             </li>
           ))}

@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa";
 import { TbWorld } from "react-icons/tb";
 import SectionInfo from "@/components/SectionInfo/SectionInfo";
+import { socialMediaContent } from "@/content/home/socialMedia";
 
 
 function GradientDefs() {
@@ -193,7 +194,13 @@ function IconTile({ platform, label }) {
 }
 
 
-export default function SocialMedia({ badge, heading, description, rows = [], platformLabels = {} }) {
+export default function SocialMedia({
+  badge = socialMediaContent.badge,
+  heading = socialMediaContent.heading,
+  description = socialMediaContent.description,
+  rows = socialMediaContent.rows,
+  platformLabels = socialMediaContent.platformLabels,
+} = {}) {
   return (
     <section id="integrations" className="section relative overflow-hidden">
       <GradientDefs />

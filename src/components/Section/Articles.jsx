@@ -1,13 +1,14 @@
 import SectionInfo from "@/components/SectionInfo/SectionInfo";
 import ArticleCard from "@/components/Card/ArticleCard";
+import { articlesContent } from "@/content/home/articles";
 
 export default function Articles({
-  badge,
-  heading,
-  headingClassName,
-  description,
-  articles = [],
-}) {
+  badge = articlesContent.badge,
+  heading = articlesContent.heading,
+  headingClassName = articlesContent.headingClassName,
+  description = articlesContent.description,
+  articles = articlesContent.articles,
+} = {}) {
   return (
     <section id="articles" className="section">
       <div className="container">

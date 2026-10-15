@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SectionInfo from "@/components/SectionInfo/SectionInfo";
+import { featuresContent } from "@/content/home/features";
 
 function FeatureCard({ title, description, image }) {
   return (
@@ -29,12 +30,12 @@ function FeatureCard({ title, description, image }) {
 }
 
 export default function FeaturesSection({
-  badge,
-  heading,
-  description,
-  headingClassName,
-  features = [],
-}) {
+  badge = featuresContent.badge,
+  heading = featuresContent.heading,
+  description = featuresContent.description,
+  headingClassName = featuresContent.headingClassName,
+  features = featuresContent.features,
+} = {}) {
   return (
     <section id="features" className="section">
       <div className="container">

@@ -21,6 +21,8 @@ function FeatureRow({ title, description, buttonLabel, href, image, imageAlt, re
           <Image
             src={image}
             alt={imageAlt || (typeof title === "string" ? title : "")}
+            width={520}
+            height={480}
             sizes="(max-width: 768px) 100vw, 40vw"
             className="h-auto w-full rounded-2xl"
           />
