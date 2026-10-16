@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { ArrowLeft, CalendarDays, Tag } from "lucide-react";
+import { CalendarDays, Tag } from "lucide-react";
 
 import { fmtArticleDate } from "@/frontend/lib/format";
 import PostContentRenderer from "@/frontend/feature/post/components/PostContentRenderer";
@@ -12,14 +11,6 @@ export default function BlogArticle({ post }) {
     <section className="section">
       <div className="container">
         <article className="mx-auto w-full max-w-3xl">
-          <Link
-            href="/blogs"
-            className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-[var(--theme-copy)] transition-colors hover:text-[var(--theme-heading)]"
-          >
-            <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-            Back to articles
-          </Link>
-
           <div className="overflow-hidden rounded-xl bg-white p-1.5 shadow-[var(--shadow-card-sm)]">
             <div className="overflow-hidden rounded-lg">
               <PostFeaturedImage src={post.featured_image} title={post.title} />

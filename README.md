@@ -34,21 +34,12 @@ npm run dev
 
 ## Cron
 
-Vercel **Hobby** only allows **daily** native crons:
-
-- `/api/cron/publish-scheduled` — `0 0 * * *` (midnight UTC)
+- `/api/cron/publish-scheduled` — `* * * * *` (every minute)
 - `/api/cron/media-orphan-cleanup` — `0 1 * * *` (01:00 UTC)
 
-**Lazy publish:** public blog reads and the admin posts list also flip due `scheduled` posts to `published`, so posts go live even between daily cron runs.
+Requires a Vercel plan that allows sub-daily crons (Pro+). Hobby rejects minute schedules at deploy time.
 
-For **every 1 minute** publishing without waiting for traffic, use an external scheduler (cron-job.org, etc.):
-
-```bash
-curl -sS -H "Authorization: Bearer $CRON_SECRET" \
-  "https://www.authoraiassistant.com/api/cron/publish-scheduled"
-```
-
-Schedule that GET every minute. Or upgrade Vercel to **Pro** and set `"schedule": "* * * * *"` in `vercel.json`.
+Public/admin reads also lazily publish due scheduled posts as a fallback.
 
 ## Rollback
 
