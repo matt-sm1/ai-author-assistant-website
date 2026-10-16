@@ -3,28 +3,31 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { brandLogo } from "@/content/media";
 import { Button } from "@/components/ui";
 
 const links = [
   { label: "Home", href: "/" },
-  { label: "Product", href: "#integrations" },
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#contact" },
+  { label: "Product", href: "/#integrations" },
+  { label: "Features", href: "/#features" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "Pricing", href: "/#contact" },
 ];
 
 export default function Header() {
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeHref, setActiveHref] = useState("/");
+  const [hash, setHash] = useState("");
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
-    const syncActiveLink = () => setActiveHref(window.location.hash || "/");
-    syncActiveLink();
-    window.addEventListener("hashchange", syncActiveLink);
-    return () => window.removeEventListener("hashchange", syncActiveLink);
-  }, []);
+    const syncHash = () => setHash(window.location.hash || "");
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -52,7 +55,14 @@ export default function Header() {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  const isActive = (href) => activeHref === href;
+  const isActive = (href) => {
+    if (href === "/blogs") return pathname === "/blogs";
+    if (href === "/") return pathname === "/" && !hash;
+    if (href.startsWith("/#")) {
+      return pathname === "/" && hash === href.slice(1);
+    }
+    return false;
+  };
 
   return (
     <header
@@ -64,7 +74,7 @@ export default function Header() {
       <div className="relative mx-auto flex h-20 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:grid sm:w-[calc(100%-3rem)] sm:grid-cols-[1fr_auto_1fr]">
         <div className="flex items-center justify-self-start">
           <Link
-            href="#home"
+            href="/"
             onClick={closeMenu}
             aria-label="AuthorBot home"
             className="flex items-center"
@@ -101,7 +111,7 @@ export default function Header() {
         <div className="flex items-center justify-self-end">
           <div className="hidden sm:block">
             <Button
-              href="#contact"
+              href="/#contact"
               className="h-9 w-[112px] px-3 py-0 text-xs md:h-10 md:w-[128px] md:text-[13px]"
             >
               Get Started
@@ -175,7 +185,7 @@ export default function Header() {
             </li>
           ))}
         </ul>
-        <Button href="#contact" onClick={closeMenu} className="mt-4 h-11 w-full">
+        <Button href="/#contact" onClick={closeMenu} className="mt-4 h-11 w-full">
           Get Started
         </Button>
       </nav>

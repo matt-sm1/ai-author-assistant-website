@@ -4,16 +4,16 @@ import { brandLogo } from "@/content/media";
 
 const pages = [
   { label: "Home", href: "/" },
-  { label: "Product", href: "#integrations" },
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#contact" },
-  { label: "Contact", href: "#contact" },
+  { label: "Product", href: "/#integrations" },
+  { label: "Features", href: "/#features" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "Pricing", href: "/#contact" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 const utilityPages = [
-  { label: "Always-On", href: "#always-on" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Articles", href: "#articles" },
+  { label: "Always-On", href: "/#always-on" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
 export default function Footer() {

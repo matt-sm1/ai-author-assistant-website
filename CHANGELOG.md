@@ -7,6 +7,11 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## 2026-10-17
 
+### Blogs page
+- New route `/blogs` under `(marketing)` with `src/content/blogs/posts.js` + `Section/Blogs`.
+- Header **Blogs** → `/blogs`; home section hashes use `/#…` so they work from other pages.
+- Footer pages/utility links updated similarly (Blogs replaces Articles).
+
 ### Favicon
 - Replaced `src/app/icon.svg` with purple gradient chat-bot mark (Downloads source).
 
