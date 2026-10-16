@@ -4,10 +4,10 @@ import { toPublicPostList } from "@/backend/lib/to-public-post";
 import { assertSafePagination } from "@/backend/lib/pagination";
 
 export const metadata = {
-  title: "Blogs | AuthorBot",
+  title: "Blogs",
   description:
     "Latest insights for modern authors on AI, reader engagement, and book marketing.",
-};
+}
 
 export const revalidate = 120;
 
