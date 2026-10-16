@@ -64,11 +64,18 @@ export default function Header() {
     return false;
   };
 
+  // Marketing hero sits under the nav via -mb-20; blog pages need a normal document flow.
+  const overlayHero = !pathname?.startsWith("/blogs");
+
   return (
     <header
       data-enter="navbar"
-      className={`sticky top-0 z-50 -mb-20 h-20 w-full border-b border-[var(--theme-hex-eae8ec)] transition-[background-color,box-shadow] duration-300 ${
-        scrolled || menuOpen ? "bg-white shadow-sm" : "bg-transparent"
+      className={`sticky top-0 z-50 h-20 w-full border-b border-[var(--theme-hex-eae8ec)] transition-[background-color,box-shadow] duration-300 ${
+        overlayHero ? "-mb-20" : ""
+      } ${
+        scrolled || menuOpen || !overlayHero
+          ? "bg-white shadow-sm"
+          : "bg-transparent"
       }`}
     >
       <div className="relative mx-auto flex h-20 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:grid sm:w-[calc(100%-3rem)] sm:grid-cols-[1fr_auto_1fr]">
