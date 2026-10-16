@@ -5,8 +5,9 @@ This project enforces expert-level architecture and delivery. Always-apply rules
 ## Every command
 
 1. Follow `.cursor/rules/*.mdc` (all `alwaysApply: true`).
-2. For non-trivial work, open the matching guide under `.cursor/guides/` before implementing.
-3. Prefer planning → smallest correct change → proof (tests/BDD or explicit acceptance).
+2. Read and maintain root [`CHANGELOG.md`](CHANGELOG.md) so updates do not overlap prior decisions.
+3. For non-trivial work, open the matching guide under `.cursor/guides/` before implementing.
+4. Prefer planning → smallest correct change → proof (tests/BDD or explicit acceptance).
 
 ## Guide index
 

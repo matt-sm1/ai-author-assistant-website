@@ -12,6 +12,7 @@ Always-on rules (`.cursor/rules/`) + deep Markdown guides (`.cursor/guides/`).
 | `03-testing-bdd.mdc` | Testing + BDD |
 | `04-planning.mdc` | Planning & plan writing |
 | `05-diagrams-efficiency.mdc` | Diagrams + resource efficiency |
+| `06-change-records.mdc` | Read/update `CHANGELOG.md` every session |
 
 ## Guides (`.md`)
 

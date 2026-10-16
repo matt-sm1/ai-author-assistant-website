@@ -1,0 +1,25 @@
+---
+description: Maintain CHANGELOG.md so updates never silently overlap prior work
+alwaysApply: true
+---
+
+# Change records (anti-overlap)
+
+## Every session
+1. **Read** `CHANGELOG.md` (and relevant `docs/adr/*`) before planning or editing.
+2. Treat locked decisions in the changelog as constraints — do not reverse them without an explicit user ask + new ADR.
+3. After meaningful work (feature, architecture, fix, media, tooling), **append** a dated entry under `## [Unreleased]` or a new `## YYYY-MM-DD` section.
+4. If `CHANGELOG.md` is missing, create it at the repo root using the standard format below, then continue.
+
+## Entry format (keep short)
+```markdown
+## YYYY-MM-DD
+### Short title
+- What changed and where (paths / seams)
+- Why / constraint to preserve
+```
+
+## Do not
+- Skip the changelog because “git history is enough”
+- Overwrite architecture seams documented in CHANGELOG / ADRs without recording the change
+- Dump noisy one-line typo fixes — only meaningful updates

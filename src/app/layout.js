@@ -6,6 +6,16 @@ export const metadata = {
   title: "AuthorBot | AI Sales Assistant for Authors",
   description:
     "Help readers discover your books with AuthorBot, your 24/7 AI sales assistant.",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
 };
 
 export default function RootLayout({ children }) {
