@@ -7,6 +7,9 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## 2026-10-17
 
+### Favicon
+- Replaced `src/app/icon.svg` with purple gradient chat-bot mark (Downloads source).
+
 ### Block crawlers
 - Site-wide `metadata.robots` noindex/nofollow in `src/app/layout.js`.
 - `src/app/robots.js` serves `/robots.txt` with `User-Agent: *` / `Disallow: /`.
