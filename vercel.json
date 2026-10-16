@@ -1,12 +1,12 @@
 {
-  "rewrites": [
+  "crons": [
     {
-      "source": "/blogs",
-      "destination": "https://author-ai-assistant.vercel.app/blogs"
+      "path": "/api/cron/publish-scheduled",
+      "schedule": "0 0 * * *"
     },
     {
-      "source": "/blogs/:path*",
-      "destination": "https://author-ai-assistant.vercel.app/blogs/:path*"
+      "path": "/api/cron/media-orphan-cleanup",
+      "schedule": "0 1 * * *"
     }
   ]
 }

@@ -1,0 +1,470 @@
+"use client";
+
+import { useState } from "react";
+import { useGetPostByIdQuery } from "@/frontend/feature/post/api/posts.api";
+import Link from "next/link";
+import { ArrowLeft, Eye } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter, useParams } from "next/navigation";
+import {
+  karachiDateTimeToISO,
+  slugify,
+  toLocalDateTime,
+} from "@/frontend/lib/format";
+import { Button } from "@/frontend/components/ui/Button";
+import { Input } from "@/frontend/components/ui/Input";
+import { Panel, StatusBadge } from "@/frontend/components/shared/ui-bits";
+import MediaPicker from "@/frontend/components/ui/MediaPicker";
+import PostSidebar from "@/frontend/feature/post/components/PostSidebar";
+import PostContentEditor from "@/frontend/feature/post/components/PostContentEditor";
+import { toNestedHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { mapEditorFormToArticle } from "@/frontend/feature/post/lib/map-post-article";
+import { writePreviewDraft } from "@/frontend/feature/post/lib/preview-draft";
+import { postSchema } from "@/frontend/feature/post/schema/post.schema";
+import usePostMutations from "@/frontend/feature/post/hooks/usePostMutations";
+import useCategories from "@/frontend/feature/category/hooks/useCategories";
+import useAuthors from "@/frontend/feature/author/hooks/useAuthors";
+
+function getErrorMessage(error, fallback) {
+  const details = error?.data?.details;
+  if (details && typeof details === "object") {
+    const first = Object.values(details).find(Boolean);
+    if (typeof first === "string") return first;
+  }
+  return error?.data?.message ?? error?.message ?? fallback;
+}
+
+function getFeaturedMediaType(url) {
+  return /\/video\/upload\/|\.(?:mp4|m4v|mov|ogv|ogg|webm|m3u8)(?:[?#]|$)/i.test(url ?? "")
+    ? "video"
+    : "image";
+}
+
+
+export default function PostEditor({ postId: providedPostId }) {
+
+  const params = useParams();
+  const postId = providedPostId ?? params?.id;
+  const isEditMode = Boolean(postId);
+  
+
+  const router = useRouter();
+
+  const {
+    data: existingPost,
+    isLoading: isPostLoading,
+    isError: isPostError,
+  } = useGetPostByIdQuery(postId, {
+    skip: !isEditMode,
+  });
+
+  if (isEditMode && isPostLoading) {
+    return (
+      <div className="p-6 text-sm text-muted-foreground">Loading post...</div>
+    );
+  }
+
+  if (isEditMode && isPostError) {
+    return (
+      <div className="space-y-3 p-6">
+        <p>Unable to load this post.</p>
+        <Button onClick={() => router.push("/admin/post")}>
+          Back to Posts
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <PostEditorForm
+      key={postId ?? "new-post"}
+      postId={postId}
+      isEditMode={isEditMode}
+      existingPost={existingPost}
+      isPostLoading={isPostLoading}
+      router={router}
+    />
+  );
+}
+
+function PostEditorForm({
+  postId,
+  isEditMode,
+  existingPost,
+  isPostLoading,
+  router,
+}) {
+
+  const [formData, setFormData] = useState({
+    title: existingPost?.title ?? "",
+    content: existingPost?.content ?? "",
+    status: existingPost?.status ?? "draft",
+    publishDate: existingPost
+      ? toLocalDateTime(existingPost.published_at)
+      : "",
+    featuredImage: toNestedHostingerMediaUrl(existingPost?.featured_image ?? "") || "",
+    featuredMediaId: existingPost?.featured_media_id ?? null,
+    featuredImageType: getFeaturedMediaType(existingPost?.featured_image),
+    featuredImageThumbnail: "",
+    category: existingPost?.category_id ?? "",
+    authorId: existingPost?.author_id ?? "",
+    tags: existingPost?.tags ?? [],
+    excerpt: existingPost?.excerpt ?? "",
+    slug: existingPost?.slug ?? "",
+    seoTitle: existingPost?.seo_title ?? "",
+    metaDescription: existingPost?.meta_description ?? "",
+  });
+
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const { createPost, updatePost, isCreating, isUpdating } = usePostMutations();
+  const { categories } = useCategories({ page: 1, limit: 100 });
+  const { authors } = useAuthors({
+    page: 1,
+    limit: 100,
+    sortBy: "name",
+    sortOrder: "asc",
+    activeOnly: true,
+  });
+
+  const isSaving = isCreating || isUpdating;
+
+  const canPreview = Boolean(
+    formData.title?.trim() ||
+      formData.content?.trim() ||
+      formData.featuredImage?.trim(),
+  );
+
+  const updateField = (field, value) => {
+    setFormData((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
+  };
+
+  const handleTitleChange = (value) => {
+    setFormData((previous) => ({
+      ...previous,
+      title: value,
+      slug: slugify(value),
+    }));
+  };
+
+  const handlePreview = () => {
+    if (!canPreview) {
+      toast.error("Add a title, content, or featured image to preview.");
+      return;
+    }
+
+    const category = categories.find((item) => item.id === formData.category);
+    const author =
+      authors.find((item) => item.id === formData.authorId) ||
+      existingPost?.author ||
+      null;
+
+    const article = mapEditorFormToArticle(formData, {
+      categoryName: category?.name ?? existingPost?.category_name ?? null,
+      categorySlug: category?.slug ?? existingPost?.category_slug ?? null,
+      author: author
+        ? {
+            name: author.name,
+            avatarUrl: author.avatarUrl ?? author.avatar_url ?? null,
+          }
+        : null,
+      tags: formData.tags ?? [],
+    });
+
+    try {
+      writePreviewDraft(article);
+      window.open("/admin/post/preview", "_blank", "noopener,noreferrer");
+    } catch (error) {
+      if (error?.name === "QuotaExceededError") {
+        toast.error("Preview is too large to open. Shorten the content and try again.");
+        return;
+      }
+      toast.error("Unable to open preview.");
+    }
+  };
+
+  const handleSubmitPost = async (requestedStatus = formData.status) => {
+    if (isSaving) return;
+
+    if (requestedStatus === "scheduled") {
+      if (!formData.publishDate?.trim()) {
+        toast.error("Choose a future schedule date and time.");
+        return;
+      }
+      const iso = karachiDateTimeToISO(formData.publishDate);
+      if (!iso || new Date(iso).getTime() <= Date.now()) {
+        toast.error("Scheduled publish date must be in the future.");
+        return;
+      }
+      setFormData((previous) => ({ ...previous, status: "scheduled" }));
+    }
+
+    try {
+      let publishedAt = null;
+
+      if (requestedStatus === "scheduled") {
+        publishedAt = karachiDateTimeToISO(formData.publishDate);
+      } else if (requestedStatus === "published") {
+        if (
+          isEditMode &&
+          existingPost?.status === "published" &&
+          existingPost?.published_at
+        ) {
+          publishedAt = existingPost.published_at;
+        } else {
+          publishedAt = new Date().toISOString();
+        }
+      }
+
+      const payload = {
+        title: formData.title,
+        content: formData.content || null,
+        excerpt: formData.excerpt || null,
+        featuredImage: formData.featuredImage || null,
+        featuredMediaId: formData.featuredMediaId || null,
+        status: requestedStatus,
+        publishedAt,
+        categoryId: formData.category || null,
+        authorId: formData.authorId,
+        tags: formData.tags.map((tag) => tag.name),
+        seoTitle: formData.seoTitle || null,
+        metaDescription: formData.metaDescription || null,
+      };
+
+      const validatedData = await postSchema.validate(payload, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+
+      // Convert only after Yup confirms the date is valid.
+      const dataToSubmit = {
+        ...validatedData,
+        publishedAt: validatedData.publishedAt
+          ? validatedData.publishedAt.toISOString()
+          : null,
+      };
+
+      if (isEditMode) {
+        await updatePost(postId, dataToSubmit);
+      } else {
+        await createPost(dataToSubmit);
+      }
+
+      const successMessages = {
+        draft: "Draft saved successfully.",
+        published: "Post published successfully.",
+        scheduled: "Post scheduled successfully.",
+      };
+
+      toast.success(
+        isEditMode
+          ? "Post updated successfully."
+          : (successMessages[requestedStatus] ?? "Post saved successfully."),
+      );
+
+      router.push("/admin/post");
+    } catch (error) {
+      if (error?.name === "ValidationError") {
+        const messages = [
+          ...new Set(
+            (error.inner?.length ? error.inner : [error]).map(
+              (item) => item.message,
+            ),
+          ),
+        ];
+
+        toast.error(messages[0] || "Please check the post details.");
+        return;
+      }
+
+      toast.error(getErrorMessage(error, "Unable to save the post."));
+    }
+  };
+
+  return (
+    <div className="mx-auto w-full max-w-screen-2xl">
+      <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button asChild variant="ghost" size="icon" className="rounded-xl">
+            <Link href="/admin/post" aria-label="Back to posts">
+              <ArrowLeft aria-hidden="true" className="h-5 w-5" />
+            </Link>
+          </Button>
+
+          <div>
+            <h1 className="text-xl font-bold">
+              {isEditMode ? "Edit Post" : "New Post"}
+            </h1>
+            <div className="mt-1">
+              <StatusBadge status={formData.status} />
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden gap-2 sm:flex">
+          <Button
+            type="button"
+            variant="ghost"
+            className="rounded-xl"
+            onClick={handlePreview}
+            disabled={!canPreview}
+          >
+            <Eye aria-hidden="true" className="h-4 w-4" />
+            Preview
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-xl"
+            onClick={() => handleSubmitPost()}
+            disabled={isSaving || isPostLoading}
+          >
+            {isSaving
+              ? isEditMode
+                ? "Updating..."
+                : "Saving..."
+              : isEditMode
+                ? "Save Changes"
+                : "Save Post"}
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-xl"
+            onClick={() => handleSubmitPost("scheduled")}
+            disabled={isSaving || isPostLoading}
+          >
+            {isEditMode ? "Update Schedule" : "Schedule"}
+          </Button>
+
+          <Button
+            type="button"
+            className="rounded-xl"
+            onClick={() => handleSubmitPost("published")}
+            disabled={isSaving || isPostLoading}
+          >
+            {isSaving
+              ? isEditMode
+                ? "Updating..."
+                : "Saving..."
+              : isEditMode
+                ? "Update & Publish"
+                : "Publish"}
+          </Button>
+        </div>
+      </header>
+
+      <div className="grid gap-6 pb-24 lg:grid-cols-[minmax(0,1fr)_340px] lg:pb-0">
+        <main className="min-w-0">
+          <Panel className="overflow-hidden">
+            <label className="sr-only" htmlFor="post-title">
+              Post title
+            </label>
+
+            <Input
+              id="post-title"
+              value={formData.title}
+              onChange={(event) => handleTitleChange(event.target.value)}
+              placeholder="Enter your post title..."
+              className="h-auto rounded-none border-0 bg-transparent px-6 pb-3 pt-6 text-xl font-bold shadow-none focus-visible:ring-0 sm:px-10 sm:pt-8 sm:text-3xl lg:text-4xl"
+            />
+
+            <div className="border-t px-4 py-4 sm:px-6">
+              <PostContentEditor
+                value={formData.content}
+                onChange={(value) => updateField("content", value)}
+              />
+            </div>
+          </Panel>
+        </main>
+
+        <PostSidebar
+          post={{
+            ...formData,
+            author: existingPost?.author,
+            image: formData.featuredImage,
+            imageType: formData.featuredImageType,
+            imageThumbnail: formData.featuredImageThumbnail,
+          }}
+          onCategoryChange={(value) => updateField("category", value)}
+          onAuthorChange={(value) => updateField("authorId", value)}
+          onTagsChange={(value) => updateField("tags", value)}
+          onFieldChange={updateField}
+          onOpenMediaPicker={() => setMediaPickerOpen(true)}
+          onFeaturedImageRemove={() => {
+            setFormData((previous) => ({
+              ...previous,
+              featuredMediaId: null,
+              featuredImage: "",
+              featuredImageType: "image",
+              featuredImageThumbnail: "",
+            }));
+          }}
+        />
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t bg-background/95 p-3 backdrop-blur sm:hidden">
+        <Button
+          type="button"
+          variant="outline"
+          className="flex-1 rounded-xl"
+          onClick={() => handleSubmitPost()}
+          disabled={isSaving || isPostLoading}
+        >
+          {isSaving
+            ? isEditMode
+              ? "Updating..."
+              : "Saving..."
+            : isEditMode
+              ? "Save Changes"
+              : "Save Post"}
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          className="flex-1 rounded-xl"
+          onClick={() => handleSubmitPost("scheduled")}
+          disabled={isSaving || isPostLoading}
+        >
+          {isEditMode ? "Update Schedule" : "Schedule"}
+        </Button>
+
+        <Button
+          type="button"
+          className="flex-1 rounded-xl"
+          onClick={() => handleSubmitPost("published")}
+          disabled={isSaving || isPostLoading}
+        >
+          {isSaving
+            ? isEditMode
+              ? "Updating..."
+              : "Saving..."
+            : isEditMode
+              ? "Update & Publish"
+              : "Publish"}
+        </Button>
+      </div>
+
+      <MediaPicker
+        open={mediaPickerOpen}
+        onOpenChange={setMediaPickerOpen}
+        onSelect={({ id, url, resourceType, thumbnailUrl }) => {
+          const nestedUrl = toNestedHostingerMediaUrl(url) || url;
+          setFormData((previous) => ({
+            ...previous,
+            featuredMediaId: id,
+            featuredImage: nestedUrl,
+            featuredImageType: resourceType,
+            featuredImageThumbnail:
+              toNestedHostingerMediaUrl(thumbnailUrl) || thumbnailUrl,
+          }));
+        }}
+      />
+    </div>
+  );
+}

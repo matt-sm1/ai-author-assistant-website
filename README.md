@@ -1,92 +1,57 @@
-# AuthorBot — AI Author Assistant Website
+# AuthorBot — website + blog CMS
 
-Marketing landing for **Author AI Assistant** (AuthorBot): a 24/7 AI sales assistant that helps authors engage readers and sell books.
+Single Next.js app for **authoraiassistant.com**:
 
-**Stack:** Next.js 15 (App Router) · React 19 · Tailwind CSS 4 · JavaScript
+| Path | Purpose |
+|------|---------|
+| `/` | Marketing homepage |
+| `/blogs`, `/blogs/[slug]` | Published articles |
+| `/admin` | Blog CMS (login at `/admin/login`) |
+| `/api/*` | CMS + public + cron APIs |
+
+**Stack:** Next.js 16 · React 19 · Tailwind CSS 4 · Neon Postgres · Hostinger media
+
+## Architecture rules
+
+1. Add marketing pages under `src/app/(marketing)/<slug>/` — **never** `blogs` or `admin`.
+2. Public posts live only under `/blogs/[slug]` (no root catch-all).
+3. Redux/`Providers` load only under `/admin` (not marketing/blog).
+4. Public blog data goes through `post.service` published methods.
 
 ## Run
 
 ```bash
+cp .env.example .env.local   # fill secrets
 npm install
+npm run copy:tinymce
+npm run setup:db             # migrate + bootstrap admin (first time)
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+- Marketing: http://localhost:3000  
+- Blogs: http://localhost:3000/blogs  
+- Admin: http://localhost:3000/admin/login  
+
+## Cron
+
+Vercel Hobby runs daily:
+
+- `/api/cron/publish-scheduled`
+- `/api/cron/media-orphan-cleanup`
+
+For nearer publishing, ping the same URL every 15 minutes with `Authorization: Bearer $CRON_SECRET`.
+
+## Rollback
+
+See [docs/MERGE_ROLLBACK.md](./docs/MERGE_ROLLBACK.md).
 
 ## Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `npm run dev` | Local development server |
+| `npm run dev` | Local development |
 | `npm run build` | Production build |
-| `npm run start` | Serve production build |
-| `npm run lint` | ESLint |
-| `npm test` | Vitest unit/component tests |
-| `npm run test:e2e` | Playwright smoke tests |
-| `npm run images:compress` | Re-encode `public/images/**` webps |
-| `npm run check` | lint + unit + e2e + build |
-| `npm audit` | Dependency vulnerabilities |
-
-CI-ready gate:
-
-```bash
-npm run check
-npm audit --audit-level=high
-```
-
-## Structure
-
-```
-public/images/
-├── brand/               # logo
-└── home/                # landing media (path strings in content)
-src/
-├── app/
-│   ├── layout.js        # fonts + globals + skip link only
-│   └── (marketing)/     # Header/Footer layout + home page
-├── content/
-│   ├── media.js         # MEDIA_BASE + path helpers (CDN-ready)
-│   └── home/            # section data (no image binaries)
-├── components/          # Section, Card, Header, Footer, ui
-└── lib/                 # fonts, cn(), dynamicSection()
-docs/                    # architecture, ADRs, acceptance
-```
-
-## Content & media
-
-- Edit copy in `src/content/home/*.js` (string paths like `/images/home/feature_1.webp`)
-- Brand/logo paths via `@/content/media`
-- To point media at a CDN later, set `MEDIA_BASE` in `src/content/media.js`
-
-## Performance rules
-
-- `priority` only on logo + hero dashboard
-- Above-fold: Hero + Features (eager)
-- Below-fold sections: `dynamicSection()` (SSR on, separate JS chunks)
-- Compress media with `npm run images:compress` after replacing source files in `public/images`
-
-## Adding another marketing page
-
-1. `src/app/(marketing)/<slug>/page.js` — compose sections
-2. `src/content/<slug>/` — page data with path strings
-3. `public/images/<slug>/` — optimized assets
-4. Do **not** put page images or sections in `app/layout.js`
-
-## Security overrides
-
-`package.json` pins safe transitive versions until upstream catches up:
-
-- `postcss` → `^8.5.23`
-- `braces` → `npm:@bleedingdev/braces@3.0.4` until official `braces@>=3.0.4` ships
-
-## UI primitives
-
-```jsx
-import { Heading, Paragraph, Button } from "@/components/ui";
-
-<Heading>Section title</Heading>
-<Heading as="h3">Subsection</Heading>
-<Paragraph>Supporting copy.</Paragraph>
-<Button href="#contact">Get In Touch</Button>
-<Button type="button">Subscribe</Button>
-```
+| `npm run migrate` / `bootstrap` / `setup:db` | Database |
+| `npm test` | Vitest |
+| `npm run test:e2e` | Playwright |
+| `npm run copy:tinymce` | Vendor TinyMCE into `public/` |

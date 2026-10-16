@@ -1,0 +1,29 @@
+# Place this file inside public_html/media/
+# Deny script execution; allow static assets only.
+
+<IfModule mod_authz_core.c>
+  Require all granted
+</IfModule>
+
+<FilesMatch "\.(?i:php|phtml|php3|php4|php5|phps|cgi|pl|asp|aspx|shtml)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</IfModule>
+
+Options -Indexes
+
+# Legacy: older uploads were stored under media/media/YYYY/... while public
+# URLs are /media/YYYY/.... Serve those nested files until they are moved.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /media/
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{DOCUMENT_ROOT}/media/media/$1 -f
+  RewriteRule ^(.+)$ media/$1 [L]
+</IfModule>

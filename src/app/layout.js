@@ -1,20 +1,20 @@
 import { inter, hostGrotesk } from "@/lib/fonts";
-import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import "./globals.css";
 
 export const metadata = {
-  title: "AuthorBot | AI Sales Assistant for Authors",
+  title: {
+    default: "AuthorBot | AI Sales Assistant for Authors",
+    template: "%s | AuthorBot",
+  },
   description:
     "Help readers discover your books with AuthorBot, your 24/7 AI sales assistant.",
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-    googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
-    },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
@@ -28,7 +28,6 @@ export default function RootLayout({ children }) {
         >
           Skip to main content
         </a>
-        <ScrollReveal />
         {children}
       </body>
     </html>

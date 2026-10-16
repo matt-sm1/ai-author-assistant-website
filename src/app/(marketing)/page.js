@@ -8,7 +8,8 @@ const AlwaysOn = dynamicSection(() => import("@/components/Section/AlwaysOn"));
 const MoreFeatures = dynamicSection(() => import("@/components/Section/MoreFeatures"));
 const Testimonials = dynamicSection(() => import("@/components/Section/Testimonials"));
 const Faq = dynamicSection(() => import("@/components/Section/Faq"));
-const Articles = dynamicSection(() => import("@/components/Section/Articles"));
+import HomeArticles from "@/components/Section/HomeArticles";
+
 const Cta = dynamicSection(() => import("@/components/Section/Cta"));
 
 export default function HomePage() {
@@ -22,7 +23,7 @@ export default function HomePage() {
       <MoreFeatures />
       <Testimonials />
       <Faq />
-      <Articles />
+      <HomeArticles />
       <Cta />
     </main>
   );

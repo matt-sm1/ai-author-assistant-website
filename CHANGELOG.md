@@ -7,17 +7,16 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## 2026-10-17
 
-### Allow blog crawling
-- Domain `robots.txt` allows `/` and points sitemap at `/blogs/sitemap.xml` so rewritten blog URLs can rank.
-- Marketing pages keep meta `noindex` for now; blog app indexes public posts.
+### Merge CMS into this project
+- Inlined full blog CMS (backend, `/api`, `/admin`, Neon, Hostinger, TinyMCE).
+- Public blog at `/blogs` + `/blogs/[slug]` with marketing Header/Footer (no rewrite, no `basePath`).
+- Route groups: `(marketing)` / `(blogs)` / `(admin)` — Redux only under `/admin`.
+- Lean published list queries, ISR + `revalidateTag`, blog pagination, paged sitemap.
+- `vercel.json` crons on `/api/cron/*`; robots allow public, disallow `/admin` + `/api`.
+- Home Articles section reads live published posts (limit 3).
 
-### Blogs → CMS app rewrite
-- Removed stub `(marketing)/blogs` page so it does not shadow the proxy.
-- Added `vercel.json` rewrites: `/blogs` and `/blogs/:path*` → `https://author-ai-assistant.vercel.app/blogs…`.
-- Header/footer **Blogs** still link to `/blogs` (served by the dashboard app with `basePath`).
-
-### Blogs page (superseded)
-- Temporary marketing `/blogs` stub removed in favor of the rewrite above.
+### Blogs → CMS app rewrite (superseded)
+- External rewrite to `author-ai-assistant.vercel.app` removed after in-app merge.
 
 ### Favicon
 - Replaced `src/app/icon.svg` with purple gradient chat-bot mark (Downloads source).
