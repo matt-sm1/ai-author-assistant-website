@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { Panel } from "@/frontend/components/shared/ui-bits";
 import DataTable from "@/frontend/components/shared/DataTable";
+import { publicPostUrl } from "@/frontend/feature/blog/lib/site-urls";
 import { fmtDate } from "@/frontend/lib/format";
 
 import {
@@ -100,7 +101,7 @@ export default function PostsTable({
         <div className="flex items-center justify-end gap-2">
           {post.status === "published" && post.slug ? (
             <Link
-              href={`/${post.slug}`}
+              href={publicPostUrl(post.slug)}
               target="_blank"
               rel="noopener noreferrer"
               title="View live"

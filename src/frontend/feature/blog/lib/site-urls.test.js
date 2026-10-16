@@ -42,7 +42,7 @@ describe("Feature: Public site URL helpers", () => {
     });
   });
 
-  describe("Scenario: Canonical article URLs for /blogs rewrite", () => {
+  describe("Scenario: Canonical article URLs under /blogs", () => {
     it("Given NEXT_PUBLIC_SITE_URL with /blogs, When publicPostUrl, Then absolute canonical", () => {
       process.env.NEXT_PUBLIC_SITE_URL = "https://authoraiassistant.com/blogs/";
       expect(publicPostUrl("my-post")).toBe(
@@ -51,10 +51,24 @@ describe("Feature: Public site URL helpers", () => {
       expect(getPublicSiteUrl()).toBe("https://authoraiassistant.com/blogs");
     });
 
-    it("Given no SITE_URL, When publicPostUrl, Then relative path", () => {
+    it("Given SITE_URL origin only, When publicPostUrl, Then appends /blogs", () => {
+      process.env.NEXT_PUBLIC_SITE_URL =
+        "https://ai-author-assistant-website.vercel.app";
+      expect(getPublicSiteUrl()).toBe(
+        "https://ai-author-assistant-website.vercel.app/blogs"
+      );
+      expect(publicPostUrl("temp")).toBe(
+        "https://ai-author-assistant-website.vercel.app/blogs/temp"
+      );
+    });
+
+    it("Given no SITE_URL, When publicPostUrl, Then marketing host + /blogs", () => {
       delete process.env.NEXT_PUBLIC_SITE_URL;
-      expect(getPublicSiteUrl()).toBe("");
-      expect(publicPostUrl("my-post")).toBe("/my-post");
+      delete process.env.NEXT_PUBLIC_MARKETING_SITE_URL;
+      expect(getPublicSiteUrl()).toBe("https://authoraiassistant.com/blogs");
+      expect(publicPostUrl("my-post")).toBe(
+        "https://authoraiassistant.com/blogs/my-post"
+      );
     });
   });
 });
