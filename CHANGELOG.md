@@ -7,6 +7,10 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## 2026-10-17
 
+### Allow blog crawling
+- Domain `robots.txt` allows `/` and points sitemap at `/blogs/sitemap.xml` so rewritten blog URLs can rank.
+- Marketing pages keep meta `noindex` for now; blog app indexes public posts.
+
 ### Blogs → CMS app rewrite
 - Removed stub `(marketing)/blogs` page so it does not shadow the proxy.
 - Added `vercel.json` rewrites: `/blogs` and `/blogs/:path*` → `https://author-ai-assistant.vercel.app/blogs…`.
