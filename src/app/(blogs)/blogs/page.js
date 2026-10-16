@@ -7,7 +7,7 @@ export const metadata = {
   title: "Blogs",
   description:
     "Latest insights for modern authors on AI, reader engagement, and book marketing.",
-}
+};
 
 export const revalidate = 120;
 
