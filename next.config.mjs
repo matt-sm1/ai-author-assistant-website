@@ -51,6 +51,21 @@ const nextConfig = {
       },
     },
   },
+  async redirects() {
+    // Pre-merge CMS used basePath `/blogs`, so admin lived at `/blogs/admin`.
+    return [
+      {
+        source: "/blogs/admin",
+        destination: "/admin",
+        permanent: true,
+      },
+      {
+        source: "/blogs/admin/:path*",
+        destination: "/admin/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
