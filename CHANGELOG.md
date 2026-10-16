@@ -7,10 +7,13 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## 2026-10-17
 
-### Blogs page
-- New route `/blogs` under `(marketing)` with `src/content/blogs/posts.js` + `Section/Blogs`.
-- Header **Blogs** → `/blogs`; home section hashes use `/#…` so they work from other pages.
-- Footer pages/utility links updated similarly (Blogs replaces Articles).
+### Blogs → CMS app rewrite
+- Removed stub `(marketing)/blogs` page so it does not shadow the proxy.
+- Added `vercel.json` rewrites: `/blogs` and `/blogs/:path*` → `https://author-ai-assistant.vercel.app/blogs…`.
+- Header/footer **Blogs** still link to `/blogs` (served by the dashboard app with `basePath`).
+
+### Blogs page (superseded)
+- Temporary marketing `/blogs` stub removed in favor of the rewrite above.
 
 ### Favicon
 - Replaced `src/app/icon.svg` with purple gradient chat-bot mark (Downloads source).

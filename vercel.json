@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/blogs",
+      "destination": "https://author-ai-assistant.vercel.app/blogs"
+    },
+    {
+      "source": "/blogs/:path*",
+      "destination": "https://author-ai-assistant.vercel.app/blogs/:path*"
+    }
+  ]
+}
