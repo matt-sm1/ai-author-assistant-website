@@ -70,7 +70,10 @@ describe("Feature: Published-only visibility", () => {
   describe("Scenario: Service maps missing published posts to 404", () => {
     it("Given repository returns null, When getPublishedPostBySlug, Then AppError 404", async () => {
       const service = new PostService(
-        { findPublishedBySlug: vi.fn().mockResolvedValue(null) },
+        {
+          publishScheduledPosts: vi.fn().mockResolvedValue([]),
+          findPublishedBySlug: vi.fn().mockResolvedValue(null),
+        },
         {},
         {},
         {}
@@ -84,7 +87,10 @@ describe("Feature: Published-only visibility", () => {
     it("Given a row exists, When getPublishedPostBySlug, Then the row is returned", async () => {
       const row = { id: "1", slug: "live", status: "published" };
       const service = new PostService(
-        { findPublishedBySlug: vi.fn().mockResolvedValue(row) },
+        {
+          publishScheduledPosts: vi.fn().mockResolvedValue([]),
+          findPublishedBySlug: vi.fn().mockResolvedValue(row),
+        },
         {},
         {},
         {}
@@ -94,10 +100,11 @@ describe("Feature: Published-only visibility", () => {
     });
 
     it("Given page 3 limit 10, When listPublishedPosts, Then offset is 20", async () => {
+      const publishScheduledPosts = vi.fn().mockResolvedValue([]);
       const findPublishedAll = vi.fn().mockResolvedValue([]);
       const countPublished = vi.fn().mockResolvedValue(25);
       const service = new PostService(
-        { findPublishedAll, countPublished },
+        { publishScheduledPosts, findPublishedAll, countPublished },
         {},
         {},
         {}
@@ -125,6 +132,7 @@ describe("Feature: Published-only visibility", () => {
     it("Given zero posts, When listPublishedPosts, Then totalPages is 0", async () => {
       const service = new PostService(
         {
+          publishScheduledPosts: vi.fn().mockResolvedValue([]),
           findPublishedAll: vi.fn().mockResolvedValue([]),
           countPublished: vi.fn().mockResolvedValue(0),
         },

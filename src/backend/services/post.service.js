@@ -259,6 +259,9 @@ async getPosts({
   sortBy = "created_at",
   sortOrder = "desc",
 } = {}) {
+  // Hobby cron is daily — flip due scheduled posts when admin lists posts.
+  await this.ensureDueScheduledPublished();
+
   const offset = (page - 1) * limit;
 
   const filters = {
@@ -315,6 +318,9 @@ async getPosts({
   }
 
   async listPublishedPosts({ page = 1, limit = 12, search = "" } = {}) {
+    // Hobby cron is daily — publish due scheduled rows on read so they go live.
+    await this.ensureDueScheduledPublished();
+
     const offset = (page - 1) * limit;
     const [posts, total] = await Promise.all([
       this.postRepository.findPublishedAll({ limit, offset, search }),
@@ -333,6 +339,8 @@ async getPosts({
   }
 
   async getPublishedPostBySlug(slug) {
+    await this.ensureDueScheduledPublished();
+
     const post = await this.postRepository.findPublishedBySlug(slug);
 
     if (!post) {
@@ -416,8 +424,20 @@ async getPosts({
   // PUBLISH DUE SCHEDULED POSTS
   // ============================================
 
+  /**
+   * Flip due `scheduled` posts to `published` and bust blog caches.
+   * Used by cron and as a lazy fallback (Vercel Hobby cron is only daily).
+   */
+  async ensureDueScheduledPublished() {
+    const published = await this.postRepository.publishScheduledPosts();
+    if (published.length > 0) {
+      revalidatePublishedContent(published.map((p) => p.slug));
+    }
+    return published;
+  }
+
   async publishScheduledPosts() {
-    return this.postRepository.publishScheduledPosts();
+    return this.ensureDueScheduledPublished();
   }
 
   // ============================================

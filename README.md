@@ -39,7 +39,9 @@ Vercel **Hobby** only allows **daily** native crons:
 - `/api/cron/publish-scheduled` — `0 0 * * *` (midnight UTC)
 - `/api/cron/media-orphan-cleanup` — `0 1 * * *` (01:00 UTC)
 
-For **every 1 minute** publishing on Hobby, use an external scheduler (cron-job.org, etc.):
+**Lazy publish:** public blog reads and the admin posts list also flip due `scheduled` posts to `published`, so posts go live even between daily cron runs.
+
+For **every 1 minute** publishing without waiting for traffic, use an external scheduler (cron-job.org, etc.):
 
 ```bash
 curl -sS -H "Authorization: Bearer $CRON_SECRET" \

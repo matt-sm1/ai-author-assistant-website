@@ -34,6 +34,7 @@ describe("PostRepository published reads", () => {
 describe("PostService published reads", () => {
   it("getPublishedPostBySlug throws when missing", async () => {
     const postRepository = {
+      publishScheduledPosts: vi.fn().mockResolvedValue([]),
       findPublishedBySlug: vi.fn().mockResolvedValue(null),
     };
     const service = new PostService(postRepository, {}, {}, {});
@@ -41,11 +42,13 @@ describe("PostService published reads", () => {
     await expect(service.getPublishedPostBySlug("missing")).rejects.toMatchObject(
       { statusCode: 404 }
     );
+    expect(postRepository.publishScheduledPosts).toHaveBeenCalledOnce();
   });
 
   it("listPublishedPosts forwards pagination", async () => {
     const posts = [{ id: "1", slug: "a", status: "published" }];
     const postRepository = {
+      publishScheduledPosts: vi.fn().mockResolvedValue([]),
       findPublishedAll: vi.fn().mockResolvedValue(posts),
       countPublished: vi.fn().mockResolvedValue(1),
     };
@@ -53,6 +56,7 @@ describe("PostService published reads", () => {
 
     const result = await service.listPublishedPosts({ page: 1, limit: 12 });
 
+    expect(postRepository.publishScheduledPosts).toHaveBeenCalledOnce();
     expect(postRepository.findPublishedAll).toHaveBeenCalledWith({
       limit: 12,
       offset: 0,

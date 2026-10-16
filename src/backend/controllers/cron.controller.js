@@ -1,7 +1,6 @@
 import { createPostService } from "@/backend/factories/post.factory";
 import { handleError } from "@/backend/errors/error-handler";
 import { secretsEqual } from "@/backend/lib/secure-compare";
-import { revalidatePublishedContent } from "@/backend/lib/revalidate-published";
 
 export async function publishScheduledPostsController(request) {
   const expectedSecret = process.env.CRON_SECRET;
@@ -32,11 +31,8 @@ export async function publishScheduledPostsController(request) {
   }
 
   try {
+    // Service flips due rows and revalidates blog caches.
     const publishedPosts = await createPostService().publishScheduledPosts();
-
-    if (publishedPosts.length > 0) {
-      revalidatePublishedContent(publishedPosts.map((p) => p.slug));
-    }
 
     return Response.json({
       success: true,
