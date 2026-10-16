@@ -34,12 +34,10 @@ npm run dev
 
 ## Cron
 
-Vercel Hobby runs daily:
+- `/api/cron/publish-scheduled` — every **1 minute** (`* * * * *`)
+- `/api/cron/media-orphan-cleanup` — daily at 01:00 UTC
 
-- `/api/cron/publish-scheduled`
-- `/api/cron/media-orphan-cleanup`
-
-For nearer publishing, ping the same URL every 15 minutes with `Authorization: Bearer $CRON_SECRET`.
+Vercel **Hobby** may only allow daily crons; if the 1-minute schedule is rejected, upgrade to Pro or hit the publish URL with an external scheduler + `Authorization: Bearer $CRON_SECRET`.
 
 ## Rollback
 
