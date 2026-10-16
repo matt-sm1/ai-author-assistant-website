@@ -34,10 +34,19 @@ npm run dev
 
 ## Cron
 
-- `/api/cron/publish-scheduled` — every **1 minute** (`* * * * *`)
-- `/api/cron/media-orphan-cleanup` — daily at 01:00 UTC
+Vercel **Hobby** only allows **daily** native crons:
 
-Vercel **Hobby** may only allow daily crons; if the 1-minute schedule is rejected, upgrade to Pro or hit the publish URL with an external scheduler + `Authorization: Bearer $CRON_SECRET`.
+- `/api/cron/publish-scheduled` — `0 0 * * *` (midnight UTC)
+- `/api/cron/media-orphan-cleanup` — `0 1 * * *` (01:00 UTC)
+
+For **every 1 minute** publishing on Hobby, use an external scheduler (cron-job.org, etc.):
+
+```bash
+curl -sS -H "Authorization: Bearer $CRON_SECRET" \
+  "https://www.authoraiassistant.com/api/cron/publish-scheduled"
+```
+
+Schedule that GET every minute. Or upgrade Vercel to **Pro** and set `"schedule": "* * * * *"` in `vercel.json`.
 
 ## Rollback
 
