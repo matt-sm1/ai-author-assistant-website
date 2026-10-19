@@ -359,3 +359,23 @@ body {
     to   { transform: translateX(-50%); }
   }
 }
+
+/* ── Post content: TinyMCE-compatible table rendering ──────────────────── */
+/* Mirrors TinyMCE's content-skin CSS so bordered tables look the same     */
+/* on the public blog as they do inside the editor.                        */
+.prose-media table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.prose-media table:not([cellpadding]) td,
+.prose-media table:not([cellpadding]) th {
+  padding: 0.4rem 0.6rem;
+}
+
+/* Apply cell borders when <table border="N"> (N ≠ 0) is present.         */
+/* Inline border-width/style/color on individual cells take precedence.    */
+.prose-media table[border]:not([border="0"]) td,
+.prose-media table[border]:not([border="0"]) th {
+  border: 1px solid #ccc;
+}
