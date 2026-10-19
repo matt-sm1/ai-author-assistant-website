@@ -13,7 +13,7 @@ Single Next.js app for **authoraiassistant.com**:
 
 ## Architecture rules
 
-1. Add marketing pages under `src/app/(marketing)/<slug>/` — **never** `blogs` or `admin`.
+1. Add public marketing pages under `src/app/(public)/` (shared Header/Footer) — **never** claim `blogs` or `admin` routes.
 2. Public posts live only under `/blogs/[slug]` (no root catch-all).
 3. Redux/`Providers` load only under `/admin` (not marketing/blog).
 4. Public blog data goes through `post.service` published methods.
