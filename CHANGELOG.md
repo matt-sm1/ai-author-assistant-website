@@ -5,6 +5,13 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+## 2026-10-19
+### Post Editor localStorage autosave
+- New `src/frontend/feature/post/lib/editor-draft.js` — `editorDraftKey`, `writeEditorDraft`, `readEditorDraft`, `clearEditorDraft` (localStorage, mirrors preview-draft.js pattern).
+- `PostEditorForm` gains three `useEffect`s: (1) silent restore from draft on mount, (2) debounced 800 ms autosave on every `formData` change, (3) `beforeunload` warning when form is dirty.
+- Draft cleared via `clearEditorDraft(draftKey)` on successful save/publish/schedule before `router.push`.
+- Keys: `cms:editor-draft-new` for new posts, `cms:editor-draft-{id}` for edits — no cross-post bleed.
+
 ## 2026-10-17
 
 ### Merge CMS into this project

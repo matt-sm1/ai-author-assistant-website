@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useGetPostByIdQuery } from "@/frontend/feature/post/api/posts.api";
 import Link from "next/link";
 import { ArrowLeft, Eye } from "lucide-react";
@@ -20,6 +20,12 @@ import PostContentEditor from "@/frontend/feature/post/components/PostContentEdi
 import { toNestedHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 import { mapEditorFormToArticle } from "@/frontend/feature/post/lib/map-post-article";
 import { writePreviewDraft } from "@/frontend/feature/post/lib/preview-draft";
+import {
+  editorDraftKey,
+  writeEditorDraft,
+  readEditorDraft,
+  clearEditorDraft,
+} from "@/frontend/feature/post/lib/editor-draft";
 import { postSchema } from "@/frontend/feature/post/schema/post.schema";
 import usePostMutations from "@/frontend/feature/post/hooks/usePostMutations";
 import useCategories from "@/frontend/feature/category/hooks/useCategories";
@@ -114,6 +120,45 @@ function PostEditorForm({
     seoTitle: existingPost?.seo_title ?? "",
     metaDescription: existingPost?.meta_description ?? "",
   });
+
+  // ── Autosave ─────────────────────────────────────────────────────────────
+  const draftKey = editorDraftKey(postId);
+  const initialFormRef = useRef(null); // snapshot of formData at mount (for dirty check)
+  const autosaveTimer = useRef(null);
+
+  // 1. Silent restore on mount — only if the draft has meaningful content.
+  useEffect(() => {
+    const saved = readEditorDraft(draftKey);
+    if (saved && (saved.title?.trim() || saved.content?.trim())) {
+      setFormData((prev) => ({ ...prev, ...saved }));
+    }
+    // Snapshot the form state after potential restore so dirty-check is accurate.
+    initialFormRef.current = JSON.stringify(saved && (saved.title?.trim() || saved.content?.trim()) ? { ...formData, ...saved } : formData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount
+
+  // 2. Debounced autosave — write to localStorage 800 ms after the last change.
+  useEffect(() => {
+    clearTimeout(autosaveTimer.current);
+    autosaveTimer.current = setTimeout(() => {
+      writeEditorDraft(draftKey, formData);
+    }, 800);
+    return () => clearTimeout(autosaveTimer.current);
+  }, [formData, draftKey]);
+
+  // 3. beforeunload warning — fires only when there are unsaved changes.
+  useEffect(() => {
+    function handleBeforeUnload(event) {
+      if (initialFormRef.current !== JSON.stringify(formData)) {
+        event.preventDefault();
+        // Modern browsers ignore the custom message but still show a dialog.
+        event.returnValue = "";
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [formData]);
+  // ─────────────────────────────────────────────────────────────────────────
 
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const { createPost, updatePost, isCreating, isUpdating } = usePostMutations();
@@ -264,6 +309,7 @@ function PostEditorForm({
           : (successMessages[requestedStatus] ?? "Post saved successfully."),
       );
 
+      clearEditorDraft(draftKey);
       router.push("/admin/post");
     } catch (error) {
       if (error?.name === "ValidationError") {
