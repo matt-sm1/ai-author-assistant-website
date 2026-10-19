@@ -16,8 +16,8 @@ return [
     // e.g. /home/u123/domains/cdn.example.com/public_html/media
     'media_root' => __DIR__ . '/../media',
 
-    // Comma-separated browser origins allowed for CORS
-    'cors_origins' => 'https://author-ai-assistant.vercel.app',
+    // Comma-separated browser origins allowed for CORS (must include live marketing domain)
+    'cors_origins' => 'https://www.authoraiassistant.com,https://authoraiassistant.com,https://ai-author-assistant-website.vercel.app,http://localhost:3000',
 
     'max_image_bytes' => 10 * 1024 * 1024,
     'max_video_bytes' => 100 * 1024 * 1024,
