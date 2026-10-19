@@ -6,6 +6,11 @@ Newest entries first. Agents must read this before implementing, and append afte
 ## [Unreleased]
 
 ## 2026-10-19
+### Draft tab + status filter tabs on Posts list
+- `PostsView.jsx`: All / Draft / Published / Scheduled filter tabs; passes `status` param to `useGetPostsQuery`; reads `cms:editor-draft-new` from localStorage when Draft tab is active via new `readEditorDraftMeta` helper.
+- `PostsTable.jsx`: accepts `localDraft` + `onLocalDraftDiscard` props; renders amber `LocalDraftBanner` above the DataTable with title, autosave time, "Continue editing" (→ `/admin/post/new`) and discard (×) actions.
+- `editor-draft.js`: refactored to private `parseEditorDraftPayload`; `readEditorDraft` unchanged; new `readEditorDraftMeta` returns `{ formData, savedAt }`.
+
 ### Post Editor localStorage autosave
 - New `src/frontend/feature/post/lib/editor-draft.js` — `editorDraftKey`, `writeEditorDraft`, `readEditorDraft`, `clearEditorDraft` (localStorage, mirrors preview-draft.js pattern).
 - `PostEditorForm` gains three `useEffect`s: (1) silent restore from draft on mount, (2) debounced 800 ms autosave on every `formData` change, (3) `beforeunload` warning when form is dirty.

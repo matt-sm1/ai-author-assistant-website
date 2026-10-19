@@ -37,11 +37,11 @@ export function writeEditorDraft(key, formData) {
 }
 
 /**
- * Read a previously saved draft.
+ * Parse the raw payload stored under `key`.
  * @param {string} key
- * @returns {object|null} formData, or null if absent / invalid / stale
+ * @returns {{ formData: object, savedAt: number } | null}
  */
-export function readEditorDraft(key) {
+function parseEditorDraftPayload(key) {
   if (!isBrowser()) return null;
   try {
     const raw = localStorage.getItem(key);
@@ -52,10 +52,29 @@ export function readEditorDraft(key) {
     if (parsed.version !== EDITOR_DRAFT_VERSION) return null;
     if (!parsed.formData || typeof parsed.formData !== "object") return null;
 
-    return parsed.formData;
+    return { formData: parsed.formData, savedAt: parsed.savedAt ?? null };
   } catch {
     return null;
   }
+}
+
+/**
+ * Read a previously saved draft's form data.
+ * @param {string} key
+ * @returns {object|null} formData, or null if absent / invalid / stale
+ */
+export function readEditorDraft(key) {
+  return parseEditorDraftPayload(key)?.formData ?? null;
+}
+
+/**
+ * Read both form data and metadata (savedAt timestamp) for a draft.
+ * Used by the Posts list to display the local-draft banner.
+ * @param {string} key
+ * @returns {{ formData: object, savedAt: number | null } | null}
+ */
+export function readEditorDraftMeta(key) {
+  return parseEditorDraftPayload(key);
 }
 
 /**

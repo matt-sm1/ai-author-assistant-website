@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useDeferredValue, useRef, useState } from "react";
+import { useDeferredValue, useRef, useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -15,6 +15,18 @@ import {
 import PostsTable from "@/frontend/feature/post/components/PostsTable";
 import usePostMutations from "@/frontend/feature/post/hooks/usePostMutations";
 import { useGetPostsQuery } from "@/frontend/feature/post/api/posts.api";
+import {
+  editorDraftKey,
+  readEditorDraftMeta,
+  clearEditorDraft,
+} from "@/frontend/feature/post/lib/editor-draft";
+
+const STATUS_TABS = [
+  { label: "All", value: "" },
+  { label: "Draft", value: "draft" },
+  { label: "Published", value: "published" },
+  { label: "Scheduled", value: "scheduled" },
+];
 
 function getErrorMessage(error, fallback) {
   return error?.data?.message ?? error?.message ?? fallback;
@@ -26,16 +38,44 @@ export default function PostsView() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [del, setDel] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [localDraft, setLocalDraft] = useState(null);
 
   const deletePending = useRef(false);
   const limit = 10;
   const deferredSearch = useDeferredValue(search.trim());
+
+  // Read the localStorage unsaved draft whenever the Draft tab is active.
+  useEffect(() => {
+    if (statusFilter !== "draft") {
+      setLocalDraft(null);
+      return;
+    }
+    const key = editorDraftKey(null); // "cms:editor-draft-new"
+    const meta = readEditorDraftMeta(key);
+    if (meta && (meta.formData?.title?.trim() || meta.formData?.content?.trim())) {
+      setLocalDraft({ key, title: meta.formData.title || "", savedAt: meta.savedAt });
+    } else {
+      setLocalDraft(null);
+    }
+  }, [statusFilter]);
+
+  function handleTabChange(value) {
+    setStatusFilter(value);
+    setPage(1);
+  }
+
+  function handleLocalDraftDiscard() {
+    if (localDraft?.key) clearEditorDraft(localDraft.key);
+    setLocalDraft(null);
+  }
 
   const { posts, pagination, isLoading, isFetching, error } = useGetPostsQuery(
     {
       page,
       limit,
       search: deferredSearch,
+      ...(statusFilter ? { status: statusFilter } : {}),
     },
     {
       selectFromResult: (result) => ({
@@ -106,11 +146,32 @@ export default function PostsView() {
         </p>
       )}
 
+      {/* Status filter tabs */}
+      <div className="mb-4 flex flex-wrap gap-1.5">
+        {STATUS_TABS.map((tab) => (
+          <button
+            key={tab.value}
+            type="button"
+            onClick={() => handleTabChange(tab.value)}
+            className={[
+              "rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              statusFilter === tab.value
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+            ].join(" ")}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <PostsTable
         posts={posts}
         loading={isLoading}
         isFetching={isFetching}
         onDelete={setDel}
+        localDraft={localDraft}
+        onLocalDraftDiscard={handleLocalDraftDiscard}
         search={{
           value: search,
           onChange: (value) => {
