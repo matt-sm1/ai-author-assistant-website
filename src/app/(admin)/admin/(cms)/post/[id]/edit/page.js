@@ -1,10 +1,7 @@
-"use client";
-
-import { use } from "react";
 import PostEditor from "@/frontend/feature/post/components/PostEditor";
 
-export default function EditPostPage({ params }) {
-  const { id } = use(params);
+export default async function EditPostPage({ params }) {
+  const { id } = await params;
 
   return <PostEditor postId={id} />;
 }

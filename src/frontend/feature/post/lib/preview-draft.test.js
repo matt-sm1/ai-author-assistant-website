@@ -4,7 +4,7 @@ describe("preview-draft", () => {
   beforeEach(() => {
     vi.resetModules();
     const store = new Map();
-    const sessionStorage = {
+    const localStorage = {
       getItem: (key) => (store.has(key) ? store.get(key) : null),
       setItem: (key, value) => {
         store.set(key, String(value));
@@ -13,8 +13,8 @@ describe("preview-draft", () => {
         store.delete(key);
       },
     };
-    vi.stubGlobal("window", { sessionStorage });
-    vi.stubGlobal("sessionStorage", sessionStorage);
+    vi.stubGlobal("window", { localStorage });
+    vi.stubGlobal("localStorage", localStorage);
   });
 
   it("round-trips an article draft", async () => {

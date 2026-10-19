@@ -2,7 +2,7 @@ export const PREVIEW_DRAFT_KEY = "cms:post-preview-draft";
 export const PREVIEW_DRAFT_VERSION = 1;
 
 function isBrowser() {
-  return typeof window !== "undefined" && typeof sessionStorage !== "undefined";
+  return typeof window !== "undefined" && typeof localStorage !== "undefined";
 }
 
 /**
@@ -22,7 +22,7 @@ export function writePreviewDraft(articlePost) {
     post: articlePost,
   };
 
-  sessionStorage.setItem(PREVIEW_DRAFT_KEY, JSON.stringify(payload));
+  localStorage.setItem(PREVIEW_DRAFT_KEY, JSON.stringify(payload));
   return payload;
 }
 
@@ -30,7 +30,7 @@ export function readPreviewDraft() {
   if (!isBrowser()) return null;
 
   try {
-    const raw = sessionStorage.getItem(PREVIEW_DRAFT_KEY);
+    const raw = localStorage.getItem(PREVIEW_DRAFT_KEY);
     if (!raw) return null;
 
     const parsed = JSON.parse(raw);
@@ -63,7 +63,7 @@ export function readPreviewDraft() {
 export function clearPreviewDraft() {
   if (!isBrowser()) return;
   try {
-    sessionStorage.removeItem(PREVIEW_DRAFT_KEY);
+    localStorage.removeItem(PREVIEW_DRAFT_KEY);
   } catch {
     /* ignore */
   }

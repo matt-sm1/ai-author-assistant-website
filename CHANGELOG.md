@@ -6,6 +6,12 @@ Newest entries first. Agents must read this before implementing, and append afte
 ## [Unreleased]
 
 ## 2026-10-19
+### Admin routes professional redesign
+- `preview-draft.js`: replaced all `sessionStorage` with `localStorage` — fixes "No draft to preview" caused by `window.open` + `noopener` creating a fresh browsing context. Test stub updated to match.
+- New `(preview)` route group: `src/app/(admin)/admin/(preview)/layout.js` — calls `requireAuth`, renders children full-width with no DashboardShell. Replaces the `(cms)` group for both preview routes so article previews are clean, sidebar-free pages.
+- Moved `post/preview/page.js` and `post/[id]/preview/page.js` from `(cms)` into `(preview)`. URLs unchanged (`/admin/post/preview`, `/admin/post/:id/preview`).
+- `new/page.js`: removed dead props (`categories`, `tags`, `authors`, `siteUrl`, `images`) — PostEditor fetches these internally via hooks.
+- `edit/page.js`: converted from `"use client"` + `use(params)` to a proper async server component using `await params`.
 ### Draft tab + status filter tabs on Posts list
 - `PostsView.jsx`: All / Draft / Published / Scheduled filter tabs; passes `status` param to `useGetPostsQuery`; reads `cms:editor-draft-new` from localStorage when Draft tab is active via new `readEditorDraftMeta` helper.
 - `PostsTable.jsx`: accepts `localDraft` + `onLocalDraftDiscard` props; renders amber `LocalDraftBanner` above the DataTable with title, autosave time, "Continue editing" (→ `/admin/post/new`) and discard (×) actions.
