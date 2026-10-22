@@ -5,7 +5,7 @@ import { brandLogo } from "@/content/media";
 const pages = [
   { label: "Home", href: "/" },
   { label: "Product", href: "/#integrations" },
-  { label: "Features", href: "/#features" },
+  { label: "Features", href: "/features" },
   { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/#contact" },
   { label: "Contact", href: "/#contact" },

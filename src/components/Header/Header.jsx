@@ -10,7 +10,7 @@ import { Button } from "@/components/ui";
 const links = [
   { label: "Home", href: "/" },
   { label: "Product", href: "/#integrations" },
-  { label: "Features", href: "/#features" },
+  { label: "Features", href: "/features" },
   { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/#contact" },
 ];
@@ -56,7 +56,8 @@ export default function Header() {
   }, []);
 
   const isActive = (href) => {
-    if (href === "/blogs") return pathname === "/blogs";
+    if (href === "/blogs") return pathname === "/blogs" || pathname?.startsWith("/blogs/");
+    if (href === "/features") return pathname === "/features";
     if (href === "/") return pathname === "/" && !hash;
     if (href.startsWith("/#")) {
       return pathname === "/" && hash === href.slice(1);
@@ -64,7 +65,7 @@ export default function Header() {
     return false;
   };
 
-  // Marketing hero sits under the nav via -mb-20; blog pages need a normal document flow.
+  // Marketing heroes sit under the nav via -mb-20; blog pages need normal document flow.
   const overlayHero = !pathname?.startsWith("/blogs");
 
   return (

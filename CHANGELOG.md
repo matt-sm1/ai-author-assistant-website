@@ -5,6 +5,15 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Features marketing page (`/features`)
+- New route `src/app/(public)/features/page.js` composed from `src/components/Section/FeaturesPage/*` (hero, trust, analytics, cards, profiles, integrations, details, FAQ, articles, CTA). No pricing section.
+- Content seam `src/content/features/*` + barrel `src/content/features.js`; media registry `featureImages` in `src/content/media.js`.
+- Static mock assets under `public/images/features/` (local Live Chat 2.0 exports + star SVG).
+- Header and Footer “Features” links point to `/features` (Header active state included). Home `/` unchanged. No pricing section on the page.
+- Polish: advantage icons cropped to purple tile, black corners filled with `#8546ef`, rendered `fill`/`object-cover` in 60×60; Image `quality={90–100}` + native widths; typography aligned to homepage Heading/Paragraph/SectionInfo/FaCheck patterns.
+- White panels (per Feature.png / Figma): inset rounded `FeaturesPanel` (`rounded-[20–24px]`, not full-bleed) on analytics, profiles, articles. Cards stay as individual white cards on page grey. Integrations / advantages / FAQ stay on page grey (FAQ not wrapped in a section panel). Removed mistaken full-width `section white`.
+- Trust marquee (home + features): replaced blurry `trusted.webp` (1600×35) with Figma vector SVGs `public/images/features/trust/logo-*.svg` via shared `trustLogos`; `TrustedBy` owns the marquee, `FeaturesTrust` reuses it.
+
 ## 2026-10-19
 ### Admin routes professional redesign
 - `preview-draft.js`: replaced all `sessionStorage` with `localStorage` — fixes "No draft to preview" caused by `window.open` + `noopener` creating a fresh browsing context. Test stub updated to match.
