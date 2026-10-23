@@ -9,10 +9,10 @@ import { Button } from "@/components/ui";
 
 const links = [
   { label: "Home", href: "/" },
-  { label: "Product", href: "/#integrations" },
+  { label: "Integrations", href: "/integrations" },
   { label: "Features", href: "/features" },
   { label: "Blogs", href: "/blogs" },
-  { label: "Pricing", href: "/#contact" },
+  { label: "Pricing", href: "/#pricing" },
 ];
 
 export default function Header() {
@@ -58,6 +58,7 @@ export default function Header() {
   const isActive = (href) => {
     if (href === "/blogs") return pathname === "/blogs" || pathname?.startsWith("/blogs/");
     if (href === "/features") return pathname === "/features";
+    if (href === "/integrations") return pathname === "/integrations";
     if (href === "/") return pathname === "/" && !hash;
     if (href.startsWith("/#")) {
       return pathname === "/" && hash === href.slice(1);

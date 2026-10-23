@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { featureImages } from "@/content/media";
+import { featureImages, homeImages } from "@/content/media";
 import { featuresHeroContent } from "@/content/features/hero";
 import { Button } from "@/components/ui";
 
@@ -17,16 +17,12 @@ export default function FeaturesHero({
         aria-hidden="true"
         fill
         priority
-        quality={90}
+        quality={100}
         sizes="100vw"
         className="pointer-events-none absolute inset-0 object-cover object-top"
       />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-white/35"
-      />
 
-      <div className="relative mx-auto flex w-full max-w-[1344px] flex-col items-center gap-10 border-x-[0.8px] border-white px-5 pb-16 pt-24 text-center sm:px-8 lg:px-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center gap-8 border-x-[0.8px] border-white px-5 pb-6 pt-24 text-center sm:gap-10 sm:px-8 sm:pb-8 lg:px-10">
         <div className="relative mx-auto w-full max-w-[900px]">
           <span
             data-reveal-step="badge"
@@ -83,7 +79,7 @@ export default function FeaturesHero({
 
         <div
           data-reveal
-          className="relative mx-auto w-full max-w-[1144px]"
+          className="relative mx-auto mb-0 w-full max-w-[1144px] translate-y-1"
         >
           <Image
             src={featureImages.heroComposite}
@@ -93,14 +89,19 @@ export default function FeaturesHero({
             priority
             quality={95}
             sizes="(max-width: 1144px) 100vw, 1144px"
-            className="mx-auto h-auto w-full object-contain drop-shadow-[0_20px_70px_rgba(120,80,200,0.24)]"
+            className="mx-auto block h-auto w-full object-contain object-bottom drop-shadow-[0_20px_70px_rgba(120,80,200,0.24)]"
           />
         </div>
       </div>
 
-      <div
+      <Image
+        src={homeImages.heroBottom}
+        alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[180px] bg-gradient-to-b from-white/2 via-[rgba(247,246,247,0.51)] via-[14.5%] to-[var(--theme-background)] to-[29%]"
+        width={1920}
+        height={200}
+        sizes="100vw"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-auto w-full"
       />
     </section>
   );

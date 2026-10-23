@@ -6,6 +6,7 @@ const SocialMedia = dynamicSection(() => import("@/components/Section/SocialMedi
 const Advantages = dynamicSection(() => import("@/components/Section/Advantages"));
 const AlwaysOn = dynamicSection(() => import("@/components/Section/AlwaysOn"));
 const MoreFeatures = dynamicSection(() => import("@/components/Section/MoreFeatures"));
+const Pricing = dynamicSection(() => import("@/components/Section/Pricing"));
 const Testimonials = dynamicSection(() => import("@/components/Section/Testimonials"));
 const Faq = dynamicSection(() => import("@/components/Section/Faq"));
 import HomeArticles from "@/components/Section/HomeArticles";
@@ -21,6 +22,7 @@ export default function HomePage() {
       <Advantages />
       <AlwaysOn />
       <MoreFeatures />
+      <Pricing />
       <Testimonials />
       <Faq />
       <HomeArticles />

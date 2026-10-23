@@ -5,6 +5,19 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Home pricing section
+- New `Pricing` section (`src/components/Section/Pricing.jsx` + `src/content/home/pricing.js`) matched to `pricing-section.png` cards/toggle: monthly/yearly + Save 20%, three gradient-border cards (Starter / Growth / Enterprise), Growth “Most popular” badge, gradient CTAs; section uses page `--theme-background` (not black) to match other home sections.
+- Inserted on home before Testimonials; Header/Footer Pricing → `/#pricing`.
+
+### Integrations marketing page (`/integrations`)
+- New route `src/app/(public)/integrations/page.js` — Hero → TrustedBy → Hub → 3×3 Platforms → FAQ → CTA. No pricing.
+- Content seam `src/content/integrations/*`; media `integrationImages` + assets under `public/images/integrations/`.
+- Header/Footer label **Integrations** → `/integrations`; **Features** → `/features` (active states included). Home `#integrations` section unchanged.
+- FAQ mirrors Features accordion UX with integrations-specific Q&A; platform cards use real channel names (Figma placeholders were all “Messenger”).
+- Hero polish: Features + Integrations remove full-bleed white wash; hero Image `quality={100}`.
+- Features hero: light bottom padding (`pb-6`/`sm:pb-8`) under `hero-composite` so it isn’t flush against the section edge.
+- Features + Integrations heroes: reuse home `heroBottom` white shade strip at section bottom (same as homepage).
+
 ### Build: self-host Inter + Host Grotesk
 - Replaced `next/font/google` with `next/font/local` + WOFF2 under `src/fonts/` so Vercel Turbopack builds no longer fail on Google’s extensionless `/l/font?kit=` URLs (next.js#99114).
 

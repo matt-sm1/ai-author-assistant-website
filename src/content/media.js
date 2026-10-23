@@ -55,3 +55,17 @@ export const featureImages = {
   trustLogos,
   cta: mediaPath("/images/home/cta.webp"),
 };
+
+export const integrationImages = {
+  heroBg: mediaPath("/images/integrations/hero-bg.png"),
+  hub: mediaPath("/images/integrations/hub.png"),
+  messenger: mediaPath("/images/integrations/messenger.png"),
+  instagram: mediaPath("/images/integrations/instagram.png"),
+  web: mediaPath("/images/integrations/web.png"),
+  whatsapp: mediaPath("/images/integrations/whatsapp.png"),
+  discord: mediaPath("/images/integrations/discord.png"),
+  gmail: mediaPath("/images/integrations/gmail.png"),
+  telegram: mediaPath("/images/integrations/telegram.png"),
+  slack: mediaPath("/images/integrations/slack.png"),
+  cta: mediaPath("/images/home/cta.webp"),
+};

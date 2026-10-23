@@ -4,10 +4,10 @@ import { brandLogo } from "@/content/media";
 
 const pages = [
   { label: "Home", href: "/" },
-  { label: "Product", href: "/#integrations" },
+  { label: "Integrations", href: "/integrations" },
   { label: "Features", href: "/features" },
   { label: "Blogs", href: "/blogs" },
-  { label: "Pricing", href: "/#contact" },
+  { label: "Pricing", href: "/#pricing" },
   { label: "Contact", href: "/#contact" },
 ];
 
