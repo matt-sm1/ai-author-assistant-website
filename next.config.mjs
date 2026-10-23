@@ -40,6 +40,9 @@ function hostingerRemotePatterns() {
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: projectRoot,
+  experimental: {
+    agentUpgrade: "security",
+  },
   images: {
     remotePatterns: hostingerRemotePatterns(),
   },
