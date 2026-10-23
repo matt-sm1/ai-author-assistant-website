@@ -5,6 +5,9 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Build: self-host Inter + Host Grotesk
+- Replaced `next/font/google` with `next/font/local` + WOFF2 under `src/fonts/` so Vercel Turbopack builds no longer fail on Google’s extensionless `/l/font?kit=` URLs (next.js#99114).
+
 ### Features marketing page (`/features`)
 - New route `src/app/(public)/features/page.js` composed from `src/components/Section/FeaturesPage/*` (hero, trust, analytics, cards, profiles, integrations, details, FAQ, articles, CTA). No pricing section.
 - Content seam `src/content/features/*` + barrel `src/content/features.js`; media registry `featureImages` in `src/content/media.js`.
