@@ -5,6 +5,9 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Security: Next.js 16.4.0 → 16.4.2
+- Bumped `next` and `eslint-config-next` to 16.4.2 for published security advisories; set `experimental.agentUpgrade: "security"` in `next.config.mjs`.
+
 ### Build: self-host Inter + Host Grotesk
 - Replaced `next/font/google` with `next/font/local` + WOFF2 under `src/fonts/` so Vercel Turbopack builds no longer fail on Google’s extensionless `/l/font?kit=` URLs (next.js#99114).
 
