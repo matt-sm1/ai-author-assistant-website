@@ -23,7 +23,7 @@ function PricingCard({ plan, yearly }) {
     <div
       data-reveal
       className={`relative flex shrink-0 flex-col rounded-[20px] p-[1.5px] ${
-        popular ? "w-[min(100%,300px)]" : "w-[min(100%,268px)]"
+        popular ? "w-[min(100%,340px)]" : "w-[min(100%,312px)]"
       }`}
       style={{ backgroundImage: GRADIENT }}
     >
@@ -36,31 +36,30 @@ function PricingCard({ plan, yearly }) {
         </span>
       ) : null}
 
-      {/* Fixed narrow width — matches tall reference cards, not full grid column */}
-      <div className="flex flex-col rounded-[18.5px] bg-white px-5 pb-5 pt-6 sm:px-6 sm:pb-6 sm:pt-7">
-        <p className="font-display text-[12px] font-bold uppercase tracking-[0.04em] text-heading sm:text-[13px]">
+      <div className="flex flex-col rounded-[18.5px] bg-white px-6 pb-6 pt-7 sm:px-7 sm:pb-7 sm:pt-8">
+        <p className="font-display text-[13px] font-bold uppercase tracking-[0.04em] text-heading">
           {plan.name}
         </p>
 
         <div className="mt-3 flex items-end gap-1">
-          <span className="font-display text-[36px] font-bold leading-none tracking-tight text-heading sm:text-[40px]">
+          <span className="font-display text-[40px] font-bold leading-none tracking-tight text-heading sm:text-[44px]">
             ${price}
           </span>
-          <span className="mb-1 font-sans text-[14px] font-medium text-heading sm:mb-1.5 sm:text-[15px]">
+          <span className="mb-1 font-sans text-[15px] font-medium text-heading sm:mb-1.5 sm:text-[16px]">
             /mo
           </span>
         </div>
-        <p className="mt-1.5 font-sans text-[12px] text-copy sm:text-[13px]">
+        <p className="mt-1.5 font-sans text-[13px] text-copy">
           {billingLabel}
         </p>
 
-        <div className="my-4 h-px w-full bg-[var(--theme-border)]" />
+        <div className="my-4 h-px w-full bg-[var(--theme-border)] sm:my-5" />
 
         <ul className="flex flex-col gap-2.5">
           {plan.features.map((feature) => (
             <li
               key={feature}
-              className="font-sans text-[13px] leading-snug text-heading sm:text-[14px]"
+              className="font-sans text-[14px] leading-snug text-heading"
             >
               {feature}
             </li>
@@ -69,7 +68,7 @@ function PricingCard({ plan, yearly }) {
 
         <Link
           href={pricingContent.ctaHref}
-          className="mt-6 inline-flex w-full items-center justify-center rounded-[12px] px-4 py-3 font-sans text-[14px] font-semibold text-white no-underline transition-[opacity,transform] duration-200 hover:scale-[1.01] hover:opacity-95 sm:mt-7 sm:text-[15px]"
+          className="mt-6 inline-flex w-full items-center justify-center rounded-[12px] px-5 py-3.5 font-sans text-[15px] font-semibold text-white no-underline transition-[opacity,transform] duration-200 hover:scale-[1.01] hover:opacity-95 sm:mt-7"
           style={{ backgroundImage: GRADIENT }}
         >
           {pricingContent.ctaLabel}

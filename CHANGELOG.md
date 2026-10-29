@@ -6,7 +6,7 @@ Newest entries first. Agents must read this before implementing, and append afte
 ## [Unreleased]
 
 ### Home pricing cards match reference scale
-- Cards capped narrow (`268px` side / `300px` Growth) in a centered flex row with gaps — no more stretching to 1/3 of the container.
+- Cards capped (`312px` side / `340px` Growth) in a centered flex row with gaps — between full-column stretch and the too-narrow 268/300 pass.
 - Side tiers content-height; Growth taller via features + badge. Title, subtitle, Monthly/Annual labels; default Annual.
 
 ### Post editor sidebar soft-nav hang
