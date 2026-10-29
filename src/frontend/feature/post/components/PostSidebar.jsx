@@ -13,17 +13,15 @@ import { Button } from "@/frontend/components/ui/Button";
 import { Input } from "@/frontend/components/ui/Input";
 import { Label } from "@/frontend/components/ui/Label";
 import { Textarea } from "@/frontend/components/ui/Textarea";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/frontend/components/ui/Select";
 import SelectableList from "@/frontend/components/ui/SelectableList";
 import { karachiDateTimeLocalMin } from "@/frontend/lib/format";
+import { cn } from "@/frontend/lib/utils";
 
-function SelectField({
+/**
+ * Native select — Radix Select@2.4 always body-locks via DismissableLayer;
+ * status/author changes sit on the schedule→navigate path and must not lock.
+ */
+function NativeSelectField({
   id,
   label,
   placeholder,
@@ -38,23 +36,32 @@ function SelectField({
         {label}
       </Label>
 
-      <Select value={value} onValueChange={onChange} disabled={disabled}>
-        <SelectTrigger id={id} className="mt-1 w-full rounded-lg">
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-
-        <SelectContent>
-          {options.map((option) => (
-            <SelectItem
-              key={option.value}
-              value={option.value}
-              disabled={option.disabled}
-            >
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <select
+        id={id}
+        value={value || ""}
+        disabled={disabled}
+        onChange={(event) => onChange?.(event.target.value)}
+        className={cn(
+          "mt-1 flex h-9 w-full cursor-pointer rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm",
+          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+        )}
+      >
+        {placeholder ? (
+          <option value="" disabled>
+            {placeholder}
+          </option>
+        ) : null}
+        {options.map((option) => (
+          <option
+            key={option.value}
+            value={option.value}
+            disabled={option.disabled}
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -120,10 +127,9 @@ export default function PostSidebar({
   return (
     <aside className="space-y-4">
       <PostSection title="Publish">
-        <SelectField
+        <NativeSelectField
           id="post-status"
           label="Status"
-          placeholder="Choose status"
           value={post.status ?? "draft"}
           onChange={(value) => onFieldChange?.("status", value)}
           options={[
@@ -223,7 +229,7 @@ export default function PostSidebar({
       </PostSection>
 
       <PostSection title="Author">
-        <SelectField
+        <NativeSelectField
           id="post-author"
           label="Author"
           placeholder={
@@ -234,12 +240,15 @@ export default function PostSidebar({
           disabled={isAuthorsLoading || Boolean(authorsError)}
           options={[
             ...(selectedAuthorIsMissing
-              ? [{
-                value: post.authorId,
-                label: `${post.author?.name || "Current author"}${!isAuthorsLoading && !authorsError ? " (inactive)" : ""
-                  }`,
-                disabled: true,
-              }]
+              ? [
+                  {
+                    value: post.authorId,
+                    label: `${post.author?.name || "Current author"}${
+                      !isAuthorsLoading && !authorsError ? " (inactive)" : ""
+                    }`,
+                    disabled: true,
+                  },
+                ]
               : []),
             ...authors.map((author) => ({
               value: author.id,

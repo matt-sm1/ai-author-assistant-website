@@ -7,13 +7,10 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { cn } from "@/frontend/lib/utils";
 
-/**
- * modal=false avoids Radix RemoveScroll locking document.body pointer-events
- * (common hang after picking Scheduled / Author / etc. then navigating).
- */
-function Select({ modal = false, ...props }) {
-  return <SelectPrimitive.Root modal={modal} {...props} />;
-}
+// Note: @radix-ui/react-select@2.4.x has no `modal` prop and always uses
+// DismissableLayer disableOutsidePointerEvents. Prefer native <select> for
+// admin form fields that navigate immediately after change (see PostSidebar).
+const Select = SelectPrimitive.Root;
 const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 

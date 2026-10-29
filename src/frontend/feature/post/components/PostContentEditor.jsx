@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 
 import MediaPicker from "@/frontend/components/ui/MediaPicker";
 import useMediaMutations from "@/frontend/feature/media/hooks/useMediaMutations";
+import { ADMIN_CLOSE_OVERLAYS_EVENT } from "@/frontend/lib/clear-ui-body-lock";
 
 function EditorSkeleton() {
   return (
@@ -50,6 +51,16 @@ export default function PostContentEditor({ value = "", onChange }) {
   const handleRequestInsertMedia = useCallback(({ insert }) => {
     insertCallbackRef.current = insert;
     setBodyPickerOpen(true);
+  }, []);
+
+  useEffect(() => {
+    function closeOverlays() {
+      setBodyPickerOpen(false);
+      insertCallbackRef.current = null;
+    }
+    window.addEventListener(ADMIN_CLOSE_OVERLAYS_EVENT, closeOverlays);
+    return () =>
+      window.removeEventListener(ADMIN_CLOSE_OVERLAYS_EVENT, closeOverlays);
   }, []);
 
   useEffect(() => {

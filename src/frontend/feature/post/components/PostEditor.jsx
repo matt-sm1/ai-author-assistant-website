@@ -18,7 +18,11 @@ import MediaPicker from "@/frontend/components/ui/MediaPicker";
 import PostSidebar from "@/frontend/feature/post/components/PostSidebar";
 import PostContentEditor from "@/frontend/feature/post/components/PostContentEditor";
 import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
-import { clearUiBodyLockSoon } from "@/frontend/lib/clear-ui-body-lock";
+import {
+  dispatchCloseAdminOverlays,
+  watchAndClearUiBodyLock,
+} from "@/frontend/lib/clear-ui-body-lock";
+import { createSubmitLock } from "@/frontend/lib/submit-lock";
 import { mapEditorFormToArticle } from "@/frontend/feature/post/lib/map-post-article";
 import { writePreviewDraft } from "@/frontend/feature/post/lib/preview-draft";
 import {
@@ -162,6 +166,8 @@ function PostEditorForm({
   // ─────────────────────────────────────────────────────────────────────────
 
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitLock = useRef(createSubmitLock()).current;
   const { createPost, updatePost, isCreating, isUpdating } = usePostMutations();
   const { categories } = useCategories({ page: 1, limit: 100 });
   const { authors } = useAuthors({
@@ -172,7 +178,8 @@ function PostEditorForm({
     activeOnly: true,
   });
 
-  const isSaving = isCreating || isUpdating;
+  const isSaving = isCreating || isUpdating || isSubmitting;
+  const actionsDisabled = isSaving || isPostLoading;
 
   const canPreview = Boolean(
     formData.title?.trim() ||
@@ -232,20 +239,26 @@ function PostEditorForm({
   };
 
   const handleSubmitPost = async (requestedStatus = formData.status) => {
-    if (isSaving) return;
+    // Sync lock before any await — RTK isLoading flips too late for double-clicks.
+    if (!submitLock.tryAcquire()) return;
 
     if (requestedStatus === "scheduled") {
       if (!formData.publishDate?.trim()) {
+        submitLock.release();
         toast.error("Choose a future schedule date and time.");
         return;
       }
       const iso = karachiDateTimeToISO(formData.publishDate);
       if (!iso || new Date(iso).getTime() <= Date.now()) {
+        submitLock.release();
         toast.error("Scheduled publish date must be in the future.");
         return;
       }
       setFormData((previous) => ({ ...previous, status: "scheduled" }));
     }
+
+    setIsSubmitting(true);
+    let succeeded = false;
 
     try {
       let publishedAt = null;
@@ -312,7 +325,9 @@ function PostEditorForm({
 
       clearEditorDraft(draftKey);
       setMediaPickerOpen(false);
-      clearUiBodyLockSoon();
+      dispatchCloseAdminOverlays();
+      watchAndClearUiBodyLock(2000);
+      succeeded = true;
       router.push("/admin/post");
     } catch (error) {
       if (error?.name === "ValidationError") {
@@ -329,6 +344,13 @@ function PostEditorForm({
       }
 
       toast.error(getErrorMessage(error, "Unable to save the post."));
+    } finally {
+      // Keep lock + disabled buttons through soft-nav so a second click
+      // cannot create slug-2 before the editor unmounts.
+      if (!succeeded) {
+        submitLock.release();
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -369,7 +391,7 @@ function PostEditorForm({
             variant="outline"
             className="rounded-xl"
             onClick={() => handleSubmitPost()}
-            disabled={isSaving || isPostLoading}
+            disabled={actionsDisabled}
           >
             {isSaving
               ? isEditMode
@@ -385,9 +407,15 @@ function PostEditorForm({
             variant="outline"
             className="rounded-xl"
             onClick={() => handleSubmitPost("scheduled")}
-            disabled={isSaving || isPostLoading}
+            disabled={actionsDisabled}
           >
-            {isEditMode ? "Update Schedule" : "Schedule"}
+            {isSaving
+              ? isEditMode
+                ? "Updating..."
+                : "Scheduling..."
+              : isEditMode
+                ? "Update Schedule"
+                : "Schedule"}
           </Button>
 
           {formData.status !== "scheduled" && (
@@ -395,7 +423,7 @@ function PostEditorForm({
               type="button"
               className="rounded-xl"
               onClick={() => handleSubmitPost("published")}
-              disabled={isSaving || isPostLoading}
+              disabled={actionsDisabled}
             >
               {isSaving
                 ? isEditMode
@@ -464,7 +492,7 @@ function PostEditorForm({
           variant="outline"
           className="flex-1 rounded-xl"
           onClick={() => handleSubmitPost()}
-          disabled={isSaving || isPostLoading}
+          disabled={actionsDisabled}
         >
           {isSaving
             ? isEditMode
@@ -480,9 +508,15 @@ function PostEditorForm({
           variant="outline"
           className="flex-1 rounded-xl"
           onClick={() => handleSubmitPost("scheduled")}
-          disabled={isSaving || isPostLoading}
+          disabled={actionsDisabled}
         >
-          {isEditMode ? "Update Schedule" : "Schedule"}
+          {isSaving
+            ? isEditMode
+              ? "Updating..."
+              : "Scheduling..."
+            : isEditMode
+              ? "Update Schedule"
+              : "Schedule"}
         </Button>
 
         {formData.status !== "scheduled" && (
@@ -490,7 +524,7 @@ function PostEditorForm({
             type="button"
             className="flex-1 rounded-xl"
             onClick={() => handleSubmitPost("published")}
-            disabled={isSaving || isPostLoading}
+            disabled={actionsDisabled}
           >
             {isSaving
               ? isEditMode

@@ -5,10 +5,15 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Schedule lock + duplicate posts (root causes)
+- **Lock:** `@radix-ui/react-select@2.4.x` has no `modal` prop and always sets `disableOutsidePointerEvents`; prior `modal={false}` was a no-op. Status/Author in `PostSidebar` now use native `<select>`. `watchAndClearUiBodyLock` MutationObserver (~2s) defeats DismissableLayer restoring `pointer-events: none` after soft-nav; strips TinyMCE `.tox-dialog-wrap` orphans; `admin:close-overlays` closes body MediaPicker before redirect.
+- **Duplicates:** `handleSubmitPost` raced on RTK `isLoading` (flips only after mutation start) so double-click / Schedule+Publish created two INSERTs (`slug` + `slug-2`). Sync `createSubmitLock` + `isSubmitting` before Yup; lock held through successful soft-nav; all action buttons disabled immediately.
+- Note: admin `getPosts` still lazy-publishes due schedules (`published_at <= NOW()`) — near-now schedules correctly flip to Published on list load (not a second insert).
+
 ### Admin UI unlock after schedule (Radix body lock)
 - Root cause: Radix Select/Dialog RemoveScroll can leave `pointer-events: none` / scroll-lock on `document.body` after choosing Scheduled (or closing MediaPicker) then soft-navigating — entire admin shell unclickable.
-- `Select` defaults to `modal={false}` so status/author dropdowns do not lock the document.
-- Shared `clearUiBodyLock` / `clearUiBodyLockSoon`; run on every `DashboardShell` pathname change, after MediaPicker close, and before post save/schedule redirect.
+- ~~`Select` defaults to `modal={false}`~~ superseded — Select 2.4 ignores `modal`; use native selects on schedule path.
+- Shared `clearUiBodyLock` / `watchAndClearUiBodyLock`; run on every `DashboardShell` pathname change, after MediaPicker close, and before post save/schedule redirect.
 - Dialog `onCloseAutoFocus` prevented by default to avoid focus/lock races on soft nav.
 
 ### MediaPicker / schedule UX fixes

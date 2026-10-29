@@ -14,7 +14,7 @@ import {
 } from "@/frontend/components/ui/Sheet";
 
 import { cn } from "@/frontend/lib/utils";
-import { clearUiBodyLockSoon } from "@/frontend/lib/clear-ui-body-lock";
+import { watchAndClearUiBodyLock } from "@/frontend/lib/clear-ui-body-lock";
 import { adminNavigation } from "@/frontend/lib/constants";
 import { baseApi } from "@/frontend/store/api/baseApi";
 // Ensure endpoints are injected before idle prefetch
@@ -44,8 +44,9 @@ export default function DashboardShell({
   const dispatch = useDispatch();
 
   // Soft nav can unmount Dialog/Select mid-cleanup and leave body unclickable.
+  // Watch ~2s: DismissableLayer often restores pointer-events:none after first clear.
   useEffect(() => {
-    clearUiBodyLockSoon();
+    return watchAndClearUiBodyLock(2000);
   }, [pathname]);
 
   useEffect(() => {
