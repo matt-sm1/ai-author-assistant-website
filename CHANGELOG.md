@@ -5,6 +5,10 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Home pricing cards match reference scale
+- Starter/Enterprise no longer stretch to Growth height (`items-stretch` + `h-full`/`flex-1` removed) — side tiers are content-sized; Growth stays taller via its feature list + badge only.
+- Added title, subtitle, Monthly/Annual labels; default toggle Annual to match reference.
+
 ### Post editor sidebar soft-nav hang
 - Repro on production: while on `/admin/post/new` or `/edit`, sidebar `Link` clicks focus but App Router never changes the URL (soft-nav no-op). Hard `location.assign` still works. Other admin pages soft-nav fine.
 - Leaving the TinyMCE editor now hard-navigates via `hardNavigateAdmin` (`src/frontend/lib/admin-nav.js`) from Sidebar `onNavigate`, Back link, logout, and successful save — so Media / Categories / etc. work again.
