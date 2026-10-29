@@ -24,13 +24,25 @@ Storage keys / public URLs look like `media/YYYY/MM/file.webp`.
 `media/` when writing — final path is `public_html/media/YYYY/MM/file.webp`,
 served at `{public_base_url}/media/YYYY/MM/file.webp`.
 
+### Canonical URL layout (ADR 0003)
+
+Prefer **flat** public URLs: `/media/YYYY/MM/file.webp`.  
+Do **not** treat `/media/media/...` as the default — that was a legacy double-prefix.
+
+The Next.js app (`publicUrlForKey`, display helpers) writes and prefers flat URLs.
+Re-upload `media/.htaccess` after pulling this repo so:
+
+- Nested URL `/media/media/YYYY/...` → serves flat file when present (old DB rows).
+- Flat URL `/media/YYYY/...` → still serves nested file when present (old disk).
+
 ### If images 404 but `/media/media/YYYY/...` works
 
 Older API builds wrote a double `media/` folder. Fix on Hostinger:
 
 1. Upload updated `media-api/lib.php` (strips the prefix for new uploads).
-2. Upload updated `media/.htaccess` (serves legacy nested files at the clean URL).
+2. Upload updated `media/.htaccess` (bidirectional legacy rewrites above).
 3. Optional cleanup in File Manager: move `public_html/media/media/YYYY` → `public_html/media/YYYY`.
+4. Redeploy the Next.js app so it stops emitting nested URLs on new uploads.
 
 ## Setup
 

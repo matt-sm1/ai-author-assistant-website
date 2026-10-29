@@ -3,7 +3,10 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/frontend/lib/utils";
-import { toNestedHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import {
+  toAlternateHostingerMediaUrl,
+  toCanonicalHostingerMediaUrl,
+} from "@/frontend/lib/hostinger-media-url";
 
 function isHttpUrl(src) {
   if (typeof src !== "string" || !src) return false;
@@ -17,7 +20,8 @@ function isHttpUrl(src) {
 
 /**
  * Hostinger-first media renderer (native <img>).
- * On error, retries once with the legacy nested /media/media/... path.
+ * Prefers flat /media/YYYY/... (ADR 0003). On error, retries once with the
+ * alternate flat↔nested path for legacy disk layouts.
  */
 const MediaImage = forwardRef(function MediaImage(
   {
@@ -36,13 +40,15 @@ const MediaImage = forwardRef(function MediaImage(
 ) {
   const rootRef = useRef(null);
   const [inView, setInView] = useState(!viewportLazy || priority);
-  const [currentSrc, setCurrentSrc] = useState(src);
-  const [triedNested, setTriedNested] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(
+    () => toCanonicalHostingerMediaUrl(src) || src,
+  );
+  const [triedAlternate, setTriedAlternate] = useState(false);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    setCurrentSrc(src);
-    setTriedNested(false);
+    setCurrentSrc(toCanonicalHostingerMediaUrl(src) || src);
+    setTriedAlternate(false);
     setFailed(false);
   }, [src]);
 
@@ -107,11 +113,11 @@ const MediaImage = forwardRef(function MediaImage(
       className={cn(fill && "absolute inset-0 h-full w-full", className)}
       onLoad={onLoad}
       onError={(event) => {
-        if (!triedNested) {
-          const nested = toNestedHostingerMediaUrl(currentSrc);
-          if (nested && nested !== currentSrc) {
-            setTriedNested(true);
-            setCurrentSrc(nested);
+        if (!triedAlternate) {
+          const alternate = toAlternateHostingerMediaUrl(currentSrc);
+          if (alternate && alternate !== currentSrc) {
+            setTriedAlternate(true);
+            setCurrentSrc(alternate);
             return;
           }
         }

@@ -23,8 +23,22 @@ describe("map-post-article", () => {
     expect(article.title).toBe("Hello");
     expect(article.category_name).toBe("News");
     expect(article.author.name).toBe("Ada");
-    expect(article.featured_image).toContain("/media/media/");
+    expect(article.featured_image).toContain("/media/2026/10/");
+    expect(article.featured_image).not.toContain("/media/media/");
     expect(article.tags).toHaveLength(1);
+  });
+
+  it("flattens legacy nested featured_image URLs (ADR 0003)", () => {
+    const article = mapDbPostToArticle({
+      title: "Nested",
+      slug: "nested",
+      content: "<p>x</p>",
+      featured_image:
+        "https://x.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
+    });
+    expect(article.featured_image).toBe(
+      "https://x.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
+    );
   });
 
   it("maps editor form into PostArticle shape without DB", () => {

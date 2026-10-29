@@ -13,13 +13,13 @@ describe("storage-key", () => {
     expect(key.startsWith("media/")).toBe(true);
   });
 
-  it("emits nested public URLs matching current Hostinger disk layout", () => {
+  it("emits flat public URLs matching Hostinger media_root layout (ADR 0003)", () => {
     const url = publicUrlForKey(
       "https://cdn.example.com",
       "media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
     );
     expect(url).toBe(
-      "https://cdn.example.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
+      "https://cdn.example.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
     );
   });
 

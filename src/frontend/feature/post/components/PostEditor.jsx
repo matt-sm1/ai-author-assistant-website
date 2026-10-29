@@ -17,7 +17,7 @@ import { Panel, StatusBadge } from "@/frontend/components/shared/ui-bits";
 import MediaPicker from "@/frontend/components/ui/MediaPicker";
 import PostSidebar from "@/frontend/feature/post/components/PostSidebar";
 import PostContentEditor from "@/frontend/feature/post/components/PostContentEditor";
-import { toNestedHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 import { mapEditorFormToArticle } from "@/frontend/feature/post/lib/map-post-article";
 import { writePreviewDraft } from "@/frontend/feature/post/lib/preview-draft";
 import {
@@ -108,7 +108,7 @@ function PostEditorForm({
     publishDate: existingPost
       ? toLocalDateTime(existingPost.published_at)
       : "",
-    featuredImage: toNestedHostingerMediaUrl(existingPost?.featured_image ?? "") || "",
+    featuredImage: toCanonicalHostingerMediaUrl(existingPost?.featured_image ?? "") || "",
     featuredMediaId: existingPost?.featured_media_id ?? null,
     featuredImageType: getFeaturedMediaType(existingPost?.featured_image),
     featuredImageThumbnail: "",
@@ -500,14 +500,14 @@ function PostEditorForm({
         open={mediaPickerOpen}
         onOpenChange={setMediaPickerOpen}
         onSelect={({ id, url, resourceType, thumbnailUrl }) => {
-          const nestedUrl = toNestedHostingerMediaUrl(url) || url;
+          const canonicalUrl = toCanonicalHostingerMediaUrl(url) || url;
           setFormData((previous) => ({
             ...previous,
             featuredMediaId: id,
-            featuredImage: nestedUrl,
+            featuredImage: canonicalUrl,
             featuredImageType: resourceType,
             featuredImageThumbnail:
-              toNestedHostingerMediaUrl(thumbnailUrl) || thumbnailUrl,
+              toCanonicalHostingerMediaUrl(thumbnailUrl) || thumbnailUrl,
           }));
         }}
       />

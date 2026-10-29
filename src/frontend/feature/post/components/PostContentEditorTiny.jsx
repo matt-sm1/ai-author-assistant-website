@@ -5,7 +5,7 @@ import { Editor } from "@tinymce/tinymce-react";
 
 import {
   rewriteHostingerMediaUrlsInHtml,
-  toNestedHostingerMediaUrl,
+  toCanonicalHostingerMediaUrl,
 } from "@/frontend/lib/hostinger-media-url";
 
 const CONTENT_STYLE = `
@@ -102,7 +102,7 @@ export default function PostContentEditorTiny({
             onAction: () => {
               onRequestInsertMedia?.({
                 insert: (item) => {
-                  const src = toNestedHostingerMediaUrl(item.url);
+                  const src = toCanonicalHostingerMediaUrl(item.url);
                   if (!src) return;
                   const alt = (item.alt || item.filename || "")
                     .replace(/"/g, "&quot;")

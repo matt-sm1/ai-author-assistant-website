@@ -17,11 +17,19 @@
 
 Options -Indexes
 
-# Legacy: older uploads were stored under media/media/YYYY/... while public
-# URLs are /media/YYYY/.... Serve those nested files until they are moved.
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /media/
+
+  # Canonical disk is flat: media/YYYY/... (ADR 0003).
+  # If a client still requests /media/media/YYYY/... and the flat file exists,
+  # serve the flat file (covers old DB URLs after migrate).
+  RewriteCond %{REQUEST_URI} ^/media/media/(.+)$
+  RewriteCond %{DOCUMENT_ROOT}/media/%1 -f
+  RewriteRule ^media/(.+)$ $1 [L]
+
+  # Legacy: older uploads were stored under media/media/YYYY/... while public
+  # URLs are /media/YYYY/.... Serve those nested files until they are moved.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{DOCUMENT_ROOT}/media/media/$1 -f

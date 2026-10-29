@@ -1,5 +1,5 @@
 import { karachiDateTimeToISO } from "@/frontend/lib/format";
-import { toNestedHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 
 /**
  * Canonical article shape consumed by PostArticle.
@@ -14,7 +14,7 @@ export function mapDbPostToArticle(post) {
     content: post.content ?? "",
     excerpt: post.excerpt ?? "",
     featured_image:
-      toNestedHostingerMediaUrl(post.featured_image ?? "") ||
+      toCanonicalHostingerMediaUrl(post.featured_image ?? "") ||
       post.featured_image ||
       "",
     published_at: post.published_at ?? null,
@@ -71,7 +71,7 @@ export function mapEditorFormToArticle(form, extras = {}) {
     content: form.content ?? "",
     excerpt: form.excerpt ?? "",
     featured_image:
-      toNestedHostingerMediaUrl(form.featuredImage ?? "") ||
+      toCanonicalHostingerMediaUrl(form.featuredImage ?? "") ||
       form.featuredImage ||
       "",
     published_at: publishedAt,

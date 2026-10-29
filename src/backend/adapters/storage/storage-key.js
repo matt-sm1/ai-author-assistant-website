@@ -61,15 +61,15 @@ export function buildMediaStorageKey(ext, now = new Date()) {
 /**
  * Public URL for a storage key.
  *
- * Keys are `media/YYYY/MM/file.ext`. Current Hostinger disk (pre-migrate) nests
- * under media_root again → `public_html/media/media/YYYY/...`, so the working
- * public path is `/media/media/YYYY/...` (= `${base}/media/${storageKey}`).
+ * Keys are `media/YYYY/MM/file.ext`. Hostinger `media_root` is already
+ * `public_html/media`, so the file lives at `media/YYYY/...` and the public
+ * URL is `${base}/${storageKey}` → `/media/YYYY/...` (flat).
  *
- * After uploading fixed lib.php and moving files to `public_html/media/YYYY/...`,
- * switch this back to `${base}/${storageKey}`.
+ * Do **not** prepend another `/media/` (that yields `/media/media/...`).
+ * Nested paths are legacy only — see ADR 0003.
  */
 export function publicUrlForKey(baseUrl, storageKey) {
   const base = String(baseUrl || "").replace(/\/+$/, "");
   assertSafeStorageKey(storageKey);
-  return `${base}/media/${storageKey}`;
+  return `${base}/${storageKey}`;
 }

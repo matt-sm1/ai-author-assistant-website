@@ -75,15 +75,13 @@ function keepSupportedInlineImage(_tagName, attribs) {
     delete attribs.src;
   }
 
-  // Nested Hostinger path so saved HTML matches working disk layout.
+  // Flat Hostinger path (ADR 0003): /media/media/YYYY/... → /media/YYYY/...
   if (typeof attribs.src === "string" && /^https?:\/\//i.test(attribs.src)) {
     try {
       const url = new URL(attribs.src);
-      if (
-        /^\/media\/\d{4}\/\d{2}\//.test(url.pathname) &&
-        !url.pathname.startsWith("/media/media/")
-      ) {
-        url.pathname = `/media${url.pathname}`;
+      const nested = url.pathname.match(/^\/media\/media\/(\d{4}\/\d{2}\/.+)$/);
+      if (nested) {
+        url.pathname = `/media/${nested[1]}`;
         attribs.src = url.toString();
       }
     } catch {

@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { toNestedHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 
 /**
  * Pixel-matched port of marketing ArticleCard.
  */
 export default function ArticleCard({ title, date, href, image, imageAlt }) {
   const src =
-    toNestedHostingerMediaUrl(image ?? "") || image || "";
+    toCanonicalHostingerMediaUrl(image ?? "") || image || "";
 
   const className =
     "group flex w-full flex-col overflow-hidden rounded-xl bg-white p-1.5 shadow-[var(--shadow-card-sm)] transition-shadow duration-200 hover:shadow-[var(--shadow-card-raised)]";

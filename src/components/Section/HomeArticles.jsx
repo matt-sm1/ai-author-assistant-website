@@ -4,7 +4,7 @@ import { articlesContent } from "@/content/home/articles";
 import { createPostService } from "@/backend/factories/post.factory";
 import { toPublicPostList } from "@/backend/lib/to-public-post";
 import { fmtArticleDate } from "@/frontend/lib/format";
-import { toNestedHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 
 export const revalidate = 120;
 
@@ -20,7 +20,7 @@ export default async function HomeArticles() {
       title: post.title,
       date: fmtArticleDate(post.published_at),
       image:
-        toNestedHostingerMediaUrl(post.featured_image ?? "") ||
+        toCanonicalHostingerMediaUrl(post.featured_image ?? "") ||
         post.featured_image ||
         undefined,
       imageAlt: post.title,

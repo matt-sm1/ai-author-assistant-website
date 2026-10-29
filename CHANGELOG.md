@@ -5,6 +5,11 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Hostinger media URLs — flat canonical (ADR 0003)
+- Root cause: after PHP wrote flat `public_html/media/YYYY/...`, Node still used `publicUrlForKey` = `${base}/media/${storageKey}` → `/media/media/...`, and the frontend nested flat URLs on display — nested requests 404 on flat disk.
+- Fix: `publicUrlForKey` → `${base}/${storageKey}`; `toCanonicalHostingerMediaUrl` + happy-path call sites flatten; `MediaImage` retries flat↔nested once; `.htaccess` serves both directions; ADR 0003 + tests lock flat as canonical. Nested is legacy fallback only — do not reintroduce happy-path `/media/media` without a new ADR.
+- Ops note: if `HOSTINGER_PUBLIC_BASE_URL` 301s `/media/*` to the marketing site, fix Hostinger redirects / domain mapping and re-upload `hostinger-media-api/media/.htaccess` — app flat URLs alone cannot serve files when the CDN redirects away.
+
 ### Header height vs Figma Home
 - Marketing header `h-20` → `h-24` with matching `-mb-24` / mobile dimmer `top-24`; removed bottom border hairline.
 - Home hero `pt-[112px]`; Features hero `pt-28` so badges clear the taller overlay. Integrations already `pt-28+`.
