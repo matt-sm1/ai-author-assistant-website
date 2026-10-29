@@ -19,6 +19,7 @@ import PostSidebar from "@/frontend/feature/post/components/PostSidebar";
 import PostContentEditor from "@/frontend/feature/post/components/PostContentEditor";
 import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 import {
+  clearUiBodyLock,
   dispatchCloseAdminOverlays,
   watchAndClearUiBodyLock,
 } from "@/frontend/lib/clear-ui-body-lock";
@@ -181,6 +182,16 @@ function PostEditorForm({
   const isSaving = isCreating || isUpdating || isSubmitting;
   const actionsDisabled = isSaving || isPostLoading;
 
+  // Editor hosts TinyMCE + MediaPicker dialogs — clear locks on enter/leave.
+  useEffect(() => {
+    const dispose = watchAndClearUiBodyLock(2500);
+    return () => {
+      dispose();
+      dispatchCloseAdminOverlays();
+      clearUiBodyLock({ force: true });
+    };
+  }, []);
+
   const canPreview = Boolean(
     formData.title?.trim() ||
       formData.content?.trim() ||
@@ -326,9 +337,11 @@ function PostEditorForm({
       clearEditorDraft(draftKey);
       setMediaPickerOpen(false);
       dispatchCloseAdminOverlays();
-      watchAndClearUiBodyLock(2000);
+      clearUiBodyLock({ force: true });
       succeeded = true;
-      router.push("/admin/post");
+      // Hard navigation tears down TinyMCE / Radix portals cleanly.
+      // Soft-nav left body pointer-events and scroll locks behind.
+      window.location.assign("/admin/post");
     } catch (error) {
       if (error?.name === "ValidationError") {
         const messages = [

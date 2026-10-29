@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Image as ImageIcon, X } from "lucide-react";
@@ -13,58 +12,9 @@ import { Button } from "@/frontend/components/ui/Button";
 import { Input } from "@/frontend/components/ui/Input";
 import { Label } from "@/frontend/components/ui/Label";
 import { Textarea } from "@/frontend/components/ui/Textarea";
+import ListboxSelect from "@/frontend/components/ui/ListboxSelect";
 import SelectableList from "@/frontend/components/ui/SelectableList";
 import { karachiDateTimeLocalMin } from "@/frontend/lib/format";
-import { cn } from "@/frontend/lib/utils";
-
-/**
- * Native select — Radix Select@2.4 always body-locks via DismissableLayer;
- * status/author changes sit on the schedule→navigate path and must not lock.
- */
-function NativeSelectField({
-  id,
-  label,
-  placeholder,
-  options,
-  value,
-  onChange,
-  disabled = false,
-}) {
-  return (
-    <div>
-      <Label htmlFor={id} className="text-xs text-muted-foreground">
-        {label}
-      </Label>
-
-      <select
-        id={id}
-        value={value || ""}
-        disabled={disabled}
-        onChange={(event) => onChange?.(event.target.value)}
-        className={cn(
-          "mt-1 flex h-9 w-full cursor-pointer rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm",
-          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
-          "disabled:cursor-not-allowed disabled:opacity-50",
-        )}
-      >
-        {placeholder ? (
-          <option value="" disabled>
-            {placeholder}
-          </option>
-        ) : null}
-        {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            disabled={option.disabled}
-          >
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 export default function PostSidebar({
   post = {},
@@ -127,7 +77,7 @@ export default function PostSidebar({
   return (
     <aside className="space-y-4">
       <PostSection title="Publish">
-        <NativeSelectField
+        <ListboxSelect
           id="post-status"
           label="Status"
           value={post.status ?? "draft"}
@@ -229,7 +179,7 @@ export default function PostSidebar({
       </PostSection>
 
       <PostSection title="Author">
-        <NativeSelectField
+        <ListboxSelect
           id="post-author"
           label="Author"
           placeholder={
@@ -393,8 +343,6 @@ export default function PostSidebar({
           </p>
         </div>
       </PostSection>
-
-
     </aside>
   );
 }

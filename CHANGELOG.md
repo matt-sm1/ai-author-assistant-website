@@ -5,9 +5,15 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Post editor navigation lock (real root cause)
+- Clearing only inline `pointer-events` was insufficient: `react-remove-scroll` can leave `block-interactivity-*` classes on `body`, and DismissableLayer can restore captured `none` after soft-nav. TinyMCE portals can also linger.
+- Status/Author use polished `ListboxSelect` (design-system look, keyboard listbox) — **not** native `<select>`, **not** Radix Select (Select@2.4 always body-locks).
+- `clearUiBodyLock` strips RemoveScroll classes + stale `data-aria-hidden`/`inert` + tox orphans; admin chrome (`data-admin-chrome`) keeps `pointer-events-auto` + `z-40` so sidebar stays clickable even if body is locked.
+- After successful save/schedule/publish: `window.location.assign("/admin/post")` hard teardown of TinyMCE/Radix (soft-nav was leaving locks).
+
 ### Schedule lock + duplicate posts (root causes)
-- **Lock:** `@radix-ui/react-select@2.4.x` has no `modal` prop and always sets `disableOutsidePointerEvents`; prior `modal={false}` was a no-op. Status/Author in `PostSidebar` now use native `<select>`. `watchAndClearUiBodyLock` MutationObserver (~2s) defeats DismissableLayer restoring `pointer-events: none` after soft-nav; strips TinyMCE `.tox-dialog-wrap` orphans; `admin:close-overlays` closes body MediaPicker before redirect.
-- **Duplicates:** `handleSubmitPost` raced on RTK `isLoading` (flips only after mutation start) so double-click / Schedule+Publish created two INSERTs (`slug` + `slug-2`). Sync `createSubmitLock` + `isSubmitting` before Yup; lock held through successful soft-nav; all action buttons disabled immediately.
+- **Lock:** superseded by post-editor navigation lock entry above.
+- **Duplicates:** `handleSubmitPost` raced on RTK `isLoading` (flips only after mutation start) so double-click / Schedule+Publish created two INSERTs (`slug` + `slug-2`). Sync `createSubmitLock` + `isSubmitting` before Yup; lock held through successful redirect; all action buttons disabled immediately.
 - Note: admin `getPosts` still lazy-publishes due schedules (`published_at <= NOW()`) — near-now schedules correctly flip to Published on list load (not a second insert).
 
 ### Admin UI unlock after schedule (Radix body lock)
