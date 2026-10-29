@@ -2,7 +2,6 @@ import { CalendarDays, Tag } from "lucide-react";
 
 import { fmtArticleDate } from "@/frontend/lib/format";
 import PostContentRenderer from "@/frontend/feature/post/components/PostContentRenderer";
-import MediaImage from "@/frontend/components/ui/MediaImage";
 
 export default function BlogArticle({ post }) {
   const tags = Array.isArray(post.tags) ? post.tags : [];
@@ -24,12 +23,6 @@ export default function BlogArticle({ post }) {
                   {post.title || "Untitled post"}
                 </h1>
 
-                {post.excerpt && (
-                  <p className="text-lg leading-relaxed text-copy">
-                    {post.excerpt}
-                  </p>
-                )}
-
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-[var(--line)] pb-5 text-sm text-copy">
                   {post.author?.name && <span>By {post.author.name}</span>}
                   {post.published_at && (
@@ -40,17 +33,6 @@ export default function BlogArticle({ post }) {
                   )}
                 </div>
               </header>
-
-              {post.featured_image && (
-                <MediaImage
-                  src={post.featured_image}
-                  alt={post.title || "Featured image"}
-                  width={800}
-                  height={450}
-                  priority
-                  className="w-full rounded-lg object-cover"
-                />
-              )}
 
               <PostContentRenderer content={post.content} />
 

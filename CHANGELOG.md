@@ -5,6 +5,9 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Post page layout — no featured hero duplicate
+- `BlogArticle` does not render `featured_image` above the body (cards/OG still use it). Layout: title → byline (author + date) → body. Removes double image when the same asset is also in HTML content.
+
 ### Durable Hostinger media boundary (ADR 0003 addendum)
 - Single policy module: `src/shared/hostinger-media-url.js`; frontend path is a thin re-export.
 - Cache-bust is env-gated: `NEXT_PUBLIC_HOSTINGER_MEDIA_URL_VERSION` (documented in `.env.example`); empty = no `?v=`.
