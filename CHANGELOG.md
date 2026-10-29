@@ -6,8 +6,8 @@ Newest entries first. Agents must read this before implementing, and append afte
 ## [Unreleased]
 
 ### Home pricing cards match reference scale
-- Starter/Enterprise no longer stretch to Growth height (`items-stretch` + `h-full`/`flex-1` removed) — side tiers are content-sized; Growth stays taller via its feature list + badge only.
-- Added title, subtitle, Monthly/Annual labels; default toggle Annual to match reference.
+- Cards capped narrow (`268px` side / `300px` Growth) in a centered flex row with gaps — no more stretching to 1/3 of the container.
+- Side tiers content-height; Growth taller via features + badge. Title, subtitle, Monthly/Annual labels; default Annual.
 
 ### Post editor sidebar soft-nav hang
 - Repro on production: while on `/admin/post/new` or `/edit`, sidebar `Link` clicks focus but App Router never changes the URL (soft-nav no-op). Hard `location.assign` still works. Other admin pages soft-nav fine.
