@@ -5,6 +5,13 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Header height vs Figma Home
+- Marketing header `h-20` → `h-24` with matching `-mb-24` / mobile dimmer `top-24`; removed bottom border hairline.
+- Home hero `pt-[112px]`; Features hero `pt-28` so badges clear the taller overlay. Integrations already `pt-28+`.
+
+### Codebase assessment report
+- Added root `CODEBASE_REPORT.md` — honest full-repo scores (overall **7.4/10**, modularity **8.0/10**), dimensions, strengths/weaknesses, and contrast with historical `QUALITY_REPORT.md` (landing-scoped 10/10, not authoritative for current tree).
+
 ### Home pricing section
 - New `Pricing` section (`src/components/Section/Pricing.jsx` + `src/content/home/pricing.js`) matched to `pricing-section.png` cards/toggle: monthly/yearly + Save 20%, three gradient-border cards (Starter / Growth / Enterprise), Growth “Most popular” badge, gradient CTAs; section uses page `--theme-background` (not black) to match other home sections.
 - Inserted on home before Testimonials; Header/Footer Pricing → `/#pricing`.

@@ -22,7 +22,7 @@ export default function FeaturesHero({
         className="pointer-events-none absolute inset-0 object-cover object-top"
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center gap-8 border-x-[0.8px] border-white px-5 pb-6 pt-24 text-center sm:gap-10 sm:px-8 sm:pb-8 lg:px-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center gap-8 border-x-[0.8px] border-white px-5 pb-6 pt-28 text-center sm:gap-10 sm:px-8 sm:pb-8 lg:px-10">
         <div className="relative mx-auto w-full max-w-[900px]">
           <span
             data-reveal-step="badge"

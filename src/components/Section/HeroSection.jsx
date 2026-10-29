@@ -13,7 +13,7 @@ export default function HeroSection({ heroContent = defaultHeroContent } = {}) {
         id="home"
         className="relative bg-[var(--theme-background-soft)] bg-[url('/hero.webp')] bg-cover bg-top bg-no-repeat"
       >
-        <div className="relative mx-auto w-full max-w-[1320px] overflow-hidden border-x-[0.8px] border-solid border-white px-5 pt-[96px] text-center sm:px-8 lg:px-10">
+        <div className="relative mx-auto w-full max-w-[1320px] overflow-hidden border-x-[0.8px] border-solid border-white px-5 pt-[112px] text-center sm:px-8 lg:px-10">
           <HeroDecorations />
           <HeroContent {...heroContent} />
           <HeroDashboard />

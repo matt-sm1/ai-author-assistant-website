@@ -66,21 +66,21 @@ export default function Header() {
     return false;
   };
 
-  // Marketing heroes sit under the nav via -mb-20; blog pages need normal document flow.
+  // Marketing heroes sit under the nav via -mb-24; blog pages need normal document flow.
   const overlayHero = !pathname?.startsWith("/blogs");
 
   return (
     <header
       data-enter="navbar"
-      className={`sticky top-0 z-50 h-20 w-full border-b border-[var(--theme-hex-eae8ec)] transition-[background-color,box-shadow] duration-300 ${
-        overlayHero ? "-mb-20" : ""
+      className={`sticky top-0 z-50 h-24 w-full transition-[background-color,box-shadow] duration-300 ${
+        overlayHero ? "-mb-24" : ""
       } ${
         scrolled || menuOpen || !overlayHero
           ? "bg-white shadow-sm"
           : "bg-transparent"
       }`}
     >
-      <div className="relative mx-auto flex h-20 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:grid sm:w-[calc(100%-3rem)] sm:grid-cols-[1fr_auto_1fr]">
+      <div className="relative mx-auto flex h-24 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:grid sm:w-[calc(100%-3rem)] sm:grid-cols-[1fr_auto_1fr]">
         <div className="flex items-center justify-self-start">
           <Link
             href="/"
@@ -159,7 +159,7 @@ export default function Header() {
       <div
         onClick={closeMenu}
         aria-hidden="true"
-        className={`fixed inset-x-0 bottom-0 top-20 bg-black/30 transition-opacity duration-300 sm:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-24 bg-black/30 transition-opacity duration-300 sm:hidden ${
           menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
