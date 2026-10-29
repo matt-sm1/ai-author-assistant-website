@@ -5,29 +5,31 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
-### Post page layout — no featured hero duplicate
-- `BlogArticle` does not render `featured_image` above the body (cards/OG still use it). Layout: title → byline (author + date) → body. Removes double image when the same asset is also in HTML content.
+### Header height vs Figma Home
+- Marketing header `h-20` → `h-24` with matching `-mb-24` / mobile dimmer `top-24`; removed bottom border hairline.
+- Home hero `pt-[112px]`; Features hero `pt-28` so badges clear the taller overlay. Integrations already `pt-28+`.
 
-### Durable Hostinger media boundary (ADR 0003 addendum)
-- Single policy module: `src/shared/hostinger-media-url.js`; frontend path is a thin re-export.
-- Cache-bust is env-gated: `NEXT_PUBLIC_HOSTINGER_MEDIA_URL_VERSION` (documented in `.env.example`); empty = no `?v=`.
-- API boundary: `toPublicPost` / `toPublicPostList` canonicalize `featured_image` and rewrite HTML `content` once so OG meta, listings, and SSR stay correct without per-leaf helpers.
+## 2026-10-29
+
+### Post page layout (locked)
+- Public post page (`BlogArticle`): **title → byline (author + date) → body**. Do **not** render `featured_image` as a hero above content — it duplicates assets already in HTML and was removed again in `91ad152`.
+- `featured_image` remains for listing cards, home/features article cards, and OG/Twitter meta only.
+
+### Durable Hostinger media boundary (ADR 0003) — verified on production
+- **Status (29 Oct evening):** `/blogs/temp` and CDN media with `?v=20261029` load correctly on `authoraiassistant.com` after `9d82ffd` + layout fix `91ad152`.
+- Single policy module: `src/shared/hostinger-media-url.js`; `src/frontend/lib/hostinger-media-url.js` is a thin re-export.
+- Cache-bust: `NEXT_PUBLIC_HOSTINGER_MEDIA_URL_VERSION` (see `.env.example`). If **unset**, default is `20261029` (needed while browsers/hCDN still hold year-long cached 301s). Explicit `""` disables `?v=`. After hPanel CDN purge + bare `/media/*` 200 in real browsers, set env to `""` (or remove the code default) and redeploy.
+- API boundary: `toPublicPost` / `toPublicPostList` canonicalize `featured_image` and rewrite HTML `content` once (OG meta uses `toPublicPost`).
 - `sanitize-post-html` uses `toCanonicalHostingerMediaUrl` (no hand-rolled `/media/media` regex).
-- `BlogArticle` renders featured hero via `MediaImage` when `featured_image` is set.
-- Ops: ADR Forbidden + post-change checklist; `npm run check:hostinger-media` (`scripts/check-hostinger-media.mjs`) HEADs CDN (uses `?v=` when version env is set) and fails on foreign 3xx redirects.
-- Deploy note: until Hostinger hCDN cached 301s are purged, `?v=20261029` is the default when `NEXT_PUBLIC_HOSTINGER_MEDIA_URL_VERSION` is unset (override with `""` after purge). Prefer setting the env explicitly on Vercel; already in local `.env.local`.
-- Tests: shared URL helpers, `to-public-post`, sanitize, storage-key no double-`/media/media/`.
+- Ops: `npm run check:hostinger-media`; ADR Forbidden + post-change checklist.
+- Tests: shared URL helpers, `to-public-post`, sanitize, storage-key asserts no `/media/media/`.
 
 ### Hostinger media URLs — flat canonical (ADR 0003)
 - Root cause: after PHP wrote flat `public_html/media/YYYY/...`, Node still used `publicUrlForKey` = `${base}/media/${storageKey}` → `/media/media/...`, and the frontend nested flat URLs on display — nested requests 404 on flat disk.
 - Fix: `publicUrlForKey` → `${base}/${storageKey}`; `toCanonicalHostingerMediaUrl` + happy-path call sites flatten; `MediaImage` retries flat↔nested once; `.htaccess` serves both directions; ADR 0003 + tests lock flat as canonical. Nested is legacy fallback only — do not reintroduce happy-path `/media/media` without a new ADR.
 - Ops note: if `HOSTINGER_PUBLIC_BASE_URL` 301s `/media/*` to the marketing site, fix Hostinger redirects / domain mapping and re-upload `hostinger-media-api/media/.htaccess` — app flat URLs alone cannot serve files when the CDN redirects away.
-- Hostinger FTP (29 Oct): removed catch-all `public_html/.htaccess` rewrite that sent every `indigo-loris-*.hostingersite.com` request to `authoraiassistant.com/blogs` (backed up as `.htaccess.bak-redirect-fix`). Re-uploaded `media/.htaccess`. Disk still has legacy nested files under `media/media/YYYY/...`; flat URLs work via rewrite. Confirmed `/media/...` and `/media/media/...` return **200 image/png**.
-- Hostinger hCDN still served cached **301** for uncached-bust URLs (`max-age=31536000`). Display helper appends `?v=20261029` once so Next Image hits fresh origin; clear Hostinger cache in hPanel, then that query can be removed.
-
-### Header height vs Figma Home
-- Marketing header `h-20` → `h-24` with matching `-mb-24` / mobile dimmer `top-24`; removed bottom border hairline.
-- Home hero `pt-[112px]`; Features hero `pt-28` so badges clear the taller overlay. Integrations already `pt-28+`.
+- Hostinger FTP (29 Oct): removed catch-all `public_html/.htaccess` rewrite that sent every `indigo-loris-*.hostingersite.com` request to `authoraiassistant.com/blogs` (backed up as `.htaccess.bak-redirect-fix`). Re-uploaded `media/.htaccess`. Disk still has legacy nested files under `media/media/YYYY/...`; flat URLs work via rewrite. Confirmed `/media/...` and `/media/media/...` return **200 image/***.
+- Hostinger hCDN / browser disk still held cached **301** for bare media URLs (`max-age=31536000`, `immutable`). App appends `?v=20261029` so clients bypass that cache; purge hCDN then retire the query.
 
 ### Codebase assessment report
 - Added root `CODEBASE_REPORT.md` — honest full-repo scores (overall **7.4/10**, modularity **8.0/10**), dimensions, strengths/weaknesses, and contrast with historical `QUALITY_REPORT.md` (landing-scoped 10/10, not authoritative for current tree).
