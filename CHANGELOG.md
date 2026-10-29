@@ -5,6 +5,12 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### MediaPicker Upload + paste-to-library
+- `MediaPicker`: All / Images / Videos / **Upload** modes. Upload reuses `MediaUpload` + session finalize; on success returns to browse with the new item as `pendingSelect`; user must click **Select** to apply (featured or insert). Cancel leaves library unchanged for the post field.
+- TinyMCE: `automatic_uploads` + `images_upload_handler` uploads clipboard blobs to the media library. External `img` URLs are ingested via authenticated `POST /api/media/import-url` (SSRF-safe HTTPS fetch → Hostinger upload → finalize) so body HTML never hotlinks third parties.
+- `sanitize-post-html`: Hostinger media URLs only — strips `data:` and non-library `img` src (defense in depth).
+- Seams: `src/backend/lib/ssrf-url.js`, `fetch-remote-image.js`, `hostinger-server-upload.js`, `MediaService.importFromUrl`, `ingest-editor-images.js`.
+
 ### Header height vs Figma Home
 - Marketing header `h-20` → `h-24` with matching `-mb-24` / mobile dimmer `top-24`; removed bottom border hairline.
 - Home hero `pt-[112px]`; Features hero `pt-28` so badges clear the taller overlay. Integrations already `pt-28+`.

@@ -345,3 +345,28 @@ export async function abortUploadController(request) {
     return handleError(error);
   }
 }
+
+export async function importFromUrlController(request) {
+  try {
+    const body = await parseJsonBody(request);
+    const url = typeof body?.url === "string" ? body.url.trim() : "";
+
+    if (!url) {
+      throw badRequest("url is required");
+    }
+
+    const mediaService = createMediaService();
+    const media = await mediaService.importFromUrl(url);
+
+    return Response.json(
+      {
+        success: true,
+        message: "Media imported",
+        data: media,
+      },
+      { status: HTTP_STATUS.CREATED },
+    );
+  } catch (error) {
+    return handleError(error);
+  }
+}

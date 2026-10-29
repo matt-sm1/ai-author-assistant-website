@@ -12,6 +12,7 @@ export default function useMedia({
   limit = 10,
   search = "",
   resourceType = "",
+  skip = false,
 } = {}) {
   const deferredSearch = useDeferredValue(search);
 
@@ -24,6 +25,7 @@ export default function useMedia({
         resourceType,
       },
       {
+        skip,
         selectFromResult: (result) => ({
           media: result.currentData?.media ?? result.data?.media ?? [],
           pagination:

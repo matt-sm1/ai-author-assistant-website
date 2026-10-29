@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { sanitizePostHtml } from "@/frontend/feature/post/utils/sanitize-post-html";
 
-describe("sanitizePostHtml — Hostinger media (ADR 0003)", () => {
+describe("sanitizePostHtml — Hostinger media only", () => {
   it("flattens nested Hostinger img src", () => {
     const html =
       '<p><img src="https://cdn.example.hostingersite.com/media/media/2026/10/file.png" alt="x" /></p>';
@@ -10,24 +10,26 @@ describe("sanitizePostHtml — Hostinger media (ADR 0003)", () => {
     expect(out).not.toContain("/media/media/");
   });
 
-  it("leaves non-Hostinger img src unchanged", () => {
-    const html = '<p><img src="https://cdn.example.com/photos/a.png" alt="x" /></p>';
+  it("strips non-Hostinger img src (no external hotlinks)", () => {
+    const html =
+      '<p><img src="https://cdn.example.com/photos/a.png" alt="x" /></p>';
     const out = sanitizePostHtml(html);
-    expect(out).toContain('src="https://cdn.example.com/photos/a.png"');
+    expect(out).not.toContain("cdn.example.com");
+    expect(out).not.toContain("<img");
+  });
+
+  it("strips all data: image URIs", () => {
+    const safe =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+    const out = sanitizePostHtml(`<p><img src="${safe}" alt="p" /></p>`);
+    expect(out).not.toContain("data:image");
+    expect(out).not.toContain("<img");
   });
 
   it("strips unsafe data URIs", () => {
     const html = '<p><img src="data:text/html;base64,PHNjcmlwdD4=" /></p>';
     const out = sanitizePostHtml(html);
     expect(out).not.toContain("data:text/html");
-  });
-
-  it("keeps safe image data URIs", () => {
-    // minimal valid-looking png data uri pattern for the allowlist regex
-    const safe =
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
-    const out = sanitizePostHtml(`<p><img src="${safe}" alt="p" /></p>`);
-    expect(out).toContain("data:image/png;base64,");
   });
 });
 

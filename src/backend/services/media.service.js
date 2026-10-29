@@ -14,6 +14,10 @@ import {
   sanitizeFilename,
   validateDeclaredMedia,
 } from "@/backend/lib/media-mime";
+import { validateMediaUpload } from "@/backend/validators/media-upload.validator";
+import { fetchRemoteImage } from "@/backend/lib/fetch-remote-image";
+import { uploadBufferToHostinger } from "@/backend/adapters/storage/hostinger-server-upload";
+import { isHostingerMediaUrl } from "@/shared/hostinger-media-url";
 
 // ============================================
 // MEDIA SERVICE
@@ -240,6 +244,83 @@ export class MediaService {
       return this.withThumbnail(finalized);
     } catch (error) {
       this.handleDatabaseError(error);
+    }
+  }
+
+  /**
+   * Download a remote HTTPS image (SSRF-safe), upload to Hostinger, finalize.
+   * Images only — prevents external hotlinks in post HTML.
+   */
+  async importFromUrl(rawUrl) {
+    if (getStorageProviderName() !== "hostinger") {
+      throw this.badRequest("URL import is only available for Hostinger storage");
+    }
+
+    if (typeof rawUrl === "string" && isHostingerMediaUrl(rawUrl)) {
+      throw this.badRequest(
+        "URL is already hosted on our media CDN — no import needed",
+      );
+    }
+
+    // Also treat HOSTINGER_PUBLIC_BASE_URL hostname as ours even if helper misses
+    try {
+      const publicBase = process.env.HOSTINGER_PUBLIC_BASE_URL?.trim();
+      if (publicBase && typeof rawUrl === "string") {
+        const ours = new URL(publicBase).hostname;
+        const incoming = new URL(rawUrl).hostname;
+        if (ours && incoming === ours && new URL(rawUrl).pathname.startsWith("/media/")) {
+          throw this.badRequest(
+            "URL is already hosted on our media CDN — no import needed",
+          );
+        }
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+    }
+
+    const { buffer, finalUrl } = await fetchRemoteImage(rawUrl);
+    const detected = await validateMediaUpload(buffer);
+
+    if (detected.resourceType !== "image") {
+      throw this.badRequest("Only remote images can be imported");
+    }
+
+    const pathName = (() => {
+      try {
+        return new URL(finalUrl).pathname.split("/").pop() || "image";
+      } catch {
+        return "image";
+      }
+    })();
+    const filename = sanitizeFilename(
+      pathName.includes(".") ? pathName : `${pathName}.${detected.format}`,
+    );
+
+    const session = await this.createUploadSession({
+      filename,
+      mimeType: detected.mimeType,
+      sizeBytes: detected.sizeBytes,
+    });
+
+    try {
+      const receipt = await uploadBufferToHostinger({
+        buffer,
+        filename,
+        mimeType: detected.mimeType,
+        session,
+      });
+
+      return await this.finalizeUpload({
+        mediaId: session.mediaId,
+        receipt,
+      });
+    } catch (error) {
+      try {
+        await this.abortUpload(session.mediaId);
+      } catch {
+        /* ignore */
+      }
+      throw error;
     }
   }
 

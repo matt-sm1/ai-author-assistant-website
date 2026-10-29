@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 
 import MediaPicker from "@/frontend/components/ui/MediaPicker";
+import useMediaMutations from "@/frontend/feature/media/hooks/useMediaMutations";
 
 function EditorSkeleton() {
   return (
@@ -40,6 +41,7 @@ export default function PostContentEditor({ value = "", onChange }) {
   const insertCallbackRef = useRef(null);
   const [shouldMount, setShouldMount] = useState(false);
   const [bodyPickerOpen, setBodyPickerOpen] = useState(false);
+  const { uploadBlobAsMedia, importFromUrl } = useMediaMutations();
 
   const activate = useCallback(() => {
     setShouldMount(true);
@@ -114,6 +116,8 @@ export default function PostContentEditor({ value = "", onChange }) {
             value={value}
             onChange={onChange}
             onRequestInsertMedia={handleRequestInsertMedia}
+            uploadBlobAsMedia={uploadBlobAsMedia}
+            importFromUrl={importFromUrl}
           />
         </div>
       )}

@@ -1,6 +1,9 @@
 import sanitizeHtml from "sanitize-html";
 
-import { toCanonicalHostingerMediaUrl } from "@/shared/hostinger-media-url";
+import {
+  isHostingerMediaUrl,
+  toCanonicalHostingerMediaUrl,
+} from "@/shared/hostinger-media-url";
 
 const SAFE_STYLE_VALUE =
   /^(?!.*(?:url\s*\(|expression\s*\(|position|behavior)).+$/i;
@@ -67,21 +70,19 @@ function isAllowedIframeUrl(value) {
 function keepSupportedInlineImage(_tagName, attribs) {
   const src = attribs.src;
 
-  if (
-    typeof src === "string" &&
-    /^data:/i.test(src) &&
-    !/^data:image\/(?:png|jpeg|gif|webp);base64,[a-z0-9+/]+={0,2}$/i.test(
-      src,
-    )
-  ) {
+  // No data: URIs in published HTML — paste must upload to the media library.
+  if (typeof src !== "string" || !src || /^data:/i.test(src)) {
     delete attribs.src;
+    return { tagName: "img", attribs };
   }
 
-  // ADR 0003: flatten nested Hostinger paths + apply ?v= via shared helper
-  if (typeof attribs.src === "string") {
-    attribs.src = toCanonicalHostingerMediaUrl(attribs.src) || attribs.src;
+  // Only Hostinger media library URLs (ADR 0003 + no external hotlinks)
+  if (!isHostingerMediaUrl(src)) {
+    delete attribs.src;
+    return { tagName: "img", attribs };
   }
 
+  attribs.src = toCanonicalHostingerMediaUrl(src) || src;
   return { tagName: "img", attribs };
 }
 
@@ -163,7 +164,7 @@ const SANITIZE_OPTIONS = {
   allowedSchemes: ["http", "https", "mailto", "tel"],
   allowedSchemesByTag: {
     iframe: ["https"],
-    img: ["http", "https", "data"],
+    img: ["http", "https"],
     source: ["http", "https"],
     video: ["http", "https"],
   },

@@ -7,10 +7,12 @@ import {
   useCreateUploadSessionMutation,
   useFinalizeUploadMutation,
   useAbortUploadMutation,
+  useImportFromUrlMutation,
   useUpdateMediaMutation,
   useDeleteMediaMutation,
 } from "../api/media.api";
 import { uploadFileToHostinger } from "../lib/hostinger-direct-upload";
+import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 
 // ============================================
 // MEDIA MUTATIONS HOOK
@@ -21,6 +23,7 @@ export default function useMediaMutations() {
   const [createSession] = useCreateUploadSessionMutation();
   const [finalizeUpload] = useFinalizeUploadMutation();
   const [abortUpload] = useAbortUploadMutation();
+  const [importFromUrlMutation] = useImportFromUrlMutation();
   const [updateMediaMutation, updateState] = useUpdateMediaMutation();
   const [deleteMediaMutation, deleteState] = useDeleteMediaMutation();
 
@@ -81,6 +84,34 @@ export default function useMediaMutations() {
     abortRef.current?.abort();
   }
 
+  /**
+   * Upload a Blob/File (e.g. TinyMCE paste) and return a canonical CDN URL.
+   */
+  async function uploadBlobAsMedia(blob, filename = "paste.png") {
+    const file =
+      blob instanceof File
+        ? blob
+        : new File([blob], filename, {
+            type: blob.type || "image/png",
+          });
+    const result = await uploadMedia(file);
+    const url = result?.data?.url;
+    if (!url) {
+      throw new Error("Upload did not return a media URL");
+    }
+    return toCanonicalHostingerMediaUrl(url) || url;
+  }
+
+  async function importFromUrl(url) {
+    const media = await importFromUrlMutation({ url }).unwrap();
+    const canonical =
+      toCanonicalHostingerMediaUrl(media?.url) || media?.url;
+    if (!canonical) {
+      throw new Error("Import did not return a media URL");
+    }
+    return { ...media, url: canonical };
+  }
+
   async function updateMedia(id, data) {
     return updateMediaMutation({ id, data }).unwrap();
   }
@@ -91,6 +122,8 @@ export default function useMediaMutations() {
 
   return {
     uploadMedia,
+    uploadBlobAsMedia,
+    importFromUrl,
     cancelUpload,
     updateMedia,
     deleteMedia,

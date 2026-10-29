@@ -35,6 +35,11 @@ URLs. Nested requests against a flat disk 404 — media disappeared on the site.
    without a new ADR and a Hostinger disk-layout check.
 6. **Public post page layout:** title → author/date byline → HTML body only.
    Do **not** render `featured_image` as an article hero (cards + OG only).
+7. **No external image dependencies in post HTML:** pasted/local images and
+   remote image URLs must be uploaded into the Hostinger media library
+   (`images_upload_handler` + `POST /api/media/import-url`). Sanitize strips
+   `data:` and non-Hostinger `img` src. MediaPicker includes an Upload mode;
+   after upload the user confirms Select (no auto-apply).
 
 ## Consequences
 
@@ -56,6 +61,8 @@ URLs. Nested requests against a flat disk 404 — media disappeared on the site.
 - Duplicating Hostinger URL rewrite logic outside `src/shared/hostinger-media-url.js`.
 - Re-adding a featured-image hero on `BlogArticle` without an explicit product
   change (causes double images when the asset is also in post HTML).
+- Leaving third-party or `data:` image URLs in saved/published post HTML.
+- Auto-applying MediaPicker uploads without an explicit Select confirm.
 
 ## Required after any Hostinger hPanel / FTP change
 

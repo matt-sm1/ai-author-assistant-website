@@ -108,6 +108,16 @@ export const mediaApi = baseApi.injectEndpoints({
       }),
     }),
 
+    importFromUrl: builder.mutation({
+      query: (body) => ({
+        url: "/media/import-url",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response) => response.data,
+      invalidatesTags: [{ type: "Media", id: "LIST" }],
+    }),
+
     updateMedia: builder.mutation({
       query: ({ id, data }) => ({
         url: `/media/${id}`,
@@ -144,6 +154,7 @@ export const {
   useCreateUploadSessionMutation,
   useFinalizeUploadMutation,
   useAbortUploadMutation,
+  useImportFromUrlMutation,
   useUpdateMediaMutation,
   useDeleteMediaMutation,
 } = mediaApi;

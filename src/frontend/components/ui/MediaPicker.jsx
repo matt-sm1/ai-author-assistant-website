@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { toast } from "sonner";
 import MediaImage from "@/frontend/components/ui/MediaImage";
 
 import { Button } from "@/frontend/components/ui/Button";
@@ -13,33 +14,53 @@ import {
 } from "@/frontend/components/ui/Dialog";
 
 import useMedia from "@/frontend/feature/media/hooks/useMedia";
+import useMediaMutations from "@/frontend/feature/media/hooks/useMediaMutations";
+import MediaUpload from "@/frontend/feature/media/components/MediaUpload";
 import { EmptyState, FilterTabs } from "@/frontend/components/shared/ui-bits";
+import { cn } from "@/frontend/lib/utils";
+import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 
 import { Image as ImageIcon, RefreshCw, Video } from "lucide-react";
 
 const PAGE_SIZE = 10;
 const COLUMNS = 4;
 const ROW_HEIGHT = 160;
+const UPLOAD_MODE = "__upload__";
 
 const MEDIA_FILTERS = [
   { label: "All", value: "" },
   { label: "Images", value: "image" },
   { label: "Videos", value: "video" },
+  { label: "Upload", value: UPLOAD_MODE },
 ];
 
 const initialState = {
+  mode: "browse",
   resourceType: "",
   page: 1,
   loadedMedia: [],
+  pendingId: null,
 };
 
 function mediaPickerReducer(state, action) {
   switch (action.type) {
     case "filterChanged":
+      if (action.resourceType === UPLOAD_MODE) {
+        return {
+          ...state,
+          mode: "upload",
+          resourceType: "",
+          page: 1,
+          loadedMedia: [],
+          pendingId: null,
+        };
+      }
       return {
+        mode: "browse",
         resourceType: action.resourceType,
         page: 1,
         loadedMedia: [],
+        pendingId: null,
       };
     case "pageLoaded": {
       const items =
@@ -57,6 +78,16 @@ function mediaPickerReducer(state, action) {
     }
     case "loadMore":
       return { ...state, page: state.page + 1 };
+    case "setPending":
+      return { ...state, pendingId: action.pendingId };
+    case "afterUpload":
+      return {
+        mode: "browse",
+        resourceType: action.resourceType ?? "",
+        page: 1,
+        loadedMedia: [],
+        pendingId: action.pendingId,
+      };
     case "closed":
       return initialState;
     default:
@@ -64,7 +95,7 @@ function mediaPickerReducer(state, action) {
   }
 }
 
-function PickerVirtualGrid({ items, onSelect }) {
+function PickerVirtualGrid({ items, pendingId, onSelect }) {
   const parentRef = useRef(null);
   const [width, setWidth] = useState(640);
 
@@ -91,6 +122,15 @@ function PickerVirtualGrid({ items, onSelect }) {
   });
 
   const virtualRows = rowVirtualizer.getVirtualItems();
+
+  useEffect(() => {
+    if (!pendingId || !items.length) return;
+    const index = items.findIndex((item) => item.id === pendingId);
+    if (index < 0) return;
+    rowVirtualizer.scrollToIndex(Math.floor(index / columns), {
+      align: "start",
+    });
+  }, [pendingId, items, columns, rowVirtualizer]);
 
   return (
     <div ref={parentRef} className="max-h-[50vh] overflow-y-auto">
@@ -119,6 +159,7 @@ function PickerVirtualGrid({ items, onSelect }) {
                   Boolean(item.url);
                 const previewUrl = item.thumbnail_url || item.url;
                 const priority = virtualRow.index === 0 && colIndex < 2;
+                const isPending = item.id === pendingId;
 
                 return (
                   <button
@@ -126,12 +167,18 @@ function PickerVirtualGrid({ items, onSelect }) {
                     type="button"
                     onClick={() => onSelect(item)}
                     disabled={!canSelect}
+                    aria-pressed={isPending}
                     aria-label={
                       isVideo
                         ? `Select ${item.filename || "video"}`
                         : `Select ${item.alt_text || item.filename || "image"}`
                     }
-                    className="group relative overflow-hidden rounded-xl border transition hover:border-primary hover:ring-2 hover:ring-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-75"
+                    className={cn(
+                      "group relative overflow-hidden rounded-xl border transition hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-75",
+                      isPending
+                        ? "border-primary ring-2 ring-primary"
+                        : "hover:ring-2 hover:ring-primary",
+                    )}
                   >
                     {previewUrl ? (
                       <MediaImage
@@ -184,42 +231,69 @@ function PickerVirtualGrid({ items, onSelect }) {
   );
 }
 
+function getErrorMessage(error, fallback) {
+  return (
+    error?.data?.message ||
+    error?.error ||
+    error?.message ||
+    fallback
+  );
+}
+
 export default function MediaPicker({
   open,
   onOpenChange,
   onSelect = () => {},
 }) {
   const [state, dispatch] = useReducer(mediaPickerReducer, initialState);
-  const { resourceType, page, loadedMedia } = state;
+  const { mode, resourceType, page, loadedMedia, pendingId } = state;
+  const [uploadError, setUploadError] = useState("");
 
   const { media, pagination, isLoading, isFetching, error, refetch } = useMedia(
     {
       page,
       limit: PAGE_SIZE,
-      resourceType,
+      resourceType: mode === "browse" ? resourceType : "",
+      skip: !open || mode !== "browse",
     },
   );
 
+  const { uploadMedia, isUploading, uploadProgress } = useMediaMutations();
+
   useEffect(() => {
-    if (isFetching || error) return;
-
+    if (mode !== "browse" || isFetching || error) return;
     dispatch({ type: "pageLoaded", page, media });
-  }, [media, page, isFetching, error]);
+  }, [media, page, isFetching, error, mode]);
 
-  const hasMore = page < pagination.totalPages;
+  const hasMore = mode === "browse" && page < pagination.totalPages;
+  const pendingItem = useMemo(
+    () => loadedMedia.find((item) => item.id === pendingId) ?? null,
+    [loadedMedia, pendingId],
+  );
 
-  const handleSelect = (item) => {
+  const tabValue = mode === "upload" ? UPLOAD_MODE : resourceType;
+
+  const handlePendingClick = (item) => {
     if (!["image", "video"].includes(item?.resource_type) || !item?.url) {
       return;
     }
+    dispatch({ type: "setPending", pendingId: item.id });
+  };
+
+  const handleConfirmSelect = () => {
+    if (!pendingItem) return;
 
     onSelect({
-      id: item.id,
-      url: item.url,
-      resourceType: item.resource_type,
-      thumbnailUrl: item.thumbnail_url ?? "",
-      alt: item.alt_text ?? "",
-      filename: item.filename ?? "",
+      id: pendingItem.id,
+      url:
+        toCanonicalHostingerMediaUrl(pendingItem.url) || pendingItem.url,
+      resourceType: pendingItem.resource_type,
+      thumbnailUrl:
+        toCanonicalHostingerMediaUrl(pendingItem.thumbnail_url) ||
+        pendingItem.thumbnail_url ||
+        "",
+      alt: pendingItem.alt_text ?? "",
+      filename: pendingItem.filename ?? "",
     });
 
     onOpenChange(false);
@@ -229,14 +303,49 @@ export default function MediaPicker({
     onOpenChange(nextOpen);
 
     if (!nextOpen) {
+      setUploadError("");
       dispatch({ type: "closed" });
     }
   };
 
   const handleFilterChange = (nextType) => {
-    if (nextType === resourceType) return;
-
+    if (nextType === tabValue) return;
+    setUploadError("");
     dispatch({ type: "filterChanged", resourceType: nextType });
+  };
+
+  const handleUploadFile = async (file) => {
+    if (!file) {
+      setUploadError("Please choose a single file.");
+      return;
+    }
+
+    setUploadError("");
+    try {
+      const result = await uploadMedia(file);
+      const uploaded = result?.data;
+      if (!uploaded?.id) {
+        throw new Error("Upload succeeded without a media id");
+      }
+
+      toast.success("Media uploaded. Confirm Select to use it.");
+      dispatch({
+        type: "afterUpload",
+        pendingId: uploaded.id,
+        resourceType: "",
+      });
+      // Ensure list includes the new row even before RTK cache aligns
+      dispatch({
+        type: "pageLoaded",
+        page: 1,
+        media: [uploaded],
+      });
+      refetch();
+    } catch (err) {
+      const message = getErrorMessage(err, "Unable to upload media.");
+      setUploadError(message);
+      toast.error(message);
+    }
   };
 
   const gridItems = useMemo(() => loadedMedia, [loadedMedia]);
@@ -250,78 +359,127 @@ export default function MediaPicker({
 
         <div className="space-y-4">
           <FilterTabs
-            value={resourceType}
+            value={tabValue}
             onChange={handleFilterChange}
             options={MEDIA_FILTERS}
           />
 
-          {isLoading && loadedMedia.length === 0 && (
-            <p className="p-8 text-center text-sm text-muted-foreground">
-              Loading media...
-            </p>
+          {mode === "upload" && (
+            <MediaUpload
+              onFileSelect={handleUploadFile}
+              uploading={isUploading}
+              uploadProgress={uploadProgress}
+              error={uploadError}
+            />
           )}
 
-          {error && (
-            <div className="space-y-3 p-6 text-center">
-              <p className="text-sm text-destructive">{error}</p>
+          {mode === "browse" && (
+            <>
+              {isLoading && loadedMedia.length === 0 && (
+                <p className="p-8 text-center text-sm text-muted-foreground">
+                  Loading media...
+                </p>
+              )}
 
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => refetch()}
-              >
-                <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
-                Retry
-              </Button>
-            </div>
-          )}
+              {error && (
+                <div className="space-y-3 p-6 text-center">
+                  <p className="text-sm text-destructive">{error}</p>
 
-          {!error && loadedMedia.length > 0 && (
-            <PickerVirtualGrid items={gridItems} onSelect={handleSelect} />
-          )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => refetch()}
+                  >
+                    <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
+                    Retry
+                  </Button>
+                </div>
+              )}
 
-          {!isLoading &&
-            !isFetching &&
-            !error &&
-            loadedMedia.length === 0 && (
-              <EmptyState
-                icon={resourceType === "video" ? Video : ImageIcon}
-                title={`No ${
-                  resourceType === "video"
-                    ? "videos"
-                    : resourceType === "image"
-                      ? "images"
-                      : "media"
-                } found`}
-                text="Your media library doesn't contain any matching items."
-              />
-            )}
+              {!error && loadedMedia.length > 0 && (
+                <PickerVirtualGrid
+                  items={gridItems}
+                  pendingId={pendingId}
+                  onSelect={handlePendingClick}
+                />
+              )}
 
-          {isFetching && loadedMedia.length > 0 && (
-            <p className="py-3 text-center text-sm text-muted-foreground">
-              Loading...
-            </p>
-          )}
+              {!isLoading &&
+                !isFetching &&
+                !error &&
+                loadedMedia.length === 0 && (
+                  <EmptyState
+                    icon={resourceType === "video" ? Video : ImageIcon}
+                    title={`No ${
+                      resourceType === "video"
+                        ? "videos"
+                        : resourceType === "image"
+                          ? "images"
+                          : "media"
+                    } found`}
+                    text="Your media library doesn't contain any matching items."
+                  />
+                )}
 
-          {hasMore && (
-            <div className="flex justify-center">
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-lg"
-                disabled={isFetching}
-                onClick={() => dispatch({ type: "loadMore" })}
-              >
-                {isFetching ? "Loading..." : "Load More"}
-              </Button>
-            </div>
-          )}
+              {!isLoading &&
+                !error &&
+                loadedMedia.length === 0 && (
+                  <div className="flex justify-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handleFilterChange(UPLOAD_MODE)}
+                    >
+                      Upload media
+                    </Button>
+                  </div>
+                )}
 
-          {loadedMedia.length > 0 && (
-            <p className="text-center text-xs text-muted-foreground">
-              Showing {loadedMedia.length} of {pagination.total} media items
-            </p>
+              {isFetching && loadedMedia.length > 0 && (
+                <p className="py-3 text-center text-sm text-muted-foreground">
+                  Loading...
+                </p>
+              )}
+
+              {hasMore && (
+                <div className="flex justify-center">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-lg"
+                    disabled={isFetching}
+                    onClick={() => dispatch({ type: "loadMore" })}
+                  >
+                    {isFetching ? "Loading..." : "Load More"}
+                  </Button>
+                </div>
+              )}
+
+              {loadedMedia.length > 0 && (
+                <p className="text-center text-xs text-muted-foreground">
+                  Showing {loadedMedia.length} of {pagination.total} media
+                  items
+                </p>
+              )}
+
+              <div className="flex justify-end gap-2 border-t pt-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  disabled={!pendingItem}
+                  onClick={handleConfirmSelect}
+                >
+                  Select
+                </Button>
+              </div>
+            </>
           )}
         </div>
       </DialogContent>
