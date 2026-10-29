@@ -6,6 +6,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { PenLine } from "lucide-react";
 
 import { adminNavigation } from "@/frontend/lib/constants";
+import {
+  hardNavigateAdmin,
+  isAdminPostEditorPath,
+} from "@/frontend/lib/admin-nav";
 import AdminProfile from "./AdminProfile";
 import { cn } from "@/frontend/lib/utils";
 
@@ -16,6 +20,7 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const leaveEditorHard = isAdminPostEditorPath(pathname);
 
   const isActive = (href) =>
     href === "/admin"
@@ -52,10 +57,24 @@ export default function Sidebar({
             <Link
               key={item.href}
               href={item.href}
-              prefetch
-              onClick={onNavigate}
-              onPointerEnter={() => router.prefetch(item.href)}
-              onFocus={() => router.prefetch(item.href)}
+              prefetch={!leaveEditorHard}
+              onClick={(event) => {
+                onNavigate?.();
+                if (!leaveEditorHard) return;
+                // TinyMCE editor can leave App Router soft-nav stuck.
+                event.preventDefault();
+                hardNavigateAdmin(item.href);
+              }}
+              onNavigate={(event) => {
+                if (!leaveEditorHard) return;
+                event.preventDefault();
+              }}
+              onPointerEnter={() => {
+                if (!leaveEditorHard) router.prefetch(item.href);
+              }}
+              onFocus={() => {
+                if (!leaveEditorHard) router.prefetch(item.href);
+              }}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",

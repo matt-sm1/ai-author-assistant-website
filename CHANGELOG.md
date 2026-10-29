@@ -5,6 +5,11 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Post editor sidebar soft-nav hang
+- Repro on production: while on `/admin/post/new` or `/edit`, sidebar `Link` clicks focus but App Router never changes the URL (soft-nav no-op). Hard `location.assign` still works. Other admin pages soft-nav fine.
+- Leaving the TinyMCE editor now hard-navigates via `hardNavigateAdmin` (`src/frontend/lib/admin-nav.js`) from Sidebar `onNavigate`, Back link, logout, and successful save — so Media / Categories / etc. work again.
+- Constraint: do not rely on App Router soft-nav to leave the post editor until a TinyMCE-safe soft unmount is proven.
+
 ### Post editor navigation lock (real root cause)
 - Clearing only inline `pointer-events` was insufficient: `react-remove-scroll` can leave `block-interactivity-*` classes on `body`, and DismissableLayer can restore captured `none` after soft-nav. TinyMCE portals can also linger.
 - Status/Author use polished `ListboxSelect` (design-system look, keyboard listbox) — **not** native `<select>`, **not** Radix Select (Select@2.4 always body-locks).

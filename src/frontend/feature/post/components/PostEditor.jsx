@@ -18,6 +18,7 @@ import MediaPicker from "@/frontend/components/ui/MediaPicker";
 import PostSidebar from "@/frontend/feature/post/components/PostSidebar";
 import PostContentEditor from "@/frontend/feature/post/components/PostContentEditor";
 import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { hardNavigateAdmin } from "@/frontend/lib/admin-nav";
 import {
   clearUiBodyLock,
   dispatchCloseAdminOverlays,
@@ -336,12 +337,10 @@ function PostEditorForm({
 
       clearEditorDraft(draftKey);
       setMediaPickerOpen(false);
-      dispatchCloseAdminOverlays();
-      clearUiBodyLock({ force: true });
       succeeded = true;
       // Hard navigation tears down TinyMCE / Radix portals cleanly.
-      // Soft-nav left body pointer-events and scroll locks behind.
-      window.location.assign("/admin/post");
+      // Soft-nav from the editor leaves App Router / body locks stuck.
+      hardNavigateAdmin("/admin/post");
     } catch (error) {
       if (error?.name === "ValidationError") {
         const messages = [
@@ -372,7 +371,18 @@ function PostEditorForm({
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button asChild variant="ghost" size="icon" className="rounded-xl">
-            <Link href="/admin/post" aria-label="Back to posts">
+            <Link
+              href="/admin/post"
+              aria-label="Back to posts"
+              onClick={(event) => {
+                // Soft-nav from the TinyMCE editor can hang; hard leave.
+                event.preventDefault();
+                hardNavigateAdmin("/admin/post");
+              }}
+              onNavigate={(event) => {
+                event.preventDefault();
+              }}
+            >
               <ArrowLeft aria-hidden="true" className="h-5 w-5" />
             </Link>
           </Button>

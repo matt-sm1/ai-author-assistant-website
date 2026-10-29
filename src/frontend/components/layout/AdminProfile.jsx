@@ -1,7 +1,6 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
@@ -9,10 +8,9 @@ import {
   useGetCurrentUserQuery,
   useLogoutMutation,
 } from "@/frontend/feature/auth/api/auth.api";
+import { hardNavigateAdmin } from "@/frontend/lib/admin-nav";
 
 export default function AdminProfile({ onNavigate }) {
-  const router = useRouter();
-
   const {
     data: currentUser,
     isLoading,
@@ -41,8 +39,10 @@ export default function AdminProfile({ onNavigate }) {
       toast.success("Logged out successfully.");
 
       onNavigate?.();
-      router.replace("/admin/login");
-      router.refresh();
+      // Prefer hard leave so logout still works from the post editor
+      // (App Router soft-nav can hang while TinyMCE is mounted).
+      hardNavigateAdmin("/admin/login");
+      return;
     } catch (err) {
       toast.error(
         err?.data?.message || "Logout failed. Please try again."
