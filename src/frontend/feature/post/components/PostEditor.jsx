@@ -310,6 +310,12 @@ function PostEditorForm({
       );
 
       clearEditorDraft(draftKey);
+      setMediaPickerOpen(false);
+      if (typeof document !== "undefined") {
+        if (document.body.style.pointerEvents === "none") {
+          document.body.style.pointerEvents = "";
+        }
+      }
       router.push("/admin/post");
     } catch (error) {
       if (error?.name === "ValidationError") {
@@ -387,20 +393,22 @@ function PostEditorForm({
             {isEditMode ? "Update Schedule" : "Schedule"}
           </Button>
 
-          <Button
-            type="button"
-            className="rounded-xl"
-            onClick={() => handleSubmitPost("published")}
-            disabled={isSaving || isPostLoading}
-          >
-            {isSaving
-              ? isEditMode
-                ? "Updating..."
-                : "Saving..."
-              : isEditMode
-                ? "Update & Publish"
-                : "Publish"}
-          </Button>
+          {formData.status !== "scheduled" && (
+            <Button
+              type="button"
+              className="rounded-xl"
+              onClick={() => handleSubmitPost("published")}
+              disabled={isSaving || isPostLoading}
+            >
+              {isSaving
+                ? isEditMode
+                  ? "Updating..."
+                  : "Saving..."
+                : isEditMode
+                  ? "Update & Publish"
+                  : "Publish"}
+            </Button>
+          )}
         </div>
       </header>
 
@@ -480,20 +488,22 @@ function PostEditorForm({
           {isEditMode ? "Update Schedule" : "Schedule"}
         </Button>
 
-        <Button
-          type="button"
-          className="flex-1 rounded-xl"
-          onClick={() => handleSubmitPost("published")}
-          disabled={isSaving || isPostLoading}
-        >
-          {isSaving
-            ? isEditMode
-              ? "Updating..."
-              : "Saving..."
-            : isEditMode
-              ? "Update & Publish"
-              : "Publish"}
-        </Button>
+        {formData.status !== "scheduled" && (
+          <Button
+            type="button"
+            className="flex-1 rounded-xl"
+            onClick={() => handleSubmitPost("published")}
+            disabled={isSaving || isPostLoading}
+          >
+            {isSaving
+              ? isEditMode
+                ? "Updating..."
+                : "Saving..."
+              : isEditMode
+                ? "Update & Publish"
+                : "Publish"}
+          </Button>
+        )}
       </div>
 
       <MediaPicker

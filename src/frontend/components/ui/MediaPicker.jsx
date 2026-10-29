@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { toast } from "sonner";
 import MediaImage from "@/frontend/components/ui/MediaImage";
@@ -16,11 +17,19 @@ import {
 import useMedia from "@/frontend/feature/media/hooks/useMedia";
 import useMediaMutations from "@/frontend/feature/media/hooks/useMediaMutations";
 import MediaUpload from "@/frontend/feature/media/components/MediaUpload";
+import { mediaApi } from "@/frontend/feature/media/api/media.api";
 import { EmptyState, FilterTabs } from "@/frontend/components/shared/ui-bits";
 import { cn } from "@/frontend/lib/utils";
 import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
 
 import { Image as ImageIcon, RefreshCw, Video } from "lucide-react";
+
+function clearBodyPointerLock() {
+  if (typeof document === "undefined") return;
+  if (document.body.style.pointerEvents === "none") {
+    document.body.style.pointerEvents = "";
+  }
+}
 
 const PAGE_SIZE = 10;
 const COLUMNS = 4;
@@ -63,12 +72,23 @@ function mediaPickerReducer(state, action) {
         pendingId: null,
       };
     case "pageLoaded": {
-      const items =
+      let items =
         action.page === 1
-          ? action.media
-          : [...state.loadedMedia, ...action.media];
-      const uniqueItems = new Map();
+          ? [...(action.media ?? [])]
+          : [...state.loadedMedia, ...(action.media ?? [])];
 
+      // Keep a just-uploaded pending row visible if the refetch list lags
+      if (action.page === 1 && state.pendingId) {
+        const hasPending = items.some((item) => item.id === state.pendingId);
+        if (!hasPending) {
+          const previous = state.loadedMedia.find(
+            (item) => item.id === state.pendingId,
+          );
+          if (previous) items = [previous, ...items];
+        }
+      }
+
+      const uniqueItems = new Map();
       items.forEach((item) => {
         const key = item.id ?? item.url;
         if (key != null) uniqueItems.set(key, item);
@@ -80,14 +100,16 @@ function mediaPickerReducer(state, action) {
       return { ...state, page: state.page + 1 };
     case "setPending":
       return { ...state, pendingId: action.pendingId };
-    case "afterUpload":
+    case "afterUpload": {
+      const uploaded = action.media;
       return {
         mode: "browse",
         resourceType: action.resourceType ?? "",
         page: 1,
-        loadedMedia: [],
-        pendingId: action.pendingId,
+        loadedMedia: uploaded ? [uploaded] : [],
+        pendingId: action.pendingId ?? uploaded?.id ?? null,
       };
+    }
     case "closed":
       return initialState;
     default:
@@ -245,6 +267,7 @@ export default function MediaPicker({
   onOpenChange,
   onSelect = () => {},
 }) {
+  const reduxDispatch = useDispatch();
   const [state, dispatch] = useReducer(mediaPickerReducer, initialState);
   const { mode, resourceType, page, loadedMedia, pendingId } = state;
   const [uploadError, setUploadError] = useState("");
@@ -261,9 +284,27 @@ export default function MediaPicker({
   const { uploadMedia, isUploading, uploadProgress } = useMediaMutations();
 
   useEffect(() => {
-    if (mode !== "browse" || isFetching || error) return;
+    if (mode !== "browse" || isFetching || isLoading || error) return;
+    // Do not wipe a just-uploaded pending row with an empty first paint
+    if (
+      pendingId &&
+      page === 1 &&
+      (!Array.isArray(media) || media.length === 0) &&
+      loadedMedia.length > 0
+    ) {
+      return;
+    }
     dispatch({ type: "pageLoaded", page, media });
-  }, [media, page, isFetching, error, mode]);
+  }, [
+    media,
+    page,
+    isFetching,
+    isLoading,
+    error,
+    mode,
+    pendingId,
+    loadedMedia.length,
+  ]);
 
   const hasMore = mode === "browse" && page < pagination.totalPages;
   const pendingItem = useMemo(
@@ -305,6 +346,7 @@ export default function MediaPicker({
     if (!nextOpen) {
       setUploadError("");
       dispatch({ type: "closed" });
+      clearBodyPointerLock();
     }
   };
 
@@ -329,18 +371,24 @@ export default function MediaPicker({
       }
 
       toast.success("Media uploaded. Confirm Select to use it.");
+      // Keep uploaded row visible immediately; never refetch a skipped query (RTK #38)
       dispatch({
         type: "afterUpload",
         pendingId: uploaded.id,
         resourceType: "",
+        media: uploaded,
       });
-      // Ensure list includes the new row even before RTK cache aligns
-      dispatch({
-        type: "pageLoaded",
-        page: 1,
-        media: [uploaded],
-      });
-      refetch();
+      reduxDispatch(
+        mediaApi.endpoints.getMedia.initiate(
+          {
+            page: 1,
+            limit: PAGE_SIZE,
+            search: "",
+            resourceType: "",
+          },
+          { forceRefetch: true },
+        ),
+      );
     } catch (err) {
       const message = getErrorMessage(err, "Unable to upload media.");
       setUploadError(message);

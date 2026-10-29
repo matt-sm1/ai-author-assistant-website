@@ -77,21 +77,30 @@ export const mediaApi = baseApi.injectEndpoints({
           const { data: media } = await queryFulfilled;
           if (!media?.id) return;
 
-          // Instant grid paint for the default library query (page 1).
+          const prependMedia = (draft) => {
+            if (!draft?.media) return;
+            draft.media = [
+              media,
+              ...draft.media.filter((item) => item.id !== media.id),
+            ];
+            if (draft.pagination) {
+              draft.pagination.total = (draft.pagination.total ?? 0) + 1;
+            }
+          };
+
+          // MediaPicker uses limit 10; MediaView uses limit 20
+          dispatch(
+            mediaApi.util.updateQueryData(
+              "getMedia",
+              { page: 1, limit: 10, search: "", resourceType: "" },
+              prependMedia,
+            ),
+          );
           dispatch(
             mediaApi.util.updateQueryData(
               "getMedia",
               { page: 1, limit: 20, search: "", resourceType: "" },
-              (draft) => {
-                if (!draft?.media) return;
-                draft.media = [
-                  media,
-                  ...draft.media.filter((item) => item.id !== media.id),
-                ];
-                if (draft.pagination) {
-                  draft.pagination.total = (draft.pagination.total ?? 0) + 1;
-                }
-              },
+              prependMedia,
             ),
           );
         } catch {

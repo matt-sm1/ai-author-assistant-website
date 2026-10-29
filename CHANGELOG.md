@@ -5,6 +5,12 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### MediaPicker / schedule UX fixes
+- Fix RTK Query error #38 after picker upload: do not `refetch()` a skipped browse query; keep uploaded row in state and `initiate` getMedia safely.
+- Finalize optimistic cache updates both `limit: 10` (picker) and `limit: 20` (media page) keys.
+- Hide Publish when post status is `scheduled` (desktop + mobile actions).
+- Close MediaPicker and clear leftover `document.body` `pointer-events: none` before redirect after save/schedule (unstick sidebar).
+
 ### MediaPicker Upload + paste-to-library
 - `MediaPicker`: All / Images / Videos / **Upload** modes. Upload reuses `MediaUpload` + session finalize; on success returns to browse with the new item as `pendingSelect`; user must click **Select** to apply (featured or insert). Cancel leaves library unchanged for the post field.
 - TinyMCE: `automatic_uploads` + `images_upload_handler` uploads clipboard blobs to the media library. External `img` URLs are ingested via authenticated `POST /api/media/import-url` (SSRF-safe HTTPS fetch → Hostinger upload → finalize) so body HTML never hotlinks third parties.
