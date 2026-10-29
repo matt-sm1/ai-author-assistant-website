@@ -1,6 +1,16 @@
 /**
  * Strip CMS-only fields from a post row for public JSON / SSR.
+ *
+ * This is the canonical API boundary for Hostinger media URLs (ADR 0003).
+ * All Hostinger /media/ URLs are normalised here — flat canonical + ?v= —
+ * so every downstream consumer (SSR, OG meta, RSS, blog listing, post page)
+ * receives clean URLs without additional per-site transforms.
  */
+import {
+  toCanonicalHostingerMediaUrl,
+  rewriteHostingerMediaUrlsInHtml,
+} from "@/shared/hostinger-media-url";
+
 export function toPublicPost(post) {
   if (!post) return null;
 
@@ -8,9 +18,11 @@ export function toPublicPost(post) {
     id: post.id,
     title: post.title ?? "",
     slug: post.slug ?? "",
-    content: post.content ?? "",
+    // Rewrite nested /media/media/... → flat /media/... + ?v= in HTML body
+    content: rewriteHostingerMediaUrlsInHtml(post.content ?? ""),
     excerpt: post.excerpt ?? "",
-    featured_image: post.featured_image ?? null,
+    // Normalise featured image URL once so all consumers are correct
+    featured_image: toCanonicalHostingerMediaUrl(post.featured_image ?? null),
     published_at: post.published_at ?? null,
     seo_title: post.seo_title ?? null,
     meta_description: post.meta_description ?? null,

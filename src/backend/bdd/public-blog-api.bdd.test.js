@@ -93,7 +93,6 @@ describe("Feature: Public blog read API", () => {
         id: SAMPLE_ROW.id,
         title: SAMPLE_ROW.title,
         slug: SAMPLE_ROW.slug,
-        content: SAMPLE_ROW.content,
         excerpt: SAMPLE_ROW.excerpt,
         featured_image: SAMPLE_ROW.featured_image,
         seo_title: SAMPLE_ROW.seo_title,
@@ -103,6 +102,8 @@ describe("Feature: Public blog read API", () => {
         author: { name: "Maya Chen", avatarUrl: "/a.png" },
         tags: [{ id: "t1", name: "AI", slug: "ai" }],
       });
+      // Listing cards never include HTML body (toPublicPostList)
+      expect(post).not.toHaveProperty("content");
       expect(post).not.toHaveProperty("status");
       expect(post).not.toHaveProperty("author_id");
       expect(post).not.toHaveProperty("created_at");

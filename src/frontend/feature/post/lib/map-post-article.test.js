@@ -36,9 +36,10 @@ describe("map-post-article", () => {
       featured_image:
         "https://x.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
     });
-    expect(article.featured_image).toBe(
-      "https://x.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp?v=20261029",
+    expect(article.featured_image).toContain(
+      "/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
     );
+    expect(article.featured_image).not.toContain("/media/media/");
   });
 
   it("maps editor form into PostArticle shape without DB", () => {

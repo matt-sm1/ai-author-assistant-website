@@ -5,6 +5,16 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Durable Hostinger media boundary (ADR 0003 addendum)
+- Single policy module: `src/shared/hostinger-media-url.js`; frontend path is a thin re-export.
+- Cache-bust is env-gated: `NEXT_PUBLIC_HOSTINGER_MEDIA_URL_VERSION` (documented in `.env.example`); empty = no `?v=`.
+- API boundary: `toPublicPost` / `toPublicPostList` canonicalize `featured_image` and rewrite HTML `content` once so OG meta, listings, and SSR stay correct without per-leaf helpers.
+- `sanitize-post-html` uses `toCanonicalHostingerMediaUrl` (no hand-rolled `/media/media` regex).
+- `BlogArticle` renders featured hero via `MediaImage` when `featured_image` is set.
+- Ops: ADR Forbidden + post-change checklist; `npm run check:hostinger-media` (`scripts/check-hostinger-media.mjs`) HEADs CDN (uses `?v=` when version env is set) and fails on foreign 3xx redirects.
+- Deploy note: until Hostinger hCDN cached 301s are purged, `?v=20261029` is the default when `NEXT_PUBLIC_HOSTINGER_MEDIA_URL_VERSION` is unset (override with `""` after purge). Prefer setting the env explicitly on Vercel; already in local `.env.local`.
+- Tests: shared URL helpers, `to-public-post`, sanitize, storage-key no double-`/media/media/`.
+
 ### Hostinger media URLs — flat canonical (ADR 0003)
 - Root cause: after PHP wrote flat `public_html/media/YYYY/...`, Node still used `publicUrlForKey` = `${base}/media/${storageKey}` → `/media/media/...`, and the frontend nested flat URLs on display — nested requests 404 on flat disk.
 - Fix: `publicUrlForKey` → `${base}/${storageKey}`; `toCanonicalHostingerMediaUrl` + happy-path call sites flatten; `MediaImage` retries flat↔nested once; `.htaccess` serves both directions; ADR 0003 + tests lock flat as canonical. Nested is legacy fallback only — do not reintroduce happy-path `/media/media` without a new ADR.

@@ -35,3 +35,25 @@ URLs. Nested requests against a flat disk 404 — media disappeared on the site.
 - Old DB rows with nested URLs still work via flatten-on-display + fallback.
 - Tests assert flat URLs so CI cannot “green” a nested regression.
 - Operators should re-upload `hostinger-media-api/media/.htaccess` after deploy.
+- Shared policy module: `src/shared/hostinger-media-url.js` (frontend re-exports
+  via `src/frontend/lib/hostinger-media-url.js`). Normalize at `toPublicPost` /
+  `toPublicPostList` so every public surface gets canonical URLs once.
+
+## Forbidden
+
+- Root `public_html/.htaccess` catch-all redirect of `*.hostingersite.com` to any
+  other domain (e.g. `authoraiassistant.com/blogs`). Backup exists at
+  `.htaccess.bak-redirect-fix` — **do not restore it**.
+- Happy-path construction of `/media/media/...` in `publicUrlForKey` or UI helpers.
+- Duplicating Hostinger URL rewrite logic outside `src/shared/hostinger-media-url.js`.
+
+## Required after any Hostinger hPanel / FTP change
+
+1. `curl -sI $HOSTINGER_PUBLIC_BASE_URL/media/<any-existing-file>` must return
+   **200** with `Content-Type: image/*` (not 301/302 to a foreign host).
+2. Run: `npm run check:hostinger-media`
+3. If CDN still serves cached 301s (`Cache-Control: immutable` / year-long max-age):
+   - Set `NEXT_PUBLIC_HOSTINGER_MEDIA_URL_VERSION=YYYYMMDD` in Vercel (and local
+     `.env.local`), redeploy.
+   - Purge Hostinger hCDN cache in hPanel.
+   - After purge confirms 200 without `?v=`, clear the env var and redeploy.

@@ -39,4 +39,13 @@ describe("storage-key", () => {
       assertSafeStorageKey("media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.jpg\0"),
     ).toThrow();
   });
+
+  it("never produces /media/media/ double-path (ADR 0003)", () => {
+    const url = publicUrlForKey(
+      "https://cdn.example.com",
+      "media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
+    );
+    expect(url).not.toContain("/media/media/");
+    expect(url).toMatch(/\/media\/\d{4}\/\d{2}\//);
+  });
 });

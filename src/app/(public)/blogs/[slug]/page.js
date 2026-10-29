@@ -23,12 +23,14 @@ async function loadPublished(slug) {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = await loadPublished(slug);
+  const raw = await loadPublished(slug);
 
-  if (!post) {
+  if (!raw) {
     return { title: "Article not found | AuthorBot" };
   }
 
+  // Run through the API boundary so featured_image is canonicalized (ADR 0003)
+  const post = toPublicPost(raw);
   const title = post.seo_title || post.title || "Article";
   const description =
     post.meta_description || post.excerpt || "AuthorBot article";

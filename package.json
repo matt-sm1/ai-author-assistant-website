@@ -17,6 +17,7 @@
     "test:bdd": "vitest run src/backend/bdd",
     "test:e2e": "playwright test",
     "images:compress": "node scripts/compress-images.mjs",
+    "check:hostinger-media": "node --env-file=.env.local scripts/check-hostinger-media.mjs",
     "check": "npm run lint && npm test && npm run build"
   },
   "dependencies": {

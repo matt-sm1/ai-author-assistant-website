@@ -1,5 +1,7 @@
 import sanitizeHtml from "sanitize-html";
 
+import { toCanonicalHostingerMediaUrl } from "@/shared/hostinger-media-url";
+
 const SAFE_STYLE_VALUE =
   /^(?!.*(?:url\s*\(|expression\s*\(|position|behavior)).+$/i;
 
@@ -75,18 +77,9 @@ function keepSupportedInlineImage(_tagName, attribs) {
     delete attribs.src;
   }
 
-  // Flat Hostinger path (ADR 0003): /media/media/YYYY/... → /media/YYYY/...
-  if (typeof attribs.src === "string" && /^https?:\/\//i.test(attribs.src)) {
-    try {
-      const url = new URL(attribs.src);
-      const nested = url.pathname.match(/^\/media\/media\/(\d{4}\/\d{2}\/.+)$/);
-      if (nested) {
-        url.pathname = `/media/${nested[1]}`;
-        attribs.src = url.toString();
-      }
-    } catch {
-      /* keep original */
-    }
+  // ADR 0003: flatten nested Hostinger paths + apply ?v= via shared helper
+  if (typeof attribs.src === "string") {
+    attribs.src = toCanonicalHostingerMediaUrl(attribs.src) || attribs.src;
   }
 
   return { tagName: "img", attribs };
