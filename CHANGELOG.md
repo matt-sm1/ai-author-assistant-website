@@ -5,6 +5,12 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Admin UI unlock after schedule (Radix body lock)
+- Root cause: Radix Select/Dialog RemoveScroll can leave `pointer-events: none` / scroll-lock on `document.body` after choosing Scheduled (or closing MediaPicker) then soft-navigating — entire admin shell unclickable.
+- `Select` defaults to `modal={false}` so status/author dropdowns do not lock the document.
+- Shared `clearUiBodyLock` / `clearUiBodyLockSoon`; run on every `DashboardShell` pathname change, after MediaPicker close, and before post save/schedule redirect.
+- Dialog `onCloseAutoFocus` prevented by default to avoid focus/lock races on soft nav.
+
 ### MediaPicker / schedule UX fixes
 - Fix RTK Query error #38 after picker upload: do not `refetch()` a skipped browse query; keep uploaded row in state and `initiate` getMedia safely.
 - Finalize optimistic cache updates both `limit: 10` (picker) and `limit: 20` (media page) keys.

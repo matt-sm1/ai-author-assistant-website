@@ -18,6 +18,7 @@ import MediaPicker from "@/frontend/components/ui/MediaPicker";
 import PostSidebar from "@/frontend/feature/post/components/PostSidebar";
 import PostContentEditor from "@/frontend/feature/post/components/PostContentEditor";
 import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { clearUiBodyLockSoon } from "@/frontend/lib/clear-ui-body-lock";
 import { mapEditorFormToArticle } from "@/frontend/feature/post/lib/map-post-article";
 import { writePreviewDraft } from "@/frontend/feature/post/lib/preview-draft";
 import {
@@ -311,11 +312,7 @@ function PostEditorForm({
 
       clearEditorDraft(draftKey);
       setMediaPickerOpen(false);
-      if (typeof document !== "undefined") {
-        if (document.body.style.pointerEvents === "none") {
-          document.body.style.pointerEvents = "";
-        }
-      }
+      clearUiBodyLockSoon();
       router.push("/admin/post");
     } catch (error) {
       if (error?.name === "ValidationError") {

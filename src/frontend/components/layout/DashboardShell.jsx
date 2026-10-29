@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, startTransition } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
 import Sidebar from "./Sidebar";
@@ -14,6 +14,7 @@ import {
 } from "@/frontend/components/ui/Sheet";
 
 import { cn } from "@/frontend/lib/utils";
+import { clearUiBodyLockSoon } from "@/frontend/lib/clear-ui-body-lock";
 import { adminNavigation } from "@/frontend/lib/constants";
 import { baseApi } from "@/frontend/store/api/baseApi";
 // Ensure endpoints are injected before idle prefetch
@@ -39,7 +40,13 @@ export default function DashboardShell({
 }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useDispatch();
+
+  // Soft nav can unmount Dialog/Select mid-cleanup and leave body unclickable.
+  useEffect(() => {
+    clearUiBodyLockSoon();
+  }, [pathname]);
 
   useEffect(() => {
     for (const item of adminNavigation) {

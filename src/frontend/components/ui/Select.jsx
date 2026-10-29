@@ -7,7 +7,13 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { cn } from "@/frontend/lib/utils";
 
-const Select = SelectPrimitive.Root;
+/**
+ * modal=false avoids Radix RemoveScroll locking document.body pointer-events
+ * (common hang after picking Scheduled / Author / etc. then navigating).
+ */
+function Select({ modal = false, ...props }) {
+  return <SelectPrimitive.Root modal={modal} {...props} />;
+}
 const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 

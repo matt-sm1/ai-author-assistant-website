@@ -21,15 +21,9 @@ import { mediaApi } from "@/frontend/feature/media/api/media.api";
 import { EmptyState, FilterTabs } from "@/frontend/components/shared/ui-bits";
 import { cn } from "@/frontend/lib/utils";
 import { toCanonicalHostingerMediaUrl } from "@/frontend/lib/hostinger-media-url";
+import { clearUiBodyLockSoon } from "@/frontend/lib/clear-ui-body-lock";
 
 import { Image as ImageIcon, RefreshCw, Video } from "lucide-react";
-
-function clearBodyPointerLock() {
-  if (typeof document === "undefined") return;
-  if (document.body.style.pointerEvents === "none") {
-    document.body.style.pointerEvents = "";
-  }
-}
 
 const PAGE_SIZE = 10;
 const COLUMNS = 4;
@@ -346,7 +340,7 @@ export default function MediaPicker({
     if (!nextOpen) {
       setUploadError("");
       dispatch({ type: "closed" });
-      clearBodyPointerLock();
+      clearUiBodyLockSoon();
     }
   };
 
