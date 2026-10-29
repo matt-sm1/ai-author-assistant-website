@@ -9,6 +9,8 @@ Newest entries first. Agents must read this before implementing, and append afte
 - Root cause: after PHP wrote flat `public_html/media/YYYY/...`, Node still used `publicUrlForKey` = `${base}/media/${storageKey}` → `/media/media/...`, and the frontend nested flat URLs on display — nested requests 404 on flat disk.
 - Fix: `publicUrlForKey` → `${base}/${storageKey}`; `toCanonicalHostingerMediaUrl` + happy-path call sites flatten; `MediaImage` retries flat↔nested once; `.htaccess` serves both directions; ADR 0003 + tests lock flat as canonical. Nested is legacy fallback only — do not reintroduce happy-path `/media/media` without a new ADR.
 - Ops note: if `HOSTINGER_PUBLIC_BASE_URL` 301s `/media/*` to the marketing site, fix Hostinger redirects / domain mapping and re-upload `hostinger-media-api/media/.htaccess` — app flat URLs alone cannot serve files when the CDN redirects away.
+- Hostinger FTP (29 Oct): removed catch-all `public_html/.htaccess` rewrite that sent every `indigo-loris-*.hostingersite.com` request to `authoraiassistant.com/blogs` (backed up as `.htaccess.bak-redirect-fix`). Re-uploaded `media/.htaccess`. Disk still has legacy nested files under `media/media/YYYY/...`; flat URLs work via rewrite. Confirmed `/media/...` and `/media/media/...` return **200 image/png**.
+- Hostinger hCDN still served cached **301** for uncached-bust URLs (`max-age=31536000`). Display helper appends `?v=20261029` once so Next Image hits fresh origin; clear Hostinger cache in hPanel, then that query can be removed.
 
 ### Header height vs Figma Home
 - Marketing header `h-20` → `h-24` with matching `-mb-24` / mobile dimmer `top-24`; removed bottom border hairline.

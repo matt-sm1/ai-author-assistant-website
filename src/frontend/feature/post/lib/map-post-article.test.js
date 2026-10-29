@@ -37,7 +37,7 @@ describe("map-post-article", () => {
         "https://x.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
     });
     expect(article.featured_image).toBe(
-      "https://x.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
+      "https://x.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp?v=20261029",
     );
   });
 

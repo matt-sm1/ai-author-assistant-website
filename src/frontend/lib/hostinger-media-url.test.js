@@ -13,14 +13,16 @@ describe("toCanonicalHostingerMediaUrl", () => {
         "https://cdn.example.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
       ),
     ).toBe(
-      "https://cdn.example.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
+      "https://cdn.example.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp?v=20261029",
     );
   });
 
-  it("leaves flat URLs unchanged", () => {
+  it("keeps flat paths and adds one-time CDN cache bust", () => {
     const flat =
       "https://cdn.example.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp";
-    expect(toCanonicalHostingerMediaUrl(flat)).toBe(flat);
+    expect(toCanonicalHostingerMediaUrl(flat)).toBe(
+      `${flat}?v=20261029`,
+    );
   });
 });
 
@@ -31,11 +33,11 @@ describe("toNestedHostingerMediaUrl (legacy fallback)", () => {
         "https://cdn.example.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
       ),
     ).toBe(
-      "https://cdn.example.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp",
+      "https://cdn.example.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp?v=20261029",
     );
   });
 
-  it("leaves already-nested URLs unchanged", () => {
+  it("leaves already-nested path unchanged (no forced nest)", () => {
     const nested =
       "https://cdn.example.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp";
     expect(toNestedHostingerMediaUrl(nested)).toBe(nested);
@@ -48,8 +50,8 @@ describe("toAlternateHostingerMediaUrl", () => {
       "https://cdn.example.hostingersite.com/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp";
     const nested =
       "https://cdn.example.hostingersite.com/media/media/2026/10/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp";
-    expect(toAlternateHostingerMediaUrl(flat)).toBe(nested);
-    expect(toAlternateHostingerMediaUrl(nested)).toBe(flat);
+    expect(toAlternateHostingerMediaUrl(flat)).toBe(`${nested}?v=20261029`);
+    expect(toAlternateHostingerMediaUrl(nested)).toBe(`${flat}?v=20261029`);
   });
 });
 

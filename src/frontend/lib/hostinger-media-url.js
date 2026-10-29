@@ -13,6 +13,22 @@ const FLAT_MEDIA_PATH = /^\/media\/(\d{4}\/\d{2}\/.+)$/;
 const NESTED_MEDIA_PATH = /^\/media\/media\/(\d{4}\/\d{2}\/.+)$/;
 
 /**
+ * Hostinger hCDN cached a year-long 301 (site-wide redirect to /blogs).
+ * After removing that redirect via FTP, bust edge cache once so Next Image
+ * and browsers hit origin 200s. Safe to remove after a full Hostinger cache purge.
+ */
+const HOSTINGER_MEDIA_CACHE_BUST = "20261029";
+
+function applyHostingerCacheBust(url) {
+  if (!(url instanceof URL)) return url;
+  if (!url.pathname.startsWith("/media/")) return url;
+  if (!url.searchParams.has("v")) {
+    url.searchParams.set("v", HOSTINGER_MEDIA_CACHE_BUST);
+  }
+  return url;
+}
+
+/**
  * Canonical flat Hostinger URL: /media/media/YYYY/... → /media/YYYY/...
  * Idempotent for already-flat URLs.
  */
@@ -23,6 +39,13 @@ export function toCanonicalHostingerMediaUrl(src) {
     const nested = url.pathname.match(NESTED_MEDIA_PATH);
     if (nested) {
       url.pathname = `/media/${nested[1]}`;
+    }
+    if (
+      FLAT_MEDIA_PATH.test(url.pathname) ||
+      NESTED_MEDIA_PATH.test(url.pathname) ||
+      url.pathname.startsWith("/media/")
+    ) {
+      applyHostingerCacheBust(url);
       return url.toString();
     }
   } catch {
@@ -44,6 +67,7 @@ export function toNestedHostingerMediaUrl(src) {
       !url.pathname.startsWith("/media/media/")
     ) {
       url.pathname = `/media${url.pathname}`;
+      applyHostingerCacheBust(url);
       return url.toString();
     }
   } catch {
