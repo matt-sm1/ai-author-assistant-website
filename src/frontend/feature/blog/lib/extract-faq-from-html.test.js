@@ -108,6 +108,44 @@ describe("extractFaqFromHtml", () => {
     ]);
   });
 
+  it("extracts Question:/Answer: pairs under a paragraph FAQs title (Pattern E)", () => {
+    // Typical TinyMCE paste — "FAQs" is a <p>, not an <h2>
+    const html = `
+      <p>FAQs</p>
+      <p>Question: what is the name of this site?</p>
+      <p>Answer: Author ai assistant.</p>
+      <p>Hi guys.</p>
+    `;
+    expect(extractFaqFromHtml(html)).toEqual([
+      {
+        question: "what is the name of this site?",
+        answer: "Author ai assistant.",
+      },
+    ]);
+  });
+
+  it("extracts Q:/A: pairs under an FAQ heading", () => {
+    const html = `
+      <h2>FAQs</h2>
+      <p>Q: Is schema automatic?</p>
+      <p>A: Yes, from the post fields.</p>
+    `;
+    expect(extractFaqFromHtml(html)).toEqual([
+      {
+        question: "Is schema automatic?",
+        answer: "Yes, from the post fields.",
+      },
+    ]);
+  });
+
+  it("ignores Question:/Answer: outside an FAQ section", () => {
+    const html = `
+      <p>Question: orphan?</p>
+      <p>Answer: should not count.</p>
+    `;
+    expect(extractFaqFromHtml(html)).toEqual([]);
+  });
+
   it("fails soft on malformed markup", () => {
     expect(extractFaqFromHtml("<details><summary>Q</summary><p>A")).toEqual([]);
   });

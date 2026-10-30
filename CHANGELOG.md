@@ -9,6 +9,7 @@ Newest entries first. Agents must read this before implementing, and append afte
 - Post SEO sidebar shows a live read-only **Auto-generated schema** preview (`build-editor-json-ld-preview.js` → `buildPostJsonLd`) from form state; **Detected FAQs from article** lists `extractFaqFromHtml(content)`.
 - Manual JSON-LD is opt-in (**Add manual schema** / **Remove manual schema**); when open with content, preview shows the merged publish graph.
 - FAQ HTML extract extended: Pattern C (TinyMCE `<p><strong|b>…?</strong|b></p>` under an FAQ heading) and Pattern D (h2–h4 ending with `?` inside FAQ section). Still no bold scraping outside FAQ-titled sections.
+- Pattern E: `Question:`/`Answer:` (or `Q:`/`A:`) paragraph pairs; FAQ title may be a plain `<p>FAQs</p>` (not only h1–h6) — matches common TinyMCE paste.
 - Constraint: public emit contract unchanged (one `@graph`); CMS FAQ repeater remains optional overrides (CMS wins).
 
 ### Auto blog JSON-LD (BlogPosting + FAQ + manual)
