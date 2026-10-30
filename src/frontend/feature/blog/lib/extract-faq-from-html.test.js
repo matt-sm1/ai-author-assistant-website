@@ -52,6 +52,62 @@ describe("extractFaqFromHtml", () => {
     expect(extractFaqFromHtml("<p><strong>Q?</strong> A.</p>")).toEqual([]);
   });
 
+  it("ignores bold questions outside an FAQ section", () => {
+    const html = `
+      <h2>Introduction</h2>
+      <p><strong>What is this?</strong></p>
+      <p>Not an FAQ section answer.</p>
+    `;
+    expect(extractFaqFromHtml(html)).toEqual([]);
+  });
+
+  it("extracts TinyMCE bold questions under an FAQ heading (Pattern C)", () => {
+    const html = `
+      <h2>FAQ</h2>
+      <p><strong>What is AuthorBot?</strong></p>
+      <p>An AI writing assistant for authors.</p>
+      <p>It helps with drafts and SEO.</p>
+      <p><b>Is there a free plan?</b></p>
+      <p>Yes, there is a free tier.</p>
+      <h2>Conclusion</h2>
+      <p><strong>Ignored outside FAQ?</strong></p>
+      <p>Should not appear.</p>
+    `;
+    expect(extractFaqFromHtml(html)).toEqual([
+      {
+        question: "What is AuthorBot?",
+        answer: "An AI writing assistant for authors. It helps with drafts and SEO.",
+      },
+      {
+        question: "Is there a free plan?",
+        answer: "Yes, there is a free tier.",
+      },
+    ]);
+  });
+
+  it("extracts h2–h4 question headings ending with ? inside FAQ (Pattern D)", () => {
+    const html = `
+      <h1>FAQ</h1>
+      <h2>How do credits work?</h2>
+      <p>Credits are used per generation.</p>
+      <h2>Can I export?</h2>
+      <p>Yes, to Markdown and DOCX.</p>
+      <h1>Elsewhere</h1>
+      <h2>Random heading?</h2>
+      <p>Not under FAQ.</p>
+    `;
+    expect(extractFaqFromHtml(html)).toEqual([
+      {
+        question: "How do credits work?",
+        answer: "Credits are used per generation.",
+      },
+      {
+        question: "Can I export?",
+        answer: "Yes, to Markdown and DOCX.",
+      },
+    ]);
+  });
+
   it("fails soft on malformed markup", () => {
     expect(extractFaqFromHtml("<details><summary>Q</summary><p>A")).toEqual([]);
   });

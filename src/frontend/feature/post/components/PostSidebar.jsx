@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { Image as ImageIcon, X } from "lucide-react";
 import MediaImage from "@/frontend/components/ui/MediaImage";
 
@@ -15,6 +16,10 @@ import { Textarea } from "@/frontend/components/ui/Textarea";
 import ListboxSelect from "@/frontend/components/ui/ListboxSelect";
 import SelectableList from "@/frontend/components/ui/SelectableList";
 import { karachiDateTimeLocalMin } from "@/frontend/lib/format";
+import {
+  buildEditorJsonLdPreview,
+  getDetectedFaqsFromEditor,
+} from "@/frontend/feature/post/lib/build-editor-json-ld-preview";
 
 export default function PostSidebar({
   post = {},
@@ -26,6 +31,9 @@ export default function PostSidebar({
   onFieldChange,
 }) {
   const selectedTags = post.tags ?? [];
+  const [manualOpen, setManualOpen] = useState(
+    () => Boolean(String(post.schemaJsonLd ?? "").trim()),
+  );
 
   const { categories, isLoading, error } = useCategories({
     page: 1,
@@ -73,6 +81,37 @@ export default function PostSidebar({
 
   const metaDescription = post.metaDescription ?? "";
   const excerpt = post.excerpt ?? "";
+
+  const selectedAuthor =
+    authors.find((author) => author.id === post.authorId) || post.author || null;
+
+  const previewForm = useMemo(
+    () => ({
+      ...post,
+      author: selectedAuthor
+        ? {
+            name: selectedAuthor.name,
+            avatarUrl:
+              selectedAuthor.avatarUrl ?? selectedAuthor.avatar_url ?? null,
+          }
+        : null,
+    }),
+    [post, selectedAuthor],
+  );
+
+  const schemaPreview = useMemo(() => {
+    const includeManual = manualOpen && Boolean(String(post.schemaJsonLd ?? "").trim());
+    return buildEditorJsonLdPreview(previewForm, { includeManual });
+  }, [previewForm, manualOpen, post.schemaJsonLd]);
+
+  const detectedFaqs = useMemo(
+    () => getDetectedFaqsFromEditor(previewForm),
+    [previewForm],
+  );
+
+  const schemaPreviewText = schemaPreview
+    ? JSON.stringify(schemaPreview, null, 2)
+    : "Add a post title to generate schema.";
 
   return (
     <aside className="space-y-4">
@@ -326,10 +365,44 @@ export default function PostSidebar({
         </div>
 
         <div className="space-y-2">
-          <Label className="text-xs text-muted-foreground">FAQ schema</Label>
+          <Label className="text-xs text-muted-foreground">
+            Auto-generated schema
+          </Label>
           <p className="text-[11px] text-muted-foreground">
-            Also auto-detected from Details blocks or an FAQ heading in the
-            article.
+            Schema is generated automatically. Add manual JSON only for advanced
+            extras.
+          </p>
+          <pre className="max-h-64 overflow-auto rounded-lg border bg-muted/40 p-2 font-mono text-[10px] leading-snug whitespace-pre-wrap break-all">
+            {schemaPreviewText}
+          </pre>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-xs text-muted-foreground">
+            Detected FAQs from article
+          </Label>
+          {detectedFaqs.length === 0 ? (
+            <p className="text-[11px] text-muted-foreground">
+              None yet. Use an “FAQ” heading with bold questions ending in ?,
+              question headings, or Details/Summary blocks.
+            </p>
+          ) : (
+            <ul className="space-y-1.5 rounded-lg border p-2 text-[11px]">
+              {detectedFaqs.map((item, index) => (
+                <li key={`detected-faq-${index}`} className="text-muted-foreground">
+                  <span className="font-medium text-foreground">
+                    {item.question}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-xs text-muted-foreground">FAQ overrides (CMS)</Label>
+          <p className="text-[11px] text-muted-foreground">
+            Optional. Merged with article FAQs; CMS wins on the same question.
           </p>
           {(post.faqItems ?? []).map((item, index) => (
             <div
@@ -396,26 +469,54 @@ export default function PostSidebar({
           </Button>
         </div>
 
-        <div>
-          <Label
-            htmlFor="manual-json-ld"
-            className="text-xs text-muted-foreground"
-          >
-            Manual JSON-LD
-          </Label>
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            Advanced: extra schema.org JSON merged into the page graph.
-          </p>
-          <Textarea
-            id="manual-json-ld"
-            value={post.schemaJsonLd ?? ""}
-            onChange={(event) =>
-              onFieldChange?.("schemaJsonLd", event.target.value)
-            }
-            rows={6}
-            className="mt-1 rounded-lg font-mono text-xs"
-            placeholder='{"@type":"Thing","name":"Example"}'
-          />
+        <div className="space-y-2">
+          {!manualOpen ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="rounded-lg"
+              onClick={() => setManualOpen(true)}
+            >
+              Add manual schema
+            </Button>
+          ) : (
+            <>
+              <div className="flex items-center justify-between gap-2">
+                <Label
+                  htmlFor="manual-json-ld"
+                  className="text-xs text-muted-foreground"
+                >
+                  Manual JSON-LD
+                </Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 rounded-lg px-2"
+                  onClick={() => {
+                    onFieldChange?.("schemaJsonLd", "");
+                    setManualOpen(false);
+                  }}
+                >
+                  Remove manual schema
+                </Button>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Advanced: extra schema.org JSON merged into the page graph.
+              </p>
+              <Textarea
+                id="manual-json-ld"
+                value={post.schemaJsonLd ?? ""}
+                onChange={(event) =>
+                  onFieldChange?.("schemaJsonLd", event.target.value)
+                }
+                rows={6}
+                className="rounded-lg font-mono text-xs"
+                placeholder='{"@type":"Thing","name":"Example"}'
+              />
+            </>
+          )}
         </div>
 
         <div>
