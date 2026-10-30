@@ -45,21 +45,6 @@ export default function PostsView() {
   const limit = 10;
   const deferredSearch = useDeferredValue(search.trim());
 
-  // Read the localStorage unsaved draft whenever the Draft tab is active.
-  useEffect(() => {
-    if (statusFilter !== "draft") {
-      setLocalDraft(null);
-      return;
-    }
-    const key = editorDraftKey(null); // "cms:editor-draft-new"
-    const meta = readEditorDraftMeta(key);
-    if (meta && (meta.formData?.title?.trim() || meta.formData?.content?.trim())) {
-      setLocalDraft({ key, title: meta.formData.title || "", savedAt: meta.savedAt });
-    } else {
-      setLocalDraft(null);
-    }
-  }, [statusFilter]);
-
   function handleTabChange(value) {
     setStatusFilter(value);
     setPage(1);
@@ -76,6 +61,9 @@ export default function PostsView() {
       limit,
       search: deferredSearch,
       ...(statusFilter ? { status: statusFilter } : {}),
+      ...(statusFilter === "draft"
+        ? { sortBy: "updated_at", sortOrder: "desc" }
+        : {}),
     },
     {
       selectFromResult: (result) => ({
@@ -95,6 +83,25 @@ export default function PostsView() {
     },
   );
 
+  // Local buffer banner only for unbound -new drafts when Draft tab has no server rows.
+  useEffect(() => {
+    if (statusFilter !== "draft" || posts.length > 0) {
+      setLocalDraft(null);
+      return;
+    }
+    const key = editorDraftKey(null); // "cms:editor-draft-new"
+    const meta = readEditorDraftMeta(key);
+    if (meta && (meta.formData?.title?.trim() || meta.formData?.content?.trim())) {
+      setLocalDraft({
+        key,
+        title: meta.formData.title || "",
+        savedAt: meta.savedAt,
+      });
+    } else {
+      setLocalDraft(null);
+    }
+  }, [statusFilter, posts.length]);
+
   const { deletePost, isDeleting } = usePostMutations();
 
   function handleAdd() {
@@ -108,6 +115,7 @@ export default function PostsView() {
 
     try {
       await deletePost(del.id);
+      clearEditorDraft(editorDraftKey(del.id));
 
       if (page > 1 && posts.length === 1) {
         setPage(page - 1);

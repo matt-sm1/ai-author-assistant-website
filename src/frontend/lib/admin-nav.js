@@ -20,14 +20,22 @@ export function isAdminPostEditorPath(pathname = "") {
 /**
  * Tear down editor overlays and hard-navigate.
  * Use when leaving the post editor (or whenever soft-nav is known stuck).
+ *
+ * @param {string} href
+ * @param {{ teardownEditor?: boolean }} [options]
+ *   When `teardownEditor` is false, skip `tinymce.remove` so an aborted
+ *   navigation cannot leave the page with a dead editor. Default true
+ *   (sidebar / back still tear down before assign).
  */
-export function hardNavigateAdmin(href) {
+export function hardNavigateAdmin(href, { teardownEditor = true } = {}) {
   if (typeof window === "undefined" || !href) return;
 
-  try {
-    window.tinymce?.remove?.();
-  } catch {
-    // TinyMCE may already be torn down.
+  if (teardownEditor) {
+    try {
+      window.tinymce?.remove?.();
+    } catch {
+      // TinyMCE may already be torn down.
+    }
   }
 
   dispatchCloseAdminOverlays();

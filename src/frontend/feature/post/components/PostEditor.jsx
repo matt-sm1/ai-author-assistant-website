@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useGetPostByIdQuery } from "@/frontend/feature/post/api/posts.api";
+import {
+  useGetPostByIdQuery,
+  useGetPostsQuery,
+} from "@/frontend/feature/post/api/posts.api";
 import Link from "next/link";
 import { ArrowLeft, Eye } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +16,11 @@ import {
 } from "@/frontend/lib/format";
 import { Button } from "@/frontend/components/ui/Button";
 import { Input } from "@/frontend/components/ui/Input";
-import { Panel, StatusBadge } from "@/frontend/components/shared/ui-bits";
+import {
+  ConfirmDialog,
+  Panel,
+  StatusBadge,
+} from "@/frontend/components/shared/ui-bits";
 import MediaPicker from "@/frontend/components/ui/MediaPicker";
 import PostSidebar from "@/frontend/feature/post/components/PostSidebar";
 import PostContentEditor from "@/frontend/feature/post/components/PostContentEditor";
@@ -33,8 +40,17 @@ import {
   readEditorDraft,
   clearEditorDraft,
 } from "@/frontend/feature/post/lib/editor-draft";
+import {
+  LOCAL_AUTOSAVE_MS,
+  SUBMIT_RECOVERY_MS,
+  canResetDraft,
+  consumeFreshNewPost,
+  createEmptyPostForm,
+  markFreshNewPost,
+} from "@/frontend/feature/post/lib/draft-lifecycle";
 import { postSchema } from "@/frontend/feature/post/schema/post.schema";
 import usePostMutations from "@/frontend/feature/post/hooks/usePostMutations";
+import useDraftServerAutosave from "@/frontend/feature/post/hooks/useDraftServerAutosave";
 import useCategories from "@/frontend/feature/category/hooks/useCategories";
 import useAuthors from "@/frontend/feature/author/hooks/useAuthors";
 
@@ -48,20 +64,109 @@ function getErrorMessage(error, fallback) {
 }
 
 function getFeaturedMediaType(url) {
-  return /\/video\/upload\/|\.(?:mp4|m4v|mov|ogv|ogg|webm|m3u8)(?:[?#]|$)/i.test(url ?? "")
+  return /\/video\/upload\/|\.(?:mp4|m4v|mov|ogv|ogg|webm|m3u8)(?:[?#]|$)/i.test(
+    url ?? "",
+  )
     ? "video"
     : "image";
 }
 
+function formatSyncedAt(ts) {
+  if (!ts) return null;
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      timeStyle: "short",
+    }).format(new Date(ts));
+  } catch {
+    return null;
+  }
+}
+
+function formFromExistingPost(existingPost) {
+  if (!existingPost) return createEmptyPostForm();
+  return {
+    title: existingPost.title ?? "",
+    content: existingPost.content ?? "",
+    status: existingPost.status ?? "draft",
+    publishDate: toLocalDateTime(existingPost.published_at),
+    featuredImage:
+      toCanonicalHostingerMediaUrl(existingPost.featured_image ?? "") || "",
+    featuredMediaId: existingPost.featured_media_id ?? null,
+    featuredImageType: getFeaturedMediaType(existingPost.featured_image),
+    featuredImageThumbnail: "",
+    category: existingPost.category_id ?? "",
+    authorId: existingPost.author_id ?? "",
+    tags: existingPost.tags ?? [],
+    excerpt: existingPost.excerpt ?? "",
+    slug: existingPost.slug ?? "",
+    seoTitle: existingPost.seo_title ?? "",
+    metaDescription: existingPost.meta_description ?? "",
+  };
+}
 
 export default function PostEditor({ postId: providedPostId }) {
-
   const params = useParams();
   const postId = providedPostId ?? params?.id;
   const isEditMode = Boolean(postId);
-  
-
   const router = useRouter();
+
+  // Resume latest server draft on /new (unless Reset All marked fresh).
+  const [resumePhase, setResumePhase] = useState(isEditMode ? "done" : "check");
+
+  useEffect(() => {
+    if (isEditMode) {
+      setResumePhase("done");
+      return;
+    }
+    if (consumeFreshNewPost()) {
+      setResumePhase("done");
+      return;
+    }
+    setResumePhase("fetch");
+  }, [isEditMode]);
+
+  const {
+    data: latestDraftPage,
+    isLoading: isLatestLoading,
+    isFetching: isLatestFetching,
+    isSuccess: isLatestSuccess,
+    isError: isLatestError,
+  } = useGetPostsQuery(
+    {
+      page: 1,
+      limit: 1,
+      status: "draft",
+      sortBy: "updated_at",
+      sortOrder: "desc",
+    },
+    { skip: isEditMode || resumePhase !== "fetch" },
+  );
+
+  const latestDraftId = latestDraftPage?.posts?.[0]?.id ?? null;
+
+  useEffect(() => {
+    if (isEditMode || resumePhase !== "fetch") return;
+    if (isLatestLoading || isLatestFetching) return;
+    if (isLatestError) {
+      setResumePhase("done");
+      return;
+    }
+    if (!isLatestSuccess) return;
+    if (latestDraftId) {
+      router.replace(`/admin/post/${latestDraftId}/edit`);
+      return;
+    }
+    setResumePhase("done");
+  }, [
+    isEditMode,
+    resumePhase,
+    isLatestLoading,
+    isLatestFetching,
+    isLatestSuccess,
+    isLatestError,
+    latestDraftId,
+    router,
+  ]);
 
   const {
     data: existingPost,
@@ -70,6 +175,12 @@ export default function PostEditor({ postId: providedPostId }) {
   } = useGetPostByIdQuery(postId, {
     skip: !isEditMode,
   });
+
+  if (!isEditMode && resumePhase !== "done") {
+    return (
+      <div className="p-6 text-sm text-muted-foreground">Loading draft...</div>
+    );
+  }
 
   if (isEditMode && isPostLoading) {
     return (
@@ -95,7 +206,6 @@ export default function PostEditor({ postId: providedPostId }) {
       isEditMode={isEditMode}
       existingPost={existingPost}
       isPostLoading={isPostLoading}
-      router={router}
     />
   );
 }
@@ -105,72 +215,25 @@ function PostEditorForm({
   isEditMode,
   existingPost,
   isPostLoading,
-  router,
 }) {
-
-  const [formData, setFormData] = useState({
-    title: existingPost?.title ?? "",
-    content: existingPost?.content ?? "",
-    status: existingPost?.status ?? "draft",
-    publishDate: existingPost
-      ? toLocalDateTime(existingPost.published_at)
-      : "",
-    featuredImage: toCanonicalHostingerMediaUrl(existingPost?.featured_image ?? "") || "",
-    featuredMediaId: existingPost?.featured_media_id ?? null,
-    featuredImageType: getFeaturedMediaType(existingPost?.featured_image),
-    featuredImageThumbnail: "",
-    category: existingPost?.category_id ?? "",
-    authorId: existingPost?.author_id ?? "",
-    tags: existingPost?.tags ?? [],
-    excerpt: existingPost?.excerpt ?? "",
-    slug: existingPost?.slug ?? "",
-    seoTitle: existingPost?.seo_title ?? "",
-    metaDescription: existingPost?.meta_description ?? "",
-  });
-
-  // ── Autosave ─────────────────────────────────────────────────────────────
-  const draftKey = editorDraftKey(postId);
-  const initialFormRef = useRef(null); // snapshot of formData at mount (for dirty check)
-  const autosaveTimer = useRef(null);
-
-  // 1. Silent restore on mount — only if the draft has meaningful content.
-  useEffect(() => {
-    const saved = readEditorDraft(draftKey);
-    if (saved && (saved.title?.trim() || saved.content?.trim())) {
-      setFormData((prev) => ({ ...prev, ...saved }));
-    }
-    // Snapshot the form state after potential restore so dirty-check is accurate.
-    initialFormRef.current = JSON.stringify(saved && (saved.title?.trim() || saved.content?.trim()) ? { ...formData, ...saved } : formData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once on mount
-
-  // 2. Debounced autosave — write to localStorage 800 ms after the last change.
-  useEffect(() => {
-    clearTimeout(autosaveTimer.current);
-    autosaveTimer.current = setTimeout(() => {
-      writeEditorDraft(draftKey, formData);
-    }, 800);
-    return () => clearTimeout(autosaveTimer.current);
-  }, [formData, draftKey]);
-
-  // 3. beforeunload warning — fires only when there are unsaved changes.
-  useEffect(() => {
-    function handleBeforeUnload(event) {
-      if (initialFormRef.current !== JSON.stringify(formData)) {
-        event.preventDefault();
-        // Modern browsers ignore the custom message but still show a dialog.
-        event.returnValue = "";
-      }
-    }
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [formData]);
-  // ─────────────────────────────────────────────────────────────────────────
-
+  const [formData, setFormData] = useState(() =>
+    formFromExistingPost(existingPost),
+  );
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitAction, setSubmitAction] = useState(null);
+  const [editorRemountKey, setEditorRemountKey] = useState(0);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+
+  const draftKey = editorDraftKey(postId);
+  const autosaveTimer = useRef(null);
   const submitLock = useRef(createSubmitLock()).current;
-  const { createPost, updatePost, isCreating, isUpdating } = usePostMutations();
+  const recoveryTimer = useRef(null);
+  const mountedRef = useRef(true);
+
+  const { createPost, updatePost, deletePost, isCreating, isUpdating } =
+    usePostMutations();
   const { categories } = useCategories({ page: 1, limit: 100 });
   const { authors } = useAuthors({
     page: 1,
@@ -180,8 +243,61 @@ function PostEditorForm({
     activeOnly: true,
   });
 
-  const isSaving = isCreating || isUpdating || isSubmitting;
-  const actionsDisabled = isSaving || isPostLoading;
+  const isSaving = isSubmitting || isCreating || isUpdating;
+  const showReset = canResetDraft(formData.status, isEditMode);
+  const draftAutosaveEnabled =
+    formData.status === "draft" && !isSubmitting && !resetOpen && !isResetting;
+
+  const { syncStatus, syncedAt, isServerSyncing } = useDraftServerAutosave({
+    formData,
+    postId,
+    enabled: draftAutosaveEnabled,
+    busy: isSubmitting || isResetting || resetOpen,
+  });
+
+  // Block explicit submit while server autosave create/update is in flight
+  // so New Post cannot double-INSERT.
+  const actionsDisabled =
+    isSaving || isPostLoading || isResetting || isServerSyncing;
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      clearTimeout(recoveryTimer.current);
+    };
+  }, []);
+
+  // Silent local restore on mount — only if the draft has meaningful content.
+  useEffect(() => {
+    const saved = readEditorDraft(draftKey);
+    if (saved && (saved.title?.trim() || saved.content?.trim())) {
+      setFormData((prev) => ({ ...prev, ...saved }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Debounced local buffer (crash recovery).
+  useEffect(() => {
+    clearTimeout(autosaveTimer.current);
+    autosaveTimer.current = setTimeout(() => {
+      writeEditorDraft(draftKey, formData);
+    }, LOCAL_AUTOSAVE_MS);
+    return () => {
+      clearTimeout(autosaveTimer.current);
+      writeEditorDraft(draftKey, formData);
+    };
+  }, [formData, draftKey]);
+
+  // Default author for new / draft autosave.
+  useEffect(() => {
+    if (formData.authorId) return;
+    const first = authors?.[0];
+    if (!first?.id) return;
+    setFormData((previous) =>
+      previous.authorId ? previous : { ...previous, authorId: first.id },
+    );
+  }, [authors, formData.authorId]);
 
   // Editor hosts TinyMCE + MediaPicker dialogs — clear locks on enter/leave.
   useEffect(() => {
@@ -243,15 +359,27 @@ function PostEditorForm({
       window.open("/admin/post/preview", "_blank", "noopener,noreferrer");
     } catch (error) {
       if (error?.name === "QuotaExceededError") {
-        toast.error("Preview is too large to open. Shorten the content and try again.");
+        toast.error(
+          "Preview is too large to open. Shorten the content and try again.",
+        );
         return;
       }
       toast.error("Unable to open preview.");
     }
   };
 
+  const releaseBusyIfStillMounted = () => {
+    clearTimeout(recoveryTimer.current);
+    recoveryTimer.current = setTimeout(() => {
+      if (!mountedRef.current) return;
+      submitLock.release();
+      setIsSubmitting(false);
+      setSubmitAction(null);
+      setEditorRemountKey((key) => key + 1);
+    }, SUBMIT_RECOVERY_MS);
+  };
+
   const handleSubmitPost = async (requestedStatus = formData.status) => {
-    // Sync lock before any await — RTK isLoading flips too late for double-clicks.
     if (!submitLock.tryAcquire()) return;
 
     if (requestedStatus === "scheduled") {
@@ -269,6 +397,7 @@ function PostEditorForm({
       setFormData((previous) => ({ ...previous, status: "scheduled" }));
     }
 
+    setSubmitAction(requestedStatus);
     setIsSubmitting(true);
     let succeeded = false;
 
@@ -309,7 +438,6 @@ function PostEditorForm({
         stripUnknown: true,
       });
 
-      // Convert only after Yup confirms the date is valid.
       const dataToSubmit = {
         ...validatedData,
         publishedAt: validatedData.publishedAt
@@ -336,11 +464,12 @@ function PostEditorForm({
       );
 
       clearEditorDraft(draftKey);
+      if (postId) clearEditorDraft(editorDraftKey(null));
       setMediaPickerOpen(false);
       succeeded = true;
-      // Hard navigation tears down TinyMCE / Radix portals cleanly.
-      // Soft-nav from the editor leaves App Router / body locks stuck.
-      hardNavigateAdmin("/admin/post");
+      // No beforeunload; teardown + assign. Recovery clears Busy if still mounted.
+      hardNavigateAdmin("/admin/post", { teardownEditor: true });
+      releaseBusyIfStillMounted();
     } catch (error) {
       if (error?.name === "ValidationError") {
         const messages = [
@@ -357,14 +486,63 @@ function PostEditorForm({
 
       toast.error(getErrorMessage(error, "Unable to save the post."));
     } finally {
-      // Keep lock + disabled buttons through soft-nav so a second click
-      // cannot create slug-2 before the editor unmounts.
       if (!succeeded) {
         submitLock.release();
         setIsSubmitting(false);
+        setSubmitAction(null);
       }
     }
   };
+
+  const handleResetConfirm = async () => {
+    if (!showReset || actionsDisabled) return;
+    setIsResetting(true);
+    try {
+      if (isEditMode && postId && formData.status === "draft") {
+        await deletePost(postId);
+      }
+      clearEditorDraft(editorDraftKey(null));
+      if (postId) clearEditorDraft(editorDraftKey(postId));
+      markFreshNewPost();
+      setResetOpen(false);
+      toast.success("Draft cleared.");
+      // Hard leave TinyMCE; fresh flag skips resume of other drafts once.
+      hardNavigateAdmin("/admin/post/new", { teardownEditor: true });
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Unable to clear the draft."));
+      setIsResetting(false);
+    }
+  };
+
+  const saveLabel = () => {
+    if (isSaving) {
+      if (submitAction === "scheduled") return "Scheduling...";
+      if (submitAction === "published") return "Publishing...";
+      return isEditMode ? "Updating..." : "Saving...";
+    }
+    return isEditMode ? "Save Changes" : "Save Post";
+  };
+
+  const scheduleLabel = () => {
+    if (isSaving && submitAction === "scheduled") return "Scheduling...";
+    if (isSaving) return isEditMode ? "Updating..." : "Scheduling...";
+    return isEditMode ? "Update Schedule" : "Schedule";
+  };
+
+  const publishLabel = () => {
+    if (isSaving && submitAction === "published") return "Publishing...";
+    if (isSaving) return isEditMode ? "Updating..." : "Publishing...";
+    return isEditMode ? "Update & Publish" : "Publish";
+  };
+
+  const syncLabel =
+    syncStatus === "error"
+      ? "Draft not synced"
+      : syncStatus === "saving"
+        ? "Saving draft…"
+        : syncStatus === "saved" && syncedAt
+          ? `Draft saved · ${formatSyncedAt(syncedAt)}`
+          : null;
 
   return (
     <div className="mx-auto w-full max-w-screen-2xl">
@@ -375,9 +553,8 @@ function PostEditorForm({
               href="/admin/post"
               aria-label="Back to posts"
               onClick={(event) => {
-                // Soft-nav from the TinyMCE editor can hang; hard leave.
                 event.preventDefault();
-                hardNavigateAdmin("/admin/post");
+                hardNavigateAdmin("/admin/post", { teardownEditor: true });
               }}
               onNavigate={(event) => {
                 event.preventDefault();
@@ -391,19 +568,42 @@ function PostEditorForm({
             <h1 className="text-xl font-bold">
               {isEditMode ? "Edit Post" : "New Post"}
             </h1>
-            <div className="mt-1">
+            <div className="mt-1 flex flex-wrap items-center gap-2">
               <StatusBadge status={formData.status} />
+              {draftAutosaveEnabled && syncLabel && (
+                <span
+                  className={
+                    syncStatus === "error"
+                      ? "text-xs text-destructive"
+                      : "text-xs text-muted-foreground"
+                  }
+                >
+                  {syncLabel}
+                </span>
+              )}
             </div>
           </div>
         </div>
 
         <div className="hidden gap-2 sm:flex">
+          {showReset && (
+            <Button
+              type="button"
+              variant="ghost"
+              className="rounded-xl"
+              onClick={() => setResetOpen(true)}
+              disabled={actionsDisabled}
+            >
+              Reset All
+            </Button>
+          )}
+
           <Button
             type="button"
             variant="ghost"
             className="rounded-xl"
             onClick={handlePreview}
-            disabled={!canPreview}
+            disabled={!canPreview || isResetting}
           >
             <Eye aria-hidden="true" className="h-4 w-4" />
             Preview
@@ -416,13 +616,7 @@ function PostEditorForm({
             onClick={() => handleSubmitPost()}
             disabled={actionsDisabled}
           >
-            {isSaving
-              ? isEditMode
-                ? "Updating..."
-                : "Saving..."
-              : isEditMode
-                ? "Save Changes"
-                : "Save Post"}
+            {saveLabel()}
           </Button>
 
           <Button
@@ -432,13 +626,7 @@ function PostEditorForm({
             onClick={() => handleSubmitPost("scheduled")}
             disabled={actionsDisabled}
           >
-            {isSaving
-              ? isEditMode
-                ? "Updating..."
-                : "Scheduling..."
-              : isEditMode
-                ? "Update Schedule"
-                : "Schedule"}
+            {scheduleLabel()}
           </Button>
 
           {formData.status !== "scheduled" && (
@@ -448,13 +636,7 @@ function PostEditorForm({
               onClick={() => handleSubmitPost("published")}
               disabled={actionsDisabled}
             >
-              {isSaving
-                ? isEditMode
-                  ? "Updating..."
-                  : "Saving..."
-                : isEditMode
-                  ? "Update & Publish"
-                  : "Publish"}
+              {publishLabel()}
             </Button>
           )}
         </div>
@@ -477,6 +659,7 @@ function PostEditorForm({
 
             <div className="border-t px-4 py-4 sm:px-6">
               <PostContentEditor
+                key={editorRemountKey}
                 value={formData.content}
                 onChange={(value) => updateField("content", value)}
               />
@@ -510,6 +693,17 @@ function PostEditorForm({
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t bg-background/95 p-3 backdrop-blur sm:hidden">
+        {showReset && (
+          <Button
+            type="button"
+            variant="ghost"
+            className="rounded-xl px-3"
+            onClick={() => setResetOpen(true)}
+            disabled={actionsDisabled}
+          >
+            Reset
+          </Button>
+        )}
         <Button
           type="button"
           variant="outline"
@@ -517,13 +711,7 @@ function PostEditorForm({
           onClick={() => handleSubmitPost()}
           disabled={actionsDisabled}
         >
-          {isSaving
-            ? isEditMode
-              ? "Updating..."
-              : "Saving..."
-            : isEditMode
-              ? "Save Changes"
-              : "Save Post"}
+          {saveLabel()}
         </Button>
 
         <Button
@@ -533,13 +721,7 @@ function PostEditorForm({
           onClick={() => handleSubmitPost("scheduled")}
           disabled={actionsDisabled}
         >
-          {isSaving
-            ? isEditMode
-              ? "Updating..."
-              : "Scheduling..."
-            : isEditMode
-              ? "Update Schedule"
-              : "Schedule"}
+          {scheduleLabel()}
         </Button>
 
         {formData.status !== "scheduled" && (
@@ -549,13 +731,7 @@ function PostEditorForm({
             onClick={() => handleSubmitPost("published")}
             disabled={actionsDisabled}
           >
-            {isSaving
-              ? isEditMode
-                ? "Updating..."
-                : "Saving..."
-              : isEditMode
-                ? "Update & Publish"
-                : "Publish"}
+            {publishLabel()}
           </Button>
         )}
       </div>
@@ -574,6 +750,17 @@ function PostEditorForm({
               toCanonicalHostingerMediaUrl(thumbnailUrl) || thumbnailUrl,
           }));
         }}
+      />
+
+      <ConfirmDialog
+        open={resetOpen}
+        onOpenChange={(open) => {
+          if (!isResetting) setResetOpen(open);
+        }}
+        title="Clear this draft?"
+        description="All fields will be emptied and this draft will be removed from Drafts. This cannot be undone."
+        confirmLabel="Clear"
+        onConfirm={handleResetConfirm}
       />
     </div>
   );

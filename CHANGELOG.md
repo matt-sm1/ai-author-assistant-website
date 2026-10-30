@@ -5,6 +5,15 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Post editor draft lifecycle (leave / autosave / reset)
+- Removed post-editor `beforeunload` “Leave site?” dialog — local + server draft autosave is the source of truth.
+- Server draft upsert: `useDraftServerAutosave` (2s debounce) creates/updates `posts.status=draft`; localStorage remains an 800ms crash buffer (`editor-draft.js`).
+- `/admin/post/new` resumes the latest draft (`sortBy=updated_at`) then `replace`s to `/admin/post/:id/edit`; Reset All sets a one-shot fresh flag so a blank editor can open.
+- Reset All + confirm deletes the draft row (draft only), clears buffers, hard-navs to `/admin/post/new`.
+- Success leave: `hardNavigateAdmin(href, { teardownEditor })` + 1.5s Busy recovery remounts TinyMCE if navigation aborts; submit lock no longer sticks on “Saving…/Scheduling…”.
+- Drafts tab sorts by `updated_at`; local banner only when no server drafts; delete clears `cms:editor-draft-{id}`.
+- Seams: `draft-lifecycle.js`, `useDraftServerAutosave.js`, `PostEditor.jsx`, `PostsView.jsx`, `admin-nav.js`.
+
 ### Home pricing cards match reference scale
 - Cards capped (`312px` side / `340px` Growth) in a centered flex row with gaps — between full-column stretch and the too-narrow 268/300 pass.
 - Side tiers content-height; Growth taller via features + badge. Title, subtitle, Monthly/Annual labels; default Annual.
