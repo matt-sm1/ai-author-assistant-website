@@ -138,6 +138,27 @@ describe("extractFaqFromHtml", () => {
     ]);
   });
 
+  it("extracts mixed Question/Answer and Q/Ans labels", () => {
+    const html = `
+      <p>FAQs</p>
+      <p>Question: what is the name of this site?</p>
+      <p>Answer: Author ai assistant.</p>
+      <p>Q: can i test this for free?</p>
+      <p>Ans: yes you can test any package for free on free trial.</p>
+      <p>Hi guys.</p>
+    `;
+    expect(extractFaqFromHtml(html)).toEqual([
+      {
+        question: "what is the name of this site?",
+        answer: "Author ai assistant.",
+      },
+      {
+        question: "can i test this for free?",
+        answer: "yes you can test any package for free on free trial.",
+      },
+    ]);
+  });
+
   it("ignores Question:/Answer: outside an FAQ section", () => {
     const html = `
       <p>Question: orphan?</p>

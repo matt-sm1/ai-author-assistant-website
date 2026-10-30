@@ -384,8 +384,8 @@ export default function PostSidebar({
           {detectedFaqs.length === 0 ? (
             <p className="text-[11px] text-muted-foreground">
               None yet. Use an “FAQ” / “FAQs” title with Question:/Answer:
-              lines, bold questions ending in ?, question headings, or
-              Details/Summary blocks.
+              (or Q:/A:/Ans:) lines, bold questions ending in ?, question
+              headings, or Details/Summary blocks.
             </p>
           ) : (
             <ul className="space-y-1.5 rounded-lg border p-2 text-[11px]">

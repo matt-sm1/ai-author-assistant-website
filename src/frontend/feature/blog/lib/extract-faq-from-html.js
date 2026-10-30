@@ -2,7 +2,8 @@ import { stripHtmlToText, truncateSchemaAnswer } from "./strip-html-text";
 
 const FAQ_HEADING_RE = /^(faqs?|frequently\s+asked\s+questions?)$/i;
 const LABELED_QUESTION_RE = /^(?:questions?|q)\s*:\s*(.+)$/i;
-const LABELED_ANSWER_RE = /^(?:answers?|a)\s*:\s*(.+)$/i;
+// Answer / Answers / Ans / A (order matters: longer tokens before bare "a")
+const LABELED_ANSWER_RE = /^(?:answers?|ans|a)\s*:\s*(.+)$/i;
 const MAX_ITEMS = 20;
 
 function headingLevel(tag) {
@@ -218,9 +219,8 @@ function extractLabeledQuestions(sectionHtml, items) {
     const text = blocks[i].text;
 
     // Same paragraph: Question: … Answer: …
-    const sameLine = /^(?:questions?|q)\s*:\s*(.+?)\s+(?:answers?|a)\s*:\s*(.+)$/i.exec(
-      text,
-    );
+    const sameLine =
+      /^(?:questions?|q)\s*:\s*(.+?)\s+(?:answers?|ans|a)\s*:\s*(.+)$/i.exec(text);
     if (sameLine) {
       pushItem(items, sameLine[1], sameLine[2]);
       continue;
