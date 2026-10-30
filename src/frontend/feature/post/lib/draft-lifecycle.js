@@ -30,6 +30,8 @@ export function createEmptyPostForm(overrides = {}) {
     slug: "",
     seoTitle: "",
     metaDescription: "",
+    faqItems: [],
+    schemaJsonLd: "",
     ...overrides,
   };
 }
@@ -61,6 +63,10 @@ export function buildDraftAutosavePayload(formData) {
     ),
     seoTitle: formData.seoTitle || null,
     metaDescription: formData.metaDescription || null,
+    faqItems: Array.isArray(formData.faqItems) ? formData.faqItems : [],
+    schemaJsonLd: formData.schemaJsonLd?.trim()
+      ? formData.schemaJsonLd.trim()
+      : null,
   };
 }
 

@@ -95,4 +95,54 @@ export const postSchema = yup.object({
 
   seoTitle: nullableText(255),
   metaDescription: nullableText(160),
+
+  faqItems: yup
+    .array()
+    .of(
+      yup.object({
+        question: yup.string().trim().required(),
+        answer: yup.string().trim().required(),
+      }),
+    )
+    .max(20, "You can add a maximum of 20 FAQ items.")
+    .default([])
+    .transform((items) =>
+      (Array.isArray(items) ? items : [])
+        .map((item) => ({
+          question: String(item?.question ?? "").trim(),
+          answer: String(item?.answer ?? "")
+            .replace(/<[^>]*>/g, " ")
+            .replace(/\s+/g, " ")
+            .trim(),
+        }))
+        .filter((item) => item.question && item.answer)
+        .slice(0, 20),
+    ),
+
+  schemaJsonLd: yup
+    .string()
+    .nullable()
+    .transform((value) => {
+      if (value == null) return null;
+      const text = String(value).trim();
+      return text ? text : null;
+    })
+    .max(50000, "Manual schema cannot exceed 50000 characters.")
+    .test(
+      "valid-json-ld",
+      "Manual schema must be valid JSON.",
+      (value) => {
+        if (value == null || value === "") return true;
+        try {
+          const parsed = JSON.parse(value);
+          return (
+            parsed !== null &&
+            (Array.isArray(parsed) || typeof parsed === "object")
+          );
+        } catch {
+          return false;
+        }
+      },
+    )
+    .default(null),
 });

@@ -28,6 +28,8 @@ const UPDATE_COLUMNS = {
   authorId: "author_id",
   seoTitle: "seo_title",
   metaDescription: "meta_description",
+  faqItems: "faq_items",
+  schemaJsonLd: "schema_json_ld",
 };
 
 // ============================================
@@ -420,6 +422,8 @@ async create(data, db = this.db) {
     authorId,
     seoTitle = null,
     metaDescription = null,
+    faqItems = [],
+    schemaJsonLd = null,
   } = data;
 
   const result = await db.query(
@@ -436,11 +440,14 @@ async create(data, db = this.db) {
       category_id,
       author_id,
       seo_title,
-      meta_description
+      meta_description,
+      faq_items,
+      schema_json_ld
     )
     VALUES (
       $1, $2, $3, $4, $5, $6,
-      $7, $8, $9, $10, $11, $12
+      $7, $8, $9, $10, $11, $12,
+      $13::jsonb, $14
     )
     RETURNING *
     `,
@@ -457,6 +464,8 @@ async create(data, db = this.db) {
       authorId,
       seoTitle,
       metaDescription,
+      JSON.stringify(faqItems ?? []),
+      schemaJsonLd,
     ]
   );
 
@@ -483,9 +492,13 @@ async create(data, db = this.db) {
         continue;
       }
 
-      values.push(data[key]);
-
-      fields.push(`${column} = $${values.length}`);
+      if (key === "faqItems") {
+        values.push(JSON.stringify(data[key] ?? []));
+        fields.push(`${column} = $${values.length}::jsonb`);
+      } else {
+        values.push(data[key]);
+        fields.push(`${column} = $${values.length}`);
+      }
     }
 
     if (!fields.length) {

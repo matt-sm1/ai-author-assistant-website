@@ -325,6 +325,99 @@ export default function PostSidebar({
           </div>
         </div>
 
+        <div className="space-y-2">
+          <Label className="text-xs text-muted-foreground">FAQ schema</Label>
+          <p className="text-[11px] text-muted-foreground">
+            Also auto-detected from Details blocks or an FAQ heading in the
+            article.
+          </p>
+          {(post.faqItems ?? []).map((item, index) => (
+            <div
+              key={`faq-${index}`}
+              className="space-y-2 rounded-lg border p-2"
+            >
+              <Input
+                value={item.question ?? ""}
+                onChange={(event) => {
+                  const next = [...(post.faqItems ?? [])];
+                  next[index] = {
+                    ...next[index],
+                    question: event.target.value,
+                  };
+                  onFieldChange?.("faqItems", next);
+                }}
+                placeholder="Question"
+                className="rounded-lg"
+              />
+              <Textarea
+                value={item.answer ?? ""}
+                onChange={(event) => {
+                  const next = [...(post.faqItems ?? [])];
+                  next[index] = {
+                    ...next[index],
+                    answer: event.target.value,
+                  };
+                  onFieldChange?.("faqItems", next);
+                }}
+                placeholder="Answer"
+                rows={2}
+                className="rounded-lg"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-8 rounded-lg px-2"
+                onClick={() => {
+                  onFieldChange?.(
+                    "faqItems",
+                    (post.faqItems ?? []).filter((_, i) => i !== index),
+                  );
+                }}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="rounded-lg"
+            disabled={(post.faqItems ?? []).length >= 20}
+            onClick={() => {
+              onFieldChange?.("faqItems", [
+                ...(post.faqItems ?? []),
+                { question: "", answer: "" },
+              ]);
+            }}
+          >
+            Add FAQ
+          </Button>
+        </div>
+
+        <div>
+          <Label
+            htmlFor="manual-json-ld"
+            className="text-xs text-muted-foreground"
+          >
+            Manual JSON-LD
+          </Label>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Advanced: extra schema.org JSON merged into the page graph.
+          </p>
+          <Textarea
+            id="manual-json-ld"
+            value={post.schemaJsonLd ?? ""}
+            onChange={(event) =>
+              onFieldChange?.("schemaJsonLd", event.target.value)
+            }
+            rows={6}
+            className="mt-1 rounded-lg font-mono text-xs"
+            placeholder='{"@type":"Thing","name":"Example"}'
+          />
+        </div>
+
         <div>
           <Label htmlFor="post-slug" className="text-xs text-muted-foreground">
             URL slug

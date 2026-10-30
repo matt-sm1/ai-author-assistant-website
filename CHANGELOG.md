@@ -5,6 +5,13 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Auto blog JSON-LD (BlogPosting + FAQ + manual)
+- Public `/blogs/[slug]` emits one schema.org `@graph`: auto **BlogPosting** + **BreadcrumbList**, optional **FAQPage**, optional manual nodes.
+- FAQ sources: CMS `faq_items` (SEO sidebar repeater) merged with HTML extract (`<details>/<summary>` or FAQ heading section); CMS wins duplicates.
+- Manual JSON-LD textarea (`schema_json_ld`) appends validated JSON into the graph (does not replace auto nodes).
+- Migration `012_post_schema_fields.sql`; `toPublicPost` exposes `updated_at`, `faq_items`, `schema_json_ld`.
+- Seams: `build-post-json-ld.js`, `extract-faq-from-html.js`, `JsonLdScript.jsx`, PostSidebar SEO panel.
+
 ### Vitest JSX runtime for marketing components
 - Set `jsxRuntime: "automatic"` / `esbuild.jsx: "automatic"` in `vitest.config.mjs` and `jsx: "react-jsx"` in `jsconfig.json` so marketing `.jsx` (no React import) matches Next’s transform — fixes Header/Button/Heading/Faq/SectionInfo tests (`React is not defined`).
 

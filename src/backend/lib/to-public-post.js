@@ -24,6 +24,7 @@ export function toPublicPost(post) {
     // Normalise featured image URL once so all consumers are correct
     featured_image: toCanonicalHostingerMediaUrl(post.featured_image ?? null),
     published_at: post.published_at ?? null,
+    updated_at: post.updated_at ?? null,
     seo_title: post.seo_title ?? null,
     meta_description: post.meta_description ?? null,
     category_name: post.category_name ?? null,
@@ -41,7 +42,31 @@ export function toPublicPost(post) {
           slug: tag.slug,
         }))
       : [],
+    faq_items: normalizePublicFaqItems(post.faq_items),
+    schema_json_ld:
+      typeof post.schema_json_ld === "string" && post.schema_json_ld.trim()
+        ? post.schema_json_ld
+        : null,
   };
+}
+
+function normalizePublicFaqItems(raw) {
+  let items = raw;
+  if (typeof items === "string") {
+    try {
+      items = JSON.parse(items);
+    } catch {
+      return [];
+    }
+  }
+  if (!Array.isArray(items)) return [];
+  return items
+    .map((item) => ({
+      question: String(item?.question ?? "").trim(),
+      answer: String(item?.answer ?? "").trim(),
+    }))
+    .filter((item) => item.question && item.answer)
+    .slice(0, 20);
 }
 
 /** Listing cards — never include HTML body. */

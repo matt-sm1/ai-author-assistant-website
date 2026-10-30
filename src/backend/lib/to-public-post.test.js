@@ -19,8 +19,24 @@ describe("toPublicPost", () => {
     expect(result.content).toBe("");
     expect(result.excerpt).toBe("");
     expect(result.featured_image).toBeNull();
+    expect(result.updated_at).toBeNull();
+    expect(result.faq_items).toEqual([]);
+    expect(result.schema_json_ld).toBeNull();
     expect(result.author).toEqual({ name: "A", avatarUrl: "/x.png" });
     expect(result.tags).toEqual([]);
+  });
+
+  it("exposes updated_at, faq_items, and schema_json_ld", () => {
+    const result = toPublicPost({
+      id: "1",
+      updated_at: "2026-10-31T00:00:00.000Z",
+      faq_items: [{ question: " Q? ", answer: " A ", extra: 1 }],
+      schema_json_ld: ' {"@type":"Thing"} ',
+    });
+
+    expect(result.updated_at).toBe("2026-10-31T00:00:00.000Z");
+    expect(result.faq_items).toEqual([{ question: "Q?", answer: "A" }]);
+    expect(result.schema_json_ld).toBe(' {"@type":"Thing"} ');
   });
 
   it("keeps only safe tag fields", () => {

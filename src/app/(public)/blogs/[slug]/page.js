@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation";
 import BlogArticle from "@/frontend/feature/blog/components/BlogArticle";
+import JsonLdScript from "@/frontend/feature/blog/components/JsonLdScript";
+import { buildPostJsonLd } from "@/frontend/feature/blog/lib/build-post-json-ld";
 import { createPostService } from "@/backend/factories/post.factory";
 import { toPublicPost } from "@/backend/lib/to-public-post";
 import { mapDbPostToArticle } from "@/frontend/feature/post/lib/map-post-article";
 import {
+  getMarketingSiteUrl,
   getPublicSiteUrl,
   publicPostUrl,
 } from "@/frontend/feature/blog/lib/site-urls";
@@ -59,6 +62,22 @@ export default async function PublicPostPage({ params }) {
     notFound();
   }
 
-  const article = mapDbPostToArticle(toPublicPost(post));
-  return <BlogArticle post={article} />;
+  const publicPost = toPublicPost(post);
+  const article = mapDbPostToArticle(publicPost);
+  const marketingSiteUrl = getMarketingSiteUrl();
+  const siteUrl = getPublicSiteUrl();
+  const postUrl = publicPostUrl(publicPost.slug);
+  const jsonLd = buildPostJsonLd(publicPost, {
+    postUrl,
+    marketingSiteUrl,
+    siteUrl,
+    publisherLogoUrl: `${marketingSiteUrl}/images/brand/logo.webp`,
+  });
+
+  return (
+    <>
+      <JsonLdScript data={jsonLd} />
+      <BlogArticle post={article} />
+    </>
+  );
 }

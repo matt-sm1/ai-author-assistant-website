@@ -101,6 +101,13 @@ function formFromExistingPost(existingPost) {
     slug: existingPost.slug ?? "",
     seoTitle: existingPost.seo_title ?? "",
     metaDescription: existingPost.meta_description ?? "",
+    faqItems: Array.isArray(existingPost.faq_items)
+      ? existingPost.faq_items.map((item) => ({
+          question: item?.question ?? "",
+          answer: item?.answer ?? "",
+        }))
+      : [],
+    schemaJsonLd: existingPost.schema_json_ld ?? "",
   };
 }
 
@@ -431,6 +438,10 @@ function PostEditorForm({
         tags: formData.tags.map((tag) => tag.name),
         seoTitle: formData.seoTitle || null,
         metaDescription: formData.metaDescription || null,
+        faqItems: Array.isArray(formData.faqItems) ? formData.faqItems : [],
+        schemaJsonLd: formData.schemaJsonLd?.trim()
+          ? formData.schemaJsonLd.trim()
+          : null,
       };
 
       const validatedData = await postSchema.validate(payload, {

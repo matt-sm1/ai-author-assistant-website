@@ -44,6 +44,58 @@ const tagsSchema = yup
   .max(30, "Maximum 30 tags allowed")
   .default([]);
 
+const faqItemsSchema = yup
+  .array()
+  .of(
+    yup
+      .object({
+        question: yup.string().trim().required(),
+        answer: yup.string().trim().required(),
+      })
+      .required(),
+  )
+  .max(20, "Maximum 20 FAQ items allowed")
+  .default([])
+  .transform((items) =>
+    (Array.isArray(items) ? items : [])
+      .map((item) => ({
+        question: String(item?.question ?? "").trim(),
+        answer: String(item?.answer ?? "")
+          .replace(/<[^>]*>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim(),
+      }))
+      .filter((item) => item.question && item.answer)
+      .slice(0, 20),
+  );
+
+const schemaJsonLdSchema = yup
+  .string()
+  .nullable()
+  .transform((value) => {
+    if (value == null) return null;
+    const text = String(value).trim();
+    return text ? text : null;
+  })
+  .max(50000, "Manual schema cannot exceed 50000 characters")
+  .test(
+    "valid-json-ld",
+    "Manual schema must be valid JSON.",
+    (value) => {
+      if (value == null || value === "") return true;
+      try {
+        const parsed = JSON.parse(value);
+        return (
+          parsed !== null &&
+          (Array.isArray(parsed) || typeof parsed === "object")
+        );
+      } catch {
+        return false;
+      }
+    },
+  )
+  .default(null);
+
 // ============================================
 // CREATE POST SCHEMA
 // ============================================
@@ -111,6 +163,10 @@ const createPostSchema = yup
     seoTitle: nullableText(255),
 
     metaDescription: nullableText(160),
+
+    faqItems: faqItemsSchema,
+
+    schemaJsonLd: schemaJsonLdSchema,
   })
   .required();
 
