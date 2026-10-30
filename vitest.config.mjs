@@ -6,7 +6,10 @@ import react from "@vitejs/plugin-react";
 const root = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react({ jsxRuntime: "automatic" })],
+  esbuild: {
+    jsx: "automatic",
+  },
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest.setup.jsx"],

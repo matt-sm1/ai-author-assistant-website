@@ -5,6 +5,9 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Vitest JSX runtime for marketing components
+- Set `jsxRuntime: "automatic"` / `esbuild.jsx: "automatic"` in `vitest.config.mjs` and `jsx: "react-jsx"` in `jsconfig.json` so marketing `.jsx` (no React import) matches Next’s transform — fixes Header/Button/Heading/Faq/SectionInfo tests (`React is not defined`).
+
 ### Post editor draft lifecycle (leave / autosave / reset)
 - Removed post-editor `beforeunload` “Leave site?” dialog — local + server draft autosave is the source of truth.
 - Server draft upsert: `useDraftServerAutosave` (2s debounce) creates/updates `posts.status=draft`; localStorage remains an 800ms crash buffer (`editor-draft.js`).
