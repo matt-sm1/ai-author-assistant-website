@@ -4,6 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import {
+  TbAddressBook,
+  TbBook,
+  TbChartLine,
+  TbHeadset,
+  TbInbox,
+  TbLayoutGrid,
+  TbMessageCircle,
+  TbRobot,
+  TbUsers,
+} from "react-icons/tb";
 import { brandLogo } from "@/content/media";
 import { Button } from "@/components/ui";
 import NavDropdown from "@/components/Header/NavDropdown";
@@ -16,14 +27,14 @@ const links = [
     label: "Features",
     href: "/features",
     children: [
-      { label: "Features overview", href: "/features" },
-      { label: "Widget Feature", href: "/features/widget" },
-      { label: "Dedicated Support Feature", href: "/features/support" },
-      { label: "Analytics Feature", href: "/features/analytics-feature" },
-      { label: "Omnichannel Inbox Feature", href: "/features/omnichannel-inbox-feature" },
-      { label: "CRM Feature", href: "/features/crm-feature" },
-      { label: "Upload Book Feature", href: "/features/upload-book-feature" },
-      { label: "AI Chat Bot Feature", href: "/features/ai-chat-bot-feature" },
+      { label: "Overview", href: "/features", icon: TbLayoutGrid },
+      { label: "Widget", href: "/features/widget", icon: TbMessageCircle },
+      { label: "Dedicated Support", href: "/features/support", icon: TbHeadset },
+      { label: "Analytics", href: "/features/analytics-feature", icon: TbChartLine },
+      { label: "Omnichannel Inbox", href: "/features/omnichannel-inbox-feature", icon: TbInbox },
+      { label: "CRM", href: "/features/crm-feature", icon: TbAddressBook },
+      { label: "Upload Book", href: "/features/upload-book-feature", icon: TbBook },
+      { label: "AI Chat Bot", href: "/features/ai-chat-bot-feature", icon: TbRobot },
     ],
   },
   { label: "Blogs", href: "/blogs" },
@@ -122,7 +133,7 @@ export default function Header() {
         </div>
 
         <nav
-          className="hidden items-center justify-center gap-8 sm:flex"
+          className="hidden h-full items-center justify-center gap-8 sm:flex"
           aria-label="Main navigation"
         >
           {links.map(({ label, href, children }) =>

@@ -76,10 +76,10 @@ describe("Features dropdown", () => {
     await user.click(trigger);
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     expect(
-      within(desktopNav).getByRole("link", { name: "Widget Feature" })
+      within(desktopNav).getByRole("link", { name: "Widget" })
     ).toHaveAttribute("href", "/features/widget");
     expect(
-      within(desktopNav).getByRole("link", { name: "Features overview" })
+      within(desktopNav).getByRole("link", { name: "Overview" })
     ).toHaveAttribute("href", "/features");
   });
 
@@ -91,7 +91,7 @@ describe("Features dropdown", () => {
     await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
 
     expect(
-      within(desktopNav).getByRole("link", { name: "Analytics Feature" })
+      within(desktopNav).getByRole("link", { name: "Analytics" })
     ).toHaveAttribute("href", "/features/analytics-feature");
   });
 
@@ -103,7 +103,7 @@ describe("Features dropdown", () => {
     await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
 
     expect(
-      within(desktopNav).getByRole("link", { name: "Omnichannel Inbox Feature" })
+      within(desktopNav).getByRole("link", { name: "Omnichannel Inbox" })
     ).toHaveAttribute("href", "/features/omnichannel-inbox-feature");
   });
 
@@ -115,7 +115,7 @@ describe("Features dropdown", () => {
     await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
 
     expect(
-      within(desktopNav).getByRole("link", { name: "CRM Feature" })
+      within(desktopNav).getByRole("link", { name: "CRM" })
     ).toHaveAttribute("href", "/features/crm-feature");
   });
 
@@ -127,7 +127,7 @@ describe("Features dropdown", () => {
     await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
 
     expect(
-      within(desktopNav).getByRole("link", { name: "Upload Book Feature" })
+      within(desktopNav).getByRole("link", { name: "Upload Book" })
     ).toHaveAttribute("href", "/features/upload-book-feature");
   });
 
@@ -139,7 +139,7 @@ describe("Features dropdown", () => {
     await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
 
     expect(
-      within(desktopNav).getByRole("link", { name: "AI Chat Bot Feature" })
+      within(desktopNav).getByRole("link", { name: "AI Chat Bot" })
     ).toHaveAttribute("href", "/features/ai-chat-bot-feature");
   });
 
@@ -154,7 +154,7 @@ describe("Features dropdown", () => {
 
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(
-      within(desktopNav).queryByRole("link", { name: "Widget Feature" })
+      within(desktopNav).queryByRole("link", { name: "Widget" })
     ).not.toBeInTheDocument();
   });
 
@@ -171,6 +171,34 @@ describe("Features dropdown", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("opens the full-width panel on hover and closes when the pointer leaves", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+    const trigger = within(desktopNav).getByRole("button", { name: /features/i });
+
+    await user.hover(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    await user.unhover(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("renders an icon beside every Features panel link", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+    const trigger = within(desktopNav).getByRole("button", { name: /features/i });
+
+    await user.hover(trigger);
+
+    const panel = document.getElementById(trigger.getAttribute("aria-controls"));
+    expect(panel.querySelectorAll("li")).toHaveLength(8);
+    panel.querySelectorAll("li").forEach((item) => {
+      expect(item.querySelector("svg")).not.toBeNull();
+    });
+  });
+
   it("expands the mobile group to reveal the Widget Feature link", async () => {
     const user = userEvent.setup();
     render(<Header />);
@@ -182,7 +210,7 @@ describe("Features dropdown", () => {
 
     expect(group).toHaveAttribute("aria-expanded", "true");
     expect(
-      within(mobileNav).getByRole("link", { name: "Widget Feature" })
+      within(mobileNav).getByRole("link", { name: "Widget" })
     ).toHaveAttribute("href", "/features/widget");
   });
 });
