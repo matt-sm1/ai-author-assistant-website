@@ -6,11 +6,26 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { brandLogo } from "@/content/media";
 import { Button } from "@/components/ui";
+import NavDropdown from "@/components/Header/NavDropdown";
+import MobileNavGroup from "@/components/Header/MobileNavGroup";
 
 const links = [
   { label: "Home", href: "/" },
   { label: "Integrations", href: "/integrations" },
-  { label: "Features", href: "/features" },
+  {
+    label: "Features",
+    href: "/features",
+    children: [
+      { label: "Features overview", href: "/features" },
+      { label: "Widget Feature", href: "/features/widget" },
+      { label: "Dedicated Support Feature", href: "/features/support" },
+      { label: "Analytics Feature", href: "/features/analytics-feature" },
+      { label: "Omnichannel Inbox Feature", href: "/features/omnichannel-inbox-feature" },
+      { label: "CRM Feature", href: "/features/crm-feature" },
+      { label: "Upload Book Feature", href: "/features/upload-book-feature" },
+      { label: "AI Chat Bot Feature", href: "/features/ai-chat-bot-feature" },
+    ],
+  },
   { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/#pricing" },
 ];
@@ -58,6 +73,13 @@ export default function Header() {
   const isActive = (href) => {
     if (href === "/blogs") return pathname === "/blogs" || pathname?.startsWith("/blogs/");
     if (href === "/features") return pathname === "/features";
+    if (href === "/features/widget") return pathname === "/features/widget";
+    if (href === "/features/support") return pathname === "/features/support";
+    if (href === "/features/analytics-feature") return pathname === "/features/analytics-feature";
+    if (href === "/features/omnichannel-inbox-feature") return pathname === "/features/omnichannel-inbox-feature";
+    if (href === "/features/crm-feature") return pathname === "/features/crm-feature";
+    if (href === "/features/upload-book-feature") return pathname === "/features/upload-book-feature";
+    if (href === "/features/ai-chat-bot-feature") return pathname === "/features/ai-chat-bot-feature";
     if (href === "/integrations") return pathname === "/integrations";
     if (href === "/") return pathname === "/" && !hash;
     if (href.startsWith("/#")) {
@@ -103,18 +125,28 @@ export default function Header() {
           className="hidden items-center justify-center gap-8 sm:flex"
           aria-label="Main navigation"
         >
-          {links.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={closeMenu}
-              className={`relative rounded-md px-1 py-2 font-sans text-[13px] font-medium no-underline transition-[color,opacity] duration-200 hover:text-accent md:text-[16px] ${
-                isActive(href) ? "text-accent" : "text-heading"
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+          {links.map(({ label, href, children }) =>
+            children ? (
+              <NavDropdown
+                key={label}
+                label={label}
+                items={children}
+                isActive={isActive}
+                onNavigate={closeMenu}
+              />
+            ) : (
+              <Link
+                key={href}
+                href={href}
+                onClick={closeMenu}
+                className={`relative rounded-md px-1 py-2 font-sans text-[13px] font-medium no-underline transition-[color,opacity] duration-200 hover:text-accent md:text-[16px] ${
+                  isActive(href) ? "text-accent" : "text-heading"
+                }`}
+              >
+                {label}
+              </Link>
+            )
+          )}
         </nav>
 
         <div className="flex items-center justify-self-end">
@@ -175,24 +207,34 @@ export default function Header() {
         }`}
       >
         <ul className="flex flex-col">
-          {links.map(({ label, href }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                onClick={closeMenu}
-                className={`flex items-center justify-between rounded-lg px-3 py-3.5 text-base font-medium no-underline transition-colors active:bg-accent/5 ${
-                  isActive(href)
-                    ? "bg-accent/5 text-accent"
-                    : "text-heading hover:bg-accent/5"
-                }`}
-              >
-                {label}
-                <span aria-hidden="true" className="text-heading/30">
-                  ›
-                </span>
-              </Link>
-            </li>
-          ))}
+          {links.map(({ label, href, children }) =>
+            children ? (
+              <MobileNavGroup
+                key={label}
+                label={label}
+                items={children}
+                isActive={isActive}
+                onNavigate={closeMenu}
+              />
+            ) : (
+              <li key={href}>
+                <Link
+                  href={href}
+                  onClick={closeMenu}
+                  className={`flex items-center justify-between rounded-lg px-3 py-3.5 text-base font-medium no-underline transition-colors active:bg-accent/5 ${
+                    isActive(href)
+                      ? "bg-accent/5 text-accent"
+                      : "text-heading hover:bg-accent/5"
+                  }`}
+                >
+                  {label}
+                  <span aria-hidden="true" className="text-heading/30">
+                    ›
+                  </span>
+                </Link>
+              </li>
+            )
+          )}
         </ul>
         <Button href="/#contact" onClick={closeMenu} className="mt-4 h-11 w-full">
           Get Started

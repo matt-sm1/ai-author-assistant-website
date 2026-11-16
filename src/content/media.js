@@ -69,3 +69,77 @@ export const integrationImages = {
   slack: mediaPath("/images/integrations/slack.png"),
   cta: mediaPath("/images/home/cta.webp"),
 };
+
+/** Widget Feature page — cropped from the Live Chat 2.0 mockups (public/images/widget). */
+export const widgetImages = {
+  iconCustomize: mediaPath("/images/widget/icon-customize.webp"),
+  iconBooks: mediaPath("/images/widget/icon-books.webp"),
+  iconSupport: mediaPath("/images/widget/icon-support.webp"),
+  iconLeads: mediaPath("/images/widget/icon-leads.webp"),
+  iconIntegration: mediaPath("/images/widget/icon-integration.webp"),
+  personalizeIllustration: mediaPath("/images/widget/personalize-illustration.webp"),
+  cardPerformance: mediaPath("/images/widget/card-performance.webp"),
+  cardScheduling: mediaPath("/images/widget/card-scheduling.webp"),
+  cardInsights: mediaPath("/images/widget/card-insights.webp"),
+  videoPoster: mediaPath("/images/widget/video-poster.webp"),
+};
+
+/** Dedicated Support Feature page — cropped from the Live Chat 2.0 mockups (public/images/support). */
+export const supportImages = {
+  heroRobot: mediaPath("/images/support/hero-robot.webp"),
+  accordionIllustration: mediaPath("/images/support/accordion-illustration.webp"),
+  showcaseTechnical: mediaPath("/images/support/showcase-technical.webp"),
+  showcaseSetup: mediaPath("/images/support/showcase-setup.webp"),
+  showcaseAccount: mediaPath("/images/support/showcase-account.webp"),
+  videoBanner: mediaPath("/images/support/video-banner.webp"),
+};
+
+/** Analytics Feature page — cropped from the Live Chat 2.0 (4) mockup (public/images/analytics). */
+export const analyticsImages = {
+  heroRobot: mediaPath("/images/analytics/hero-robot.webp"),
+  accordionIllustration: mediaPath("/images/analytics/accordion-illustration.webp"),
+  showcasePerformance: mediaPath("/images/analytics/showcase-performance.webp"),
+  showcaseEngagement: mediaPath("/images/analytics/showcase-engagement.webp"),
+  showcaseInsights: mediaPath("/images/analytics/showcase-insights.webp"),
+  videoBanner: mediaPath("/images/analytics/video-banner.webp"),
+};
+
+/** Omnichannel Inbox Feature page — cropped from the Live Chat 2.0 (5) mockup (public/images/omnichannel). */
+export const omnichannelImages = {
+  heroRobot: mediaPath("/images/omnichannel/hero-robot.webp"),
+  accordionIllustration: mediaPath("/images/omnichannel/accordion-illustration.webp"),
+  showcaseInbox: mediaPath("/images/omnichannel/showcase-inbox.webp"),
+  showcasePlatform: mediaPath("/images/omnichannel/showcase-platform.webp"),
+  showcaseHandoff: mediaPath("/images/omnichannel/showcase-handoff.webp"),
+  videoBanner: mediaPath("/images/omnichannel/video-banner.webp"),
+};
+
+/** CRM Feature page — cropped from the Live Chat 2.0 (6) mockup (public/images/crm). */
+export const crmImages = {
+  heroRobot: mediaPath("/images/crm/hero-robot.webp"),
+  accordionIllustration: mediaPath("/images/crm/accordion-illustration.webp"),
+  showcaseOverview: mediaPath("/images/crm/showcase-overview.webp"),
+  showcaseActivity: mediaPath("/images/crm/showcase-activity.webp"),
+  showcaseInsights: mediaPath("/images/crm/showcase-insights.webp"),
+  videoBanner: mediaPath("/images/crm/video-banner.webp"),
+};
+
+/** Upload Book Feature page — cropped from the Live Chat 2.0 (7) mockup (public/images/upload-book). */
+export const uploadBookImages = {
+  heroRobot: mediaPath("/images/upload-book/hero-robot.webp"),
+  accordionIllustration: mediaPath("/images/upload-book/accordion-illustration.webp"),
+  showcaseManualUpload: mediaPath("/images/upload-book/showcase-manual-upload.webp"),
+  showcaseImportUrl: mediaPath("/images/upload-book/showcase-import-url.webp"),
+  showcaseDistribution: mediaPath("/images/upload-book/showcase-distribution.webp"),
+  videoBanner: mediaPath("/images/upload-book/video-banner.webp"),
+};
+
+/** AI Chat Bot Feature page — cropped from the Live Chat 2.0 (8) mockup (public/images/ai-chat-bot). */
+export const aiChatBotImages = {
+  heroRobot: mediaPath("/images/ai-chat-bot/hero-robot.webp"),
+  accordionIllustration: mediaPath("/images/ai-chat-bot/accordion-illustration.webp"),
+  showcaseEasySetup: mediaPath("/images/ai-chat-bot/showcase-easy-setup.webp"),
+  showcaseCustomPersonalities: mediaPath("/images/ai-chat-bot/showcase-custom-personalities.webp"),
+  showcaseSmarterConversations: mediaPath("/images/ai-chat-bot/showcase-smarter-conversations.webp"),
+  videoBanner: mediaPath("/images/ai-chat-bot/video-banner.webp"),
+};

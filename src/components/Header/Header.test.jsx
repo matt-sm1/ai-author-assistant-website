@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Header from "./Header";
 
@@ -21,6 +21,7 @@ describe("Mobile menu", () => {
   });
 
   afterEach(() => {
+    cleanup();
     document.body.style.overflow = "";
   });
 
@@ -43,3 +44,146 @@ describe("Mobile menu", () => {
     );
   });
 });
+
+describe("Features dropdown", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  beforeEach(() => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: (query) => ({
+        matches: false,
+        media: query,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+  });
+
+  it("opens the desktop dropdown and lists the Widget Feature link", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+
+    const trigger = within(desktopNav).getByRole("button", { name: /features/i });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(
+      within(desktopNav).getByRole("link", { name: "Widget Feature" })
+    ).toHaveAttribute("href", "/features/widget");
+    expect(
+      within(desktopNav).getByRole("link", { name: "Features overview" })
+    ).toHaveAttribute("href", "/features");
+  });
+
+  it("lists the Analytics Feature link in the desktop dropdown", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+
+    await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
+
+    expect(
+      within(desktopNav).getByRole("link", { name: "Analytics Feature" })
+    ).toHaveAttribute("href", "/features/analytics-feature");
+  });
+
+  it("lists the Omnichannel Inbox Feature link in the desktop dropdown", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+
+    await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
+
+    expect(
+      within(desktopNav).getByRole("link", { name: "Omnichannel Inbox Feature" })
+    ).toHaveAttribute("href", "/features/omnichannel-inbox-feature");
+  });
+
+  it("lists the CRM Feature link in the desktop dropdown", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+
+    await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
+
+    expect(
+      within(desktopNav).getByRole("link", { name: "CRM Feature" })
+    ).toHaveAttribute("href", "/features/crm-feature");
+  });
+
+  it("lists the Upload Book Feature link in the desktop dropdown", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+
+    await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
+
+    expect(
+      within(desktopNav).getByRole("link", { name: "Upload Book Feature" })
+    ).toHaveAttribute("href", "/features/upload-book-feature");
+  });
+
+  it("lists the AI Chat Bot Feature link in the desktop dropdown", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+
+    await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
+
+    expect(
+      within(desktopNav).getByRole("link", { name: "AI Chat Bot Feature" })
+    ).toHaveAttribute("href", "/features/ai-chat-bot-feature");
+  });
+
+  it("closes the desktop dropdown on outside click", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+    const trigger = within(desktopNav).getByRole("button", { name: /features/i });
+
+    await user.click(trigger);
+    await user.click(document.body);
+
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(
+      within(desktopNav).queryByRole("link", { name: "Widget Feature" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("closes on Escape and returns focus to the trigger", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+    const trigger = within(desktopNav).getByRole("button", { name: /features/i });
+
+    await user.click(trigger);
+    await user.keyboard("{Escape}");
+
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("expands the mobile group to reveal the Widget Feature link", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    await user.click(screen.getByRole("button", { name: /open menu/i }));
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+
+    const group = within(mobileNav).getByRole("button", { name: /features/i });
+    await user.click(group);
+
+    expect(group).toHaveAttribute("aria-expanded", "true");
+    expect(
+      within(mobileNav).getByRole("link", { name: "Widget Feature" })
+    ).toHaveAttribute("href", "/features/widget");
+  });
+});
+

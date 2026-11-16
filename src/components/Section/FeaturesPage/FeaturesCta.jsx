@@ -5,6 +5,7 @@ import { Button, Heading, Paragraph } from "@/components/ui";
 
 export default function FeaturesCta({
   content = featuresCtaContent,
+  badgeClassName = "text-white",
 } = {}) {
   return (
     <section id="contact" className="section">
@@ -21,7 +22,7 @@ export default function FeaturesCta({
           <div className="relative z-10 mx-auto w-full max-w-[900px]">
             <span
               data-reveal-step="badge"
-              className="inline-flex rounded-full bg-[linear-gradient(124deg,var(--theme-pink-wash)_6.56%,var(--theme-purple-medium)_93.44%)] px-[14px] py-[5px] font-sans text-[14px] font-normal uppercase leading-[21.7px] tracking-[0px] text-white shadow-[var(--shadow-badge)] backdrop-blur-[12px]"
+              className={`inline-flex rounded-full bg-[linear-gradient(124deg,var(--theme-pink-wash)_6.56%,var(--theme-purple-medium)_93.44%)] px-[14px] py-[5px] font-sans text-[14px] font-normal uppercase leading-[21.7px] tracking-[0px] ${badgeClassName} shadow-[var(--shadow-badge)] backdrop-blur-[12px]`}
             >
               {content.badge}
             </span>

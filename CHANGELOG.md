@@ -5,6 +5,42 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### AI Chat Bot Feature page
+- New marketing route `/features/ai-chat-bot-feature` (`src/app/(public)/features/ai-chat-bot-feature/page.js`) built from `src/components/Section/AiChatBotPage/*` sections with tests in `src/components/Section/AiChatBotPage/tests/`; copy in `src/content/ai-chat-bot/*` (barrel `src/content/ai-chat-bot.js`), images in `public/images/ai-chat-bot/` registered as `aiChatBotImages` in `src/content/media.js`.
+- Trust strip reuses `FeaturesTrust` and blog section reuses `FeaturesArticles` (DB-backed, unchanged). Header **Features** dropdown includes **AI Chat Bot Feature** (`/features/ai-chat-bot-feature`).
+- Hero robot image is a small upscale from a low-resolution crop. Showcase descriptions, card copy, and accordion items 01 and 03 are provisional placeholders. `aiChatBotVideoContent.videoHref` stays `null` until a video URL is set.
+
+### Upload Book Feature page
+- New marketing route `/features/upload-book-feature` (`src/app/(public)/features/upload-book-feature/page.js`) built from `src/components/Section/UploadBookPage/*` sections with tests in `src/components/Section/UploadBookPage/tests/`; copy in `src/content/upload-book/*` (barrel `src/content/upload-book.js`), images in `public/images/upload-book/` registered as `uploadBookImages` in `src/content/media.js`.
+- Trust strip reuses `FeaturesTrust` and blog section reuses `FeaturesArticles` (DB-backed, unchanged). Header **Features** dropdown includes **Upload Book Feature** (`/features/upload-book-feature`).
+- Card grid heading/descriptions and accordion items 01 and 03 are provisional placeholders. `uploadBookVideoContent.videoHref` stays `null` until a video URL is set.
+
+### CRM Feature page
+- New marketing route `/features/crm-feature` (`src/app/(public)/features/crm-feature/page.js`) built from `src/components/Section/CrmPage/*` sections with tests in `src/components/Section/CrmPage/tests/`; copy in `src/content/crm/*` (barrel `src/content/crm.js`), images in `public/images/crm/` registered as `crmImages` in `src/content/media.js`.
+- Trust strip reuses `FeaturesTrust` and blog section reuses `FeaturesArticles` (DB-backed, unchanged). Header **Features** dropdown includes **CRM Feature** (`/features/crm-feature`).
+- Card grid heading/descriptions and accordion items 01 and 03 are provisional placeholders. `crmVideoContent.videoHref` stays `null` until a video URL is set.
+
+### Omnichannel Inbox Feature page
+- New marketing route `/features/omnichannel-inbox-feature` (`src/app/(public)/features/omnichannel-inbox-feature/page.js`) built from `src/components/Section/OmnichannelPage/*` sections with tests in `src/components/Section/OmnichannelPage/tests/`; copy in `src/content/omnichannel/*` (barrel `src/content/omnichannel.js`), images in `public/images/omnichannel/` registered as `omnichannelImages` in `src/content/media.js`.
+- Blog section reuses `FeaturesArticles` (DB-backed, unchanged); trust strip reuses `FeaturesTrust`. Header **Features** dropdown includes **Omnichannel Inbox Feature** (`/features/omnichannel-inbox-feature`).
+- Showcase descriptions are copied from the analytics page. The card grid heading and descriptions, and accordion items 01 and 03 descriptions, are provisional placeholders. `omnichannelVideoContent.videoHref` stays `null` until a video URL is set.
+
+### Analytics Feature page
+- New marketing route `/features/analytics-feature` (`src/app/(public)/features/analytics-feature/page.js`) built from `src/components/Section/AnalyticsPage/*` sections with tests in `src/components/Section/AnalyticsPage/tests/`; copy in `src/content/analytics/*` (barrel `src/content/analytics.js`), images in `public/images/analytics/` registered as `analyticsImages` in `src/content/media.js`.
+- Blog section reuses `FeaturesArticles` (DB-backed, unchanged); trust strip reuses `FeaturesTrust`. Header **Features** dropdown includes **Analytics Feature** (`/features/analytics-feature`).
+- Accordion items 01 and 03 descriptions and the card grid heading/description (copied from the support mockup) are provisional. `analyticsVideoContent.videoHref` stays `null` until a video URL is set.
+
+### Dedicated Support Feature page
+- New marketing route `/features/support` (`src/app/(public)/features/support/page.js`) built from `src/components/Section/SupportPage/*` sections with tests in `src/components/Section/SupportPage/tests/`; copy in `src/content/support/*` (barrel `src/content/support.js`), images in `public/images/support/` registered as `supportImages` in `src/content/media.js`.
+- Blog section reuses `FeaturesArticles` (DB-backed, unchanged). Header **Features** dropdown includes **Dedicated Support Feature** (`/features/support`).
+- Trust strip reuses `FeaturesTrust` (same as the widget page). Hero, showcase, card, and CTA copy follow the Live Chat 2.0 mockup. Accordion items 01 and 03 descriptions are provisional (not visible in the mockup). The video banner from the mockup has its play button baked into the image, and `supportVideoContent.videoHref` stays `null` until a video URL is set.
+
+### Widget Feature page + Features header dropdown
+- New marketing route `/features/widget` (`src/app/(public)/features/widget/page.js`) built from `src/components/Section/WidgetPage/*` sections; copy in `src/content/widget/*` (barrel `src/content/widget.js`), images in `public/images/widget/` registered as `widgetImages` in `src/content/media.js`.
+- Reuses `FeaturesTrust` and `FeaturesCta` (with `content={widgetCtaContent}`); existing Features components are unchanged.
+- Header: **Features** is now a dropdown (desktop `NavDropdown`, mobile `MobileNavGroup`) with **Features overview** (`/features`) and **Widget Feature** (`/features/widget`).
+- Article cards and video poster are placeholder content; `widgetVideoContent.videoHref` stays `null` until a video URL is set.
+
 ### Schema preview UX + broader FAQ HTML pickup
 - Post SEO sidebar shows a live read-only **Auto-generated schema** preview (`build-editor-json-ld-preview.js` → `buildPostJsonLd`) from form state; **Detected FAQs from article** lists `extractFaqFromHtml(content)`.
 - Manual JSON-LD is opt-in (**Add manual schema** / **Remove manual schema**); when open with content, preview shows the merged publish graph.
