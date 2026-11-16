@@ -59,7 +59,7 @@ export default function NavDropdown({ label, items, isActive, onNavigate }) {
           id={menuId}
           className="fixed inset-x-0 top-24 z-50 border-t border-heading/10 bg-white shadow-xl"
         >
-          <ul className="mx-auto flex max-w-[1200px] items-stretch gap-2 px-4 py-3 sm:px-6">
+          <ul className="mx-auto flex max-w-[1200px] items-stretch gap-2 px-4 py-2 sm:px-6">
             {items.map((item) => {
               const Icon = item.icon;
               return (
@@ -70,13 +70,13 @@ export default function NavDropdown({ label, items, isActive, onNavigate }) {
                       setOpen(false);
                       onNavigate?.();
                     }}
-                    className={`flex w-full flex-col items-center gap-2 rounded-xl px-2 py-2 text-center font-sans text-[14px] font-medium leading-tight no-underline transition-colors hover:bg-accent/5 ${
+                    className={`flex w-full flex-col items-center gap-1.5 rounded-lg px-2 py-1.5 text-center font-sans text-[12px] font-medium leading-tight no-underline transition-colors hover:bg-accent/5 ${
                       isActive(item.href) ? "text-accent" : "text-heading"
                     }`}
                   >
                     {Icon && (
-                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent/10 text-accent">
-                        <Icon aria-hidden="true" className="size-4" />
+                      <span className="grid size-7 shrink-0 place-items-center rounded-md bg-accent/10 text-accent">
+                        <Icon aria-hidden="true" className="size-3.5" />
                       </span>
                     )}
                     {item.label}
