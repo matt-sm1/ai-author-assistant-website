@@ -5,6 +5,11 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Contact Feature page
+- New marketing route `/features/contact-feature` (`src/app/(public)/features/contact-feature/page.js`) built from `src/components/Section/ContactPage/*` sections with tests in `src/components/Section/ContactPage/tests/`; copy in `src/content/contact/*` (barrel `src/content/contact.js`), hero robot image in `public/images/contact/` registered as `contactImages` in `src/content/media.js`.
+- Trust strip reuses `FeaturesTrust`. No blog section, since the mockup has none. Header **Features** dropdown includes **Contact** (`/features/contact-feature`).
+- The contact form is UI-only. No contact endpoint exists, so `onSubmit` is a prop with no backend wiring. FAQ answers, card copy, and the form badge "Get In Touch" are provisional placeholders.
+
 ### AI Chat Bot Feature page
 - New marketing route `/features/ai-chat-bot-feature` (`src/app/(public)/features/ai-chat-bot-feature/page.js`) built from `src/components/Section/AiChatBotPage/*` sections with tests in `src/components/Section/AiChatBotPage/tests/`; copy in `src/content/ai-chat-bot/*` (barrel `src/content/ai-chat-bot.js`), images in `public/images/ai-chat-bot/` registered as `aiChatBotImages` in `src/content/media.js`.
 - Trust strip reuses `FeaturesTrust` and blog section reuses `FeaturesArticles` (DB-backed, unchanged). Header **Features** dropdown includes **AI Chat Bot Feature** (`/features/ai-chat-bot-feature`).

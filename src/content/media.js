@@ -143,3 +143,8 @@ export const aiChatBotImages = {
   showcaseSmarterConversations: mediaPath("/images/ai-chat-bot/showcase-smarter-conversations.webp"),
   videoBanner: mediaPath("/images/ai-chat-bot/video-banner.webp"),
 };
+
+/** Contact Feature page — cropped from the Live Chat 2.0 (9) mockup (public/images/contact). */
+export const contactImages = {
+  heroRobot: mediaPath("/images/contact/hero-robot.webp"),
+};

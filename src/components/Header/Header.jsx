@@ -11,6 +11,7 @@ import {
   TbHeadset,
   TbInbox,
   TbLayoutGrid,
+  TbMail,
   TbMessageCircle,
   TbRobot,
   TbUsers,
@@ -35,6 +36,7 @@ const links = [
       { label: "CRM", href: "/features/crm-feature", icon: TbAddressBook },
       { label: "Upload Book", href: "/features/upload-book-feature", icon: TbBook },
       { label: "AI Chat Bot", href: "/features/ai-chat-bot-feature", icon: TbRobot },
+      { label: "Contact", href: "/features/contact-feature", icon: TbMail },
     ],
   },
   { label: "Blogs", href: "/blogs" },
@@ -91,6 +93,7 @@ export default function Header() {
     if (href === "/features/crm-feature") return pathname === "/features/crm-feature";
     if (href === "/features/upload-book-feature") return pathname === "/features/upload-book-feature";
     if (href === "/features/ai-chat-bot-feature") return pathname === "/features/ai-chat-bot-feature";
+    if (href === "/features/contact-feature") return pathname === "/features/contact-feature";
     if (href === "/integrations") return pathname === "/integrations";
     if (href === "/") return pathname === "/" && !hash;
     if (href.startsWith("/#")) {

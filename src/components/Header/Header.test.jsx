@@ -143,6 +143,18 @@ describe("Features dropdown", () => {
     ).toHaveAttribute("href", "/features/ai-chat-bot-feature");
   });
 
+  it("lists the Contact Feature link in the desktop dropdown", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+
+    await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
+
+    expect(
+      within(desktopNav).getByRole("link", { name: "Contact" })
+    ).toHaveAttribute("href", "/features/contact-feature");
+  });
+
   it("closes the desktop dropdown on outside click", async () => {
     const user = userEvent.setup();
     render(<Header />);
@@ -193,7 +205,7 @@ describe("Features dropdown", () => {
     await user.hover(trigger);
 
     const panel = document.getElementById(trigger.getAttribute("aria-controls"));
-    expect(panel.querySelectorAll("li")).toHaveLength(8);
+    expect(panel.querySelectorAll("li")).toHaveLength(9);
     panel.querySelectorAll("li").forEach((item) => {
       expect(item.querySelector("svg")).not.toBeNull();
     });
