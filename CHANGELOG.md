@@ -5,6 +5,9 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Blog article visibility
+- Excluded public blog articles from scroll reveal so long posts remain visible even when their height exceeds the observer's visibility threshold.
+
 ### Contact navigation
 - Added Contact before Help in the header, linking to `/contact` on desktop and mobile.
 

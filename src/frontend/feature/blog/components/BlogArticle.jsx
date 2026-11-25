@@ -9,7 +9,7 @@ export default function BlogArticle({ post }) {
   return (
     <section className="section">
       <div className="container">
-        <article className="mx-auto w-full max-w-3xl">
+        <article data-no-reveal className="mx-auto w-full max-w-3xl">
           <div className="overflow-hidden rounded-xl bg-white p-1.5 shadow-[var(--shadow-card-sm)]">
               <div className="space-y-6 px-5 py-8 sm:px-10 sm:py-12">
               <header className="space-y-4">
