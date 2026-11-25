@@ -168,4 +168,5 @@ export const aiChatBotImages = {
 /** Contact Feature page — cropped from the Live Chat 2.0 (9) mockup (public/images/contact). */
 export const contactImages = {
   heroRobot: mediaPath("/images/contact/hero-robot.webp"),
+  worldMap: mediaPath("/images/contact/world-map.webp"),
 };

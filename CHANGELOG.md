@@ -5,6 +5,15 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Home hero badge
+- Matched the home hero sparkle to the yellow emoji used on other page badges.
+
+### Contact and pricing pages
+- Redesigned `/contact` around the supplied form and contact-method layout, and added `/pricing` with the existing plans and a comparison of their listed features. Header and footer pricing links now point to the new page.
+- Both pages reuse the existing feature hero background and home CTA WebP artwork.
+- Reused existing WebP artwork; no images were extracted from the supplied archives. Contact details remain unavailable, and the form explicitly disables submission until a handler is connected.
+- Added the separately supplied WebP world map above the contact details, on the page's light background.
+
 ### Blog article visibility
 - Excluded public blog articles from scroll reveal so long posts remain visible even when their height exceeds the observer's visibility threshold.
 

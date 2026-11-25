@@ -3,6 +3,7 @@ import { describe, expect, it, afterEach } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { TbMail, TbMapPin, TbPhoneCall } from "react-icons/tb";
 import ContactCards from "../ContactCards";
+import { contactImages } from "@/content/media";
 
 const content = {
   cards: [
@@ -24,6 +25,13 @@ describe("ContactCards", () => {
     expect(screen.getByRole("heading", { name: "(888) 123-4567" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "410 Sandtown" })).toBeInTheDocument();
     expect(container.querySelectorAll("article")).toHaveLength(3);
+  });
+
+  it("shows the supplied decorative map before the contact details", () => {
+    const { container } = render(<ContactCards content={content} />);
+    const map = container.querySelector('img[alt=""]');
+    expect(map).toHaveAttribute("src", contactImages.worldMap);
+    expect(map.compareDocumentPosition(screen.getByRole("heading", { name: "Info@Example.Com" })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("renders an icon in every card", () => {

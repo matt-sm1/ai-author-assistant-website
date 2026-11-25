@@ -1,17 +1,23 @@
 import Image from "next/image";
 import { contactHeroContent } from "@/content/contact/hero";
+import { featureImages } from "@/content/media";
 import { Button } from "@/components/ui";
 
 export default function ContactHero({ content = contactHeroContent } = {}) {
   return (
     <section
       id="contact-hero"
-      className="relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, #ffffff 0%, #eeeaff 45%, #fbe9f6 80%, #f5f5f5 100%)",
-      }}
+      className="relative overflow-hidden bg-[var(--theme-background-soft)]"
     >
+      <Image
+        src={featureImages.heroBg}
+        alt=""
+        aria-hidden="true"
+        fill
+        priority
+        sizes="100vw"
+        className="pointer-events-none absolute inset-0 object-cover object-top"
+      />
       <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center gap-8 px-5 pb-10 pt-28 text-center sm:gap-10 sm:px-8 lg:px-10">
         <div className="relative mx-auto w-full max-w-[900px]">
           <span

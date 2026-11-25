@@ -81,4 +81,13 @@ describe("ContactForm", () => {
 
     expect(screen.getByRole("button", { name: "Submit" })).toHaveAttribute("type", "submit");
   });
+
+  it("explains that submissions are unavailable when no handler is connected", () => {
+    render(<ContactForm />);
+
+    expect(screen.getByLabelText("First name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Last name")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Submit" })).toBeDisabled();
+    expect(screen.getByRole("status")).toHaveTextContent("not available yet");
+  });
 });

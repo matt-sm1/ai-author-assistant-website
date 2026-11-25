@@ -1,5 +1,7 @@
+import Image from "next/image";
 import { Paragraph } from "@/components/ui";
 import { contactCardsContent } from "@/content/contact/cards";
+import { contactImages } from "@/content/media";
 
 export default function ContactCards({ content = contactCardsContent } = {}) {
   const cards = Array.isArray(content.cards) ? content.cards : [];
@@ -7,17 +9,26 @@ export default function ContactCards({ content = contactCardsContent } = {}) {
   return (
     <section id="contact-cards" className="section">
       <div className="container">
-        <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-8">
+        <div className="mx-auto mb-10 max-w-[1212px]">
+          <Image
+            src={contactImages.worldMap}
+            alt=""
+            aria-hidden="true"
+            width={1913}
+            height={768}
+            sizes="(max-width: 1212px) 100vw, 1212px"
+            className="h-auto w-full"
+          />
+        </div>
+        <div className="mx-auto grid max-w-[1136px] grid-cols-1 rounded-[24px] bg-white px-6 py-6 md:grid-cols-3">
           {cards.map((card) => {
             const Icon = card.Icon;
             return (
               <article
                 key={card.id}
-                data-reveal
-                data-card-hover
-                className="flex w-full flex-col items-center gap-5 rounded-[20px] bg-white p-[30px] text-center shadow-[0_10px_30px_rgba(0,0,0,0.08)] md:w-[400px]"
+                className="flex flex-col items-center gap-4 border-b border-[var(--line)] px-6 py-8 text-center last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
               >
-                <span className="flex h-[70px] w-[70px] items-center justify-center rounded-full bg-[#f5f3ff] text-black">
+                <span className="flex h-12 w-12 items-center justify-center rounded-lg border border-[var(--line)] text-heading">
                   <Icon className="h-6 w-6" aria-hidden="true" />
                 </span>
                 <div className="flex flex-col gap-3">
@@ -27,6 +38,7 @@ export default function ContactCards({ content = contactCardsContent } = {}) {
                   <Paragraph className="text-[16px] leading-[24px]">
                     {card.description}
                   </Paragraph>
+                  <p className="text-sm text-[var(--theme-purple-brand)]">Details coming soon</p>
                 </div>
               </article>
             );

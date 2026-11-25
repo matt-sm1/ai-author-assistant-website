@@ -2,6 +2,7 @@ import React from "react";
 import { describe, expect, it, afterEach } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import ContactCta from "../ContactCta";
+import { featureImages } from "@/content/media";
 
 const content = {
   badge: "Ready to grow your readership?",
@@ -28,5 +29,10 @@ describe("ContactCta", () => {
     render(<ContactCta content={content} />);
 
     expect(screen.getByRole("link", { name: "Get In Touch" })).toHaveAttribute("href", "#contact-form");
+  });
+
+  it("uses the existing decorative CTA background", () => {
+    const { container } = render(<ContactCta content={content} />);
+    expect(container.querySelector('img[alt=""]')).toHaveAttribute("src", featureImages.cta);
   });
 });

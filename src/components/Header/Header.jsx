@@ -38,7 +38,7 @@ const links = [
     ],
   },
   { label: "Blogs", href: "/blogs" },
-  { label: "Pricing", href: "/#pricing" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Contact", href: "/contact" },
   { label: "Help", href: "/help" },
 ];
@@ -94,6 +94,7 @@ export default function Header() {
     if (href === "/features/upload-book-feature") return pathname === "/features/upload-book-feature";
     if (href === "/features/ai-chat-bot-feature") return pathname === "/features/ai-chat-bot-feature";
     if (href === "/integrations") return pathname === "/integrations";
+    if (href === "/pricing") return pathname === "/pricing";
     if (href === "/contact") return pathname === "/contact";
     if (href === "/help") return pathname === "/help";
     if (href === "/") return pathname === "/" && !hash;

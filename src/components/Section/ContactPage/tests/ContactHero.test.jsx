@@ -2,6 +2,7 @@ import React from "react";
 import { describe, expect, it, afterEach } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import ContactHero from "../ContactHero";
+import { featureImages } from "@/content/media";
 
 const content = {
   badge: "Contact Us",
@@ -45,5 +46,10 @@ describe("ContactHero", () => {
       "hero-robot"
     );
     expect(screen.getByText("Rated by 2k+ users")).toBeInTheDocument();
+  });
+
+  it("uses the existing decorative hero background", () => {
+    const { container } = render(<ContactHero content={content} />);
+    expect(container.querySelector('img[alt=""]')).toHaveAttribute("src", featureImages.heroBg);
   });
 });

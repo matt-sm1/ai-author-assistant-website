@@ -1,17 +1,14 @@
 export const contactFormContent = {
-  // Placeholder: the mockup's eyebrow is unfilled copy, so this label is provisional.
-  badge: "Get In Touch",
-  heading: "Get In Touch With Any General Query",
-  description:
-    "Everything you need to know about setting up AuthorBot, connecting your books, and engaging readers with AI.",
+  heading: "Reach out to us",
+  description: "Contact us for questions, feedback, or inquiries.",
   fields: [
-    { id: "name", label: "Your Name", type: "text", autoComplete: "name" },
-    { id: "email", label: "Email", type: "email", autoComplete: "email" },
-    { id: "phone", label: "Phone", type: "tel", autoComplete: "tel" },
-    { id: "subject", label: "Subject", type: "text" },
+    { id: "firstName", label: "First name", type: "text", autoComplete: "given-name", placeholder: "First name" },
+    { id: "lastName", label: "Last name", type: "text", autoComplete: "family-name", placeholder: "Last name" },
+    { id: "email", label: "Email", type: "email", autoComplete: "email", placeholder: "Enter your email" },
+    { id: "phone", label: "Phone number", type: "tel", autoComplete: "tel", placeholder: "Phone number" },
   ],
   messageLabel: "Message",
-  termsPrefix: "I agree to the",
-  termsLinkLabel: "Terms And Conditions",
+  messagePlaceholder: "Type your message here",
+  termsLabel: "I agree to be contacted about my inquiry.",
   submitLabel: "Submit",
 };

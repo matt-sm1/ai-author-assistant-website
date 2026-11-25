@@ -4,7 +4,7 @@ export const pricingContent = {
     "Transform static PDFs into an expert assistant. Zero hallucinations, 100% factual accuracy, and seamless handoff to your human team when it matters most.",
   saveBadge: "Save 20%",
   ctaLabel: "Get started",
-  ctaHref: "/#contact",
+  ctaHref: "/contact",
   billing: {
     monthly: {
       switchLabel: "Monthly",

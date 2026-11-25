@@ -7,7 +7,7 @@ const pages = [
   { label: "Integrations", href: "/integrations" },
   { label: "Features", href: "/features" },
   { label: "Blogs", href: "/blogs" },
-  { label: "Pricing", href: "/#pricing" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Contact", href: "/contact" },
 ];
 

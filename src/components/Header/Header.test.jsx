@@ -61,6 +61,14 @@ describe("Mobile menu", () => {
       mobileLinks.findIndex((text) => text.startsWith("Help"))
     );
   });
+
+  it("links to the pricing page in desktop and mobile navigation", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    expect(within(screen.getByRole("navigation", { name: "Main navigation" })).getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
+    await user.click(screen.getByRole("button", { name: /open menu/i }));
+    expect(within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
+  });
 });
 
 describe("Features dropdown", () => {

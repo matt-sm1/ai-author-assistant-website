@@ -2,8 +2,8 @@ import FeaturesTrust from "@/components/Section/FeaturesPage/FeaturesTrust";
 import ContactHero from "@/components/Section/ContactPage/ContactHero";
 import ContactCards from "@/components/Section/ContactPage/ContactCards";
 import ContactForm from "@/components/Section/ContactPage/ContactForm";
-import ContactFaq from "@/components/Section/ContactPage/ContactFaq";
 import ContactCta from "@/components/Section/ContactPage/ContactCta";
+import Faq from "@/components/Section/Faq";
 
 export const metadata = {
   title: "Contact",
@@ -16,9 +16,9 @@ export default function ContactPage() {
     <main id="main-content" className="min-h-screen">
       <ContactHero />
       <FeaturesTrust />
-      <ContactCards />
       <ContactForm />
-      <ContactFaq />
+      <ContactCards />
+      <Faq />
       <ContactCta />
     </main>
   );
