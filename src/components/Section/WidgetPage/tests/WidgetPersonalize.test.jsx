@@ -81,4 +81,23 @@ describe("WidgetPersonalize", () => {
       screen.getByRole("img", { name: "AuthorBot beside a chat widget" })
     ).toBeInTheDocument();
   });
+
+  it("restarts the image transition when another item is selected", async () => {
+    const imageContent = {
+      ...content,
+      items: content.items.map((item) => ({
+        ...item,
+        image: `/images/widget/${item.id}.webp`,
+      })),
+    };
+    render(<WidgetPersonalize content={imageContent} />);
+    const initialImage = screen.getByRole("img");
+
+    await userEvent.click(screen.getByRole("button", { name: "First item" }));
+
+    const nextImage = screen.getByRole("img");
+    expect(nextImage).not.toBe(initialImage);
+    expect(nextImage).toHaveAttribute("src", "/images/widget/one.webp");
+    expect(nextImage).toHaveClass("accordion-image-transition");
+  });
 });

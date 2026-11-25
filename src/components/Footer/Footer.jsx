@@ -12,6 +12,7 @@ const pages = [
 ];
 
 const utilityPages = [
+  { label: "Help", href: "/hero" },
   { label: "Always-On", href: "/#always-on" },
   { label: "FAQ", href: "/#faq" },
 ];

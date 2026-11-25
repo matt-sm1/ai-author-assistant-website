@@ -11,6 +11,9 @@ export default function OmnichannelAccordion({
 } = {}) {
   const [openId, setOpenId] = useState(content.defaultOpenId);
   const items = Array.isArray(content.items) ? content.items : [];
+  const activeItem = items.find((item) => item.id === openId);
+  const activeImage = activeItem?.image || content.image;
+  const activeImageAlt = activeItem?.imageAlt || content.imageAlt;
 
   return (
     <section id="omnichannel-accordion" className="section">
@@ -18,11 +21,12 @@ export default function OmnichannelAccordion({
         <div className="grid grid-cols-1 items-center gap-10 rounded-[24px] bg-[#f7f7f7] p-6 md:p-10 lg:grid-cols-2 lg:gap-16 lg:p-14">
           <div className="relative aspect-[0.825] w-full overflow-hidden rounded-[20px]">
             <Image
-              src={content.image}
-              alt={content.imageAlt}
+              key={activeImage}
+              src={activeImage}
+              alt={activeImageAlt}
               fill
               sizes="(max-width: 1023px) 100vw, 50vw"
-              className="object-cover"
+              className="accordion-image-transition object-cover"
             />
           </div>
 

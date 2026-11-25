@@ -205,6 +205,10 @@ body {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .accordion-image-transition {
+    animation: reveal-fade-scale 1400ms ease-in-out both;
+  }
+
   [data-enter="navbar"] {
     animation: reveal-fade-up 600ms cubic-bezier(.22, 1, .36, 1) 40ms both;
   }

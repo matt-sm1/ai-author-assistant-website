@@ -11,7 +11,6 @@ import {
   TbHeadset,
   TbInbox,
   TbLayoutGrid,
-  TbMail,
   TbMessageCircle,
   TbRobot,
   TbUsers,
@@ -36,11 +35,12 @@ const links = [
       { label: "CRM", href: "/features/crm-feature", icon: TbAddressBook },
       { label: "Upload Book", href: "/features/upload-book-feature", icon: TbBook },
       { label: "AI Chat Bot", href: "/features/ai-chat-bot-feature", icon: TbRobot },
-      { label: "Contact", href: "/features/contact-feature", icon: TbMail },
     ],
   },
   { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/#pricing" },
+  { label: "Contact", href: "/contact" },
+  { label: "Help", href: "/hero" },
 ];
 
 export default function Header() {
@@ -77,7 +77,7 @@ export default function Header() {
   }, [menuOpen]);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 640px)");
+    const mq = window.matchMedia("(min-width: 1024px)");
     const onChange = (e) => e.matches && setMenuOpen(false);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
@@ -93,8 +93,9 @@ export default function Header() {
     if (href === "/features/crm-feature") return pathname === "/features/crm-feature";
     if (href === "/features/upload-book-feature") return pathname === "/features/upload-book-feature";
     if (href === "/features/ai-chat-bot-feature") return pathname === "/features/ai-chat-bot-feature";
-    if (href === "/features/contact-feature") return pathname === "/features/contact-feature";
     if (href === "/integrations") return pathname === "/integrations";
+    if (href === "/contact") return pathname === "/contact";
+    if (href === "/hero") return pathname === "/hero";
     if (href === "/") return pathname === "/" && !hash;
     if (href.startsWith("/#")) {
       return pathname === "/" && hash === href.slice(1);
@@ -116,7 +117,7 @@ export default function Header() {
           : "bg-transparent"
       }`}
     >
-      <div className="relative mx-auto flex h-24 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:grid sm:w-[calc(100%-3rem)] sm:grid-cols-[1fr_auto_1fr]">
+      <div className="relative mx-auto flex h-24 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between sm:w-[calc(100%-3rem)] lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <div className="flex items-center justify-self-start">
           <Link
             href="/"
@@ -136,7 +137,7 @@ export default function Header() {
         </div>
 
         <nav
-          className="hidden h-full items-center justify-center gap-8 sm:flex"
+          className="hidden h-full items-center justify-center gap-4 lg:flex xl:gap-8"
           aria-label="Main navigation"
         >
           {links.map(({ label, href, children }) =>
@@ -164,9 +165,9 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center justify-self-end">
-          <div className="hidden sm:block">
+          <div className="hidden lg:block">
             <Button
-              href="/#contact"
+              href="/contact"
               className="h-9 w-[112px] px-3 py-0 text-xs md:h-10 md:w-[128px] md:text-[13px]"
             >
               Get Started
@@ -176,7 +177,7 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
-            className="relative grid size-10 place-items-center rounded-full text-heading transition-colors duration-200 hover:bg-heading/5 active:bg-heading/10 sm:hidden"
+            className="relative grid size-10 place-items-center rounded-full text-heading transition-colors duration-200 hover:bg-heading/5 active:bg-heading/10 lg:hidden"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
@@ -205,7 +206,7 @@ export default function Header() {
       <div
         onClick={closeMenu}
         aria-hidden="true"
-        className={`fixed inset-x-0 bottom-0 top-24 bg-black/30 transition-opacity duration-300 sm:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-24 bg-black/30 transition-opacity duration-300 lg:hidden ${
           menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -214,7 +215,7 @@ export default function Header() {
         id="mobile-navigation"
         aria-label="Mobile navigation"
         aria-hidden={!menuOpen}
-        className={`absolute inset-x-0 top-full origin-top border-t border-heading/10 bg-white px-4 pb-5 pt-3 shadow-xl transition-[opacity,transform,visibility] duration-300 ease-out sm:hidden ${
+        className={`absolute inset-x-0 top-full origin-top border-t border-heading/10 bg-white px-4 pb-5 pt-3 shadow-xl transition-[opacity,transform,visibility] duration-300 ease-out lg:hidden ${
           menuOpen
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-2 opacity-0"
@@ -250,7 +251,7 @@ export default function Header() {
             )
           )}
         </ul>
-        <Button href="/#contact" onClick={closeMenu} className="mt-4 h-11 w-full">
+        <Button href="/contact" onClick={closeMenu} className="mt-4 h-11 w-full">
           Get Started
         </Button>
       </nav>

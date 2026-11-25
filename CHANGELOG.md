@@ -5,6 +5,24 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Contact navigation
+- Added Contact before Help in the header, linking to `/contact` on desktop and mobile.
+
+### Help center page
+- Added `/hero` with seven step-by-step guides, responsive navigation and a support link, using the existing marketing layout and purple theme. Video tutorials are labeled as coming soon until assets are available.
+- Matched the Help Center badge and sparkle icon to other feature-page hero badges and increased vertical spacing around the guide navigation.
+- Increased the height of the guide navigation cards and reduced the surrounding spacing.
+
+### Home hero decoration sizing
+- Increased and repositioned the two floating metric cards and bot icon to match the supplied hero reference, preserving responsive visibility.
+
+### Disable Next image srcSet
+- Set `images.unoptimized: true` globally so Next.js `<Image>` components use their original `src` instead of generated `srcSet` and optimizer URLs. This also disables optimization for remote CMS images.
+
+### Marketing PNG replacements
+- Replaced Features and Integrations page PNG references with WebPs, reusing shared artwork. Supplied matching images retain their original dimensions; unmatched artwork and platform icons were converted losslessly to preserve their existing appearance.
+- Browser and Apple icons remain PNG for compatibility; uploaded and external CMS images are unchanged.
+
 ### Contact Feature page
 - New marketing route `/features/contact-feature` (`src/app/(public)/features/contact-feature/page.js`) built from `src/components/Section/ContactPage/*` sections with tests in `src/components/Section/ContactPage/tests/`; copy in `src/content/contact/*` (barrel `src/content/contact.js`), hero robot image in `public/images/contact/` registered as `contactImages` in `src/content/media.js`.
 - Trust strip reuses `FeaturesTrust`. No blog section, since the mockup has none. Header **Features** dropdown includes **Contact** (`/features/contact-feature`).

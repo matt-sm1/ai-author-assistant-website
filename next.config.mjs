@@ -41,6 +41,7 @@ const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: projectRoot,
   images: {
+    unoptimized: true,
     remotePatterns: hostingerRemotePatterns(),
   },
   turbopack: {

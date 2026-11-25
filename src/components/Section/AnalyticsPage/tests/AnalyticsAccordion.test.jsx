@@ -63,4 +63,25 @@ describe("AnalyticsAccordion", () => {
       "false"
     );
   });
+
+  it("restarts the image transition when the selected illustration changes", async () => {
+    const imageContent = {
+      ...content,
+      items: content.items.map((item) => ({
+        ...item,
+        image: `/images/analytics/${item.id}.webp`,
+      })),
+    };
+    render(<AnalyticsAccordion content={imageContent} />);
+
+    const initialImage = screen.getByRole("img");
+    expect(initialImage).toHaveAttribute("src", "/images/analytics/engagement.webp");
+
+    await userEvent.click(screen.getByRole("button", { name: "Understand Performance" }));
+
+    const nextImage = screen.getByRole("img");
+    expect(nextImage).not.toBe(initialImage);
+    expect(nextImage).toHaveAttribute("src", "/images/analytics/performance.webp");
+    expect(nextImage).toHaveClass("accordion-image-transition");
+  });
 });

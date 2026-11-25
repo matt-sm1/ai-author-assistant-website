@@ -11,6 +11,9 @@ export default function WidgetPersonalize({
 } = {}) {
   const [openIndex, setOpenIndex] = useState(content.defaultOpen ?? null);
   const items = Array.isArray(content.items) ? content.items : [];
+  const activeItem = openIndex !== null ? items[openIndex] : null;
+  const activeImage = activeItem?.image || content.image;
+  const activeImageAlt = activeItem?.imageAlt || content.imageAlt;
 
   return (
     <section id="widget-personalize" className="section">
@@ -48,12 +51,13 @@ export default function WidgetPersonalize({
 
           <div data-reveal className="relative w-full">
             <Image
-              src={content.image}
-              alt={content.imageAlt}
+              key={activeImage}
+              src={activeImage}
+              alt={activeImageAlt}
               width={2079}
               height={2518}
               sizes="(max-width: 1023px) 100vw, 50vw"
-              className="h-auto w-full object-contain"
+              className="accordion-image-transition h-auto w-full object-contain"
             />
           </div>
         </div>

@@ -11,6 +11,7 @@ export const supportAccordionContent = {
     {
       id: "help",
       title: "Get Help When Something Goes Wrong",
+      image: supportImages.itemTechnical,
       // Placeholder: the mockup collapses this item, so its copy is provisional.
       description:
         "Get quick answers to technical questions and step-by-step fixes for common issues.",
@@ -18,12 +19,14 @@ export const supportAccordionContent = {
     {
       id: "setup",
       title: "Get Guided Through Setup & Integrations",
+      image: supportImages.itemSetup,
       description:
         "Choose the widget's position on your website and set auto-open delay to engage visitors at the moment.",
     },
     {
       id: "account",
       title: "Manage Your Account With Confidence",
+      image: supportImages.itemAccount,
       // Placeholder: the mockup collapses this item, so its copy is provisional.
       description:
         "Review your billing, subscription, and account settings whenever you need them.",

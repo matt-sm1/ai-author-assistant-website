@@ -11,18 +11,21 @@ export const analyticsAccordionContent = {
     {
       id: "performance",
       title: "Understand Your Performance At A Glance",
+      image: analyticsImages.itemPerformance,
       // Placeholder: the mockup collapses this item, so its copy is provisional.
       description: "See sessions, unique visitors, and link clicks in one summary view.",
     },
     {
       id: "engagement",
       title: "See How Engagement Changes Over Time",
+      image: analyticsImages.itemEngagement,
       description:
         "Choose the widget's position on your website and set auto-open delay to engage visitors at the moment.",
     },
     {
       id: "measure",
       title: "Measure What Drives Reader Action",
+      image: analyticsImages.itemInsights,
       // Placeholder: the mockup collapses this item, so its copy is provisional.
       description:
         "Track which conversations lead to link clicks and purchases so you know what works.",

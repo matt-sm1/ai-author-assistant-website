@@ -43,6 +43,24 @@ describe("Mobile menu", () => {
       "false"
     );
   });
+
+  it("links to Contact before Help in desktop and mobile navigation", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+
+    const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
+    expect(within(desktopNav).getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
+    const desktopLinks = within(desktopNav).getAllByRole("link").map((link) => link.textContent);
+    expect(desktopLinks.indexOf("Contact") + 1).toBe(desktopLinks.indexOf("Help"));
+
+    await user.click(screen.getByRole("button", { name: /open menu/i }));
+    const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    expect(within(mobileNav).getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
+    const mobileLinks = within(mobileNav).getAllByRole("link").map((link) => link.textContent.trim());
+    expect(mobileLinks.findIndex((text) => text.startsWith("Contact")) + 1).toBe(
+      mobileLinks.findIndex((text) => text.startsWith("Help"))
+    );
+  });
 });
 
 describe("Features dropdown", () => {
@@ -143,16 +161,16 @@ describe("Features dropdown", () => {
     ).toHaveAttribute("href", "/features/ai-chat-bot-feature");
   });
 
-  it("lists the Contact Feature link in the desktop dropdown", async () => {
+  it("keeps Contact out of the Features dropdown", async () => {
     const user = userEvent.setup();
     render(<Header />);
     const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
 
-    await user.click(within(desktopNav).getByRole("button", { name: /features/i }));
+    const trigger = within(desktopNav).getByRole("button", { name: /features/i });
+    await user.click(trigger);
+    const dropdown = document.getElementById(trigger.getAttribute("aria-controls"));
 
-    expect(
-      within(desktopNav).getByRole("link", { name: "Contact" })
-    ).toHaveAttribute("href", "/features/contact-feature");
+    expect(within(dropdown).queryByRole("link", { name: "Contact" })).not.toBeInTheDocument();
   });
 
   it("closes the desktop dropdown on outside click", async () => {
@@ -205,7 +223,7 @@ describe("Features dropdown", () => {
     await user.hover(trigger);
 
     const panel = document.getElementById(trigger.getAttribute("aria-controls"));
-    expect(panel.querySelectorAll("li")).toHaveLength(9);
+    expect(panel.querySelectorAll("li")).toHaveLength(8);
     panel.querySelectorAll("li").forEach((item) => {
       expect(item.querySelector("svg")).not.toBeNull();
     });
@@ -224,6 +242,24 @@ describe("Features dropdown", () => {
     expect(
       within(mobileNav).getByRole("link", { name: "Widget" })
     ).toHaveAttribute("href", "/features/widget");
+  });
+
+  it("links both Get Started buttons to the Contact page", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+
+    expect(screen.getByRole("link", { name: "Get Started" })).toHaveAttribute(
+      "href",
+      "/contact"
+    );
+
+    await user.click(screen.getByRole("button", { name: /open menu/i }));
+    expect(
+      within(screen.getByRole("navigation", { name: "Mobile navigation" })).getByRole(
+        "link",
+        { name: "Get Started" }
+      )
+    ).toHaveAttribute("href", "/contact");
   });
 });
 
