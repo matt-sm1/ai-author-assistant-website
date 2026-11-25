@@ -1,4 +1,4 @@
-export { default } from "./HeroPage";
+export { default } from "./HelpPage";
 
 export const metadata = {
   title: "Help Center",

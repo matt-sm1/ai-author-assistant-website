@@ -1,12 +1,12 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import HeroPage from "./HeroPage";
+import HelpPage from "./HelpPage";
 
 describe("Help center", () => {
   afterEach(cleanup);
 
   it("links each guide in the navigation to its section", () => {
-    render(<HeroPage />);
+    render(<HelpPage />);
     const navigation = screen.getByRole("navigation", { name: "Help guides" });
     const links = within(navigation).getAllByRole("link");
     expect(links).toHaveLength(7);
@@ -19,7 +19,7 @@ describe("Help center", () => {
   });
 
   it("directs visitors to support and labels unavailable tutorials", () => {
-    render(<HeroPage />);
+    render(<HelpPage />);
     expect(screen.getByRole("link", { name: "Contact Support" })).toHaveAttribute("href", "/contact");
     expect(screen.getAllByText("Video tutorial coming soon")).toHaveLength(7);
     expect(screen.queryByRole("button", { name: /play/i })).not.toBeInTheDocument();

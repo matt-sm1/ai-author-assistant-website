@@ -8,11 +8,11 @@ const pages = [
   { label: "Features", href: "/features" },
   { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/#pricing" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const utilityPages = [
-  { label: "Help", href: "/hero" },
+  { label: "Help", href: "/help" },
   { label: "Always-On", href: "/#always-on" },
   { label: "FAQ", href: "/#faq" },
 ];

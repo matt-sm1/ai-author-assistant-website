@@ -103,7 +103,7 @@ function VideoPlaceholder({ title }) {
   );
 }
 
-export default function HeroPage() {
+export default function HelpPage() {
   return (
     <main id="main-content">
       <section className="bg-[linear-gradient(180deg,#ffffff_0%,#eeeaff_45%,#fbe9f6_100%)] px-5 pb-16 pt-36 text-center sm:px-8 sm:pb-20 sm:pt-40">
@@ -115,7 +115,7 @@ export default function HeroPage() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button href="#getting-started">Start with the first guide</Button>
-            <span className="rounded-lg border border-[var(--theme-border)] bg-white px-5 py-3 text-sm font-medium text-[var(--theme-text-muted)]">Overview video coming soon</span>
+           {/* <span className="rounded-lg border border-[var(--theme-border)] bg-white px-5 py-3 text-sm font-medium text-[var(--theme-text-muted)]">Overview video coming soon</span> */}
           </div>
           <div className="mx-auto mt-12 grid max-w-[900px] gap-3 text-left sm:grid-cols-3">
             {[
@@ -136,7 +136,9 @@ export default function HeroPage() {
         <div className="mx-auto grid max-w-[1200px] grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           {guides.map((guide, index) => (
             <a key={guide.id} href={`#${guide.id}`} className="rounded-xl border border-[var(--theme-border-subtle)] px-3 py-8 text-left transition hover:border-[var(--theme-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--theme-accent)]">
-              <span className="block rounded-full bg-[var(--theme-purple-wash)] px-3 py-1 text-center text-xs font-semibold text-[var(--theme-purple-brand)]">{String(index + 1).padStart(2, "0")}</span>
+              <span className="flex items-center justify-center rounded-full bg-[var(--theme-purple-wash)] px-3 py-1 text-center text-xs font-semibold text-[var(--theme-purple-brand)]">
+  {String(index + 1).padStart(2, "0")}
+</span>
               <span className="mt-3 block text-sm font-semibold leading-snug text-heading">{guide.title}</span>
             </a>
           ))}

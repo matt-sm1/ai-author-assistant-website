@@ -40,7 +40,7 @@ const links = [
   { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/#pricing" },
   { label: "Contact", href: "/contact" },
-  { label: "Help", href: "/hero" },
+  { label: "Help", href: "/help" },
 ];
 
 export default function Header() {
@@ -95,7 +95,7 @@ export default function Header() {
     if (href === "/features/ai-chat-bot-feature") return pathname === "/features/ai-chat-bot-feature";
     if (href === "/integrations") return pathname === "/integrations";
     if (href === "/contact") return pathname === "/contact";
-    if (href === "/hero") return pathname === "/hero";
+    if (href === "/help") return pathname === "/help";
     if (href === "/") return pathname === "/" && !hash;
     if (href.startsWith("/#")) {
       return pathname === "/" && hash === href.slice(1);
