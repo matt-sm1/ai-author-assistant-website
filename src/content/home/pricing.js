@@ -1,4 +1,6 @@
 export const pricingContent = {
+  badge: "Pricing",
+  comparisonBadge: "Comparison",
   title: "Pricing",
   subtitle:
     "Transform static PDFs into an expert assistant. Zero hallucinations, 100% factual accuracy, and seamless handoff to your human team when it matters most.",

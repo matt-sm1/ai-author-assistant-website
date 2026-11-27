@@ -33,7 +33,9 @@ export default function WidgetFeatureCards({
                     key={card.id}
                     data-reveal
                     data-card-hover
-                    className="flex w-full items-start gap-4 rounded-[20px] p-[30px] sm:w-[318px]"
+                    className={`flex w-full items-start gap-4 rounded-[20px] p-[30px] ${
+                      rowId === 1 ? "sm:w-[360px]" : "sm:w-[318px]"
+                    }`}
                     style={{ background: card.background }}
                   >
                     <Image

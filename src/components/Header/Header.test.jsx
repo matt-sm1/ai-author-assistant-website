@@ -44,21 +44,21 @@ describe("Mobile menu", () => {
     );
   });
 
-  it("links to Contact before Help in desktop and mobile navigation", async () => {
+  it("links to Help before Contact in desktop and mobile navigation", async () => {
     const user = userEvent.setup();
     render(<Header />);
 
     const desktopNav = screen.getByRole("navigation", { name: "Main navigation" });
     expect(within(desktopNav).getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
     const desktopLinks = within(desktopNav).getAllByRole("link").map((link) => link.textContent);
-    expect(desktopLinks.indexOf("Contact") + 1).toBe(desktopLinks.indexOf("Help"));
+    expect(desktopLinks.indexOf("Help") + 1).toBe(desktopLinks.indexOf("Contact"));
 
     await user.click(screen.getByRole("button", { name: /open menu/i }));
     const mobileNav = screen.getByRole("navigation", { name: "Mobile navigation" });
     expect(within(mobileNav).getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
     const mobileLinks = within(mobileNav).getAllByRole("link").map((link) => link.textContent.trim());
-    expect(mobileLinks.findIndex((text) => text.startsWith("Contact")) + 1).toBe(
-      mobileLinks.findIndex((text) => text.startsWith("Help"))
+    expect(mobileLinks.findIndex((text) => text.startsWith("Help")) + 1).toBe(
+      mobileLinks.findIndex((text) => text.startsWith("Contact"))
     );
   });
 

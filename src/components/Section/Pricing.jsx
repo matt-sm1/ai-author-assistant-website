@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Badge from "@/components/ui/Badge/Badge.jsx";
 import { pricingContent } from "@/content/home/pricing";
 
 const GRADIENT =
@@ -84,7 +85,8 @@ export default function Pricing({ content = pricingContent } = {}) {
   return (
     <section id="pricing" className="section !border-b-0 bg-[var(--theme-background)]">
       <div className="container !border-x-0">
-        <div className="mx-auto mb-8 max-w-[720px] text-center sm:mb-10">
+        <div className="mx-auto mb-8 flex max-w-[720px] flex-col items-center text-center sm:mb-10">
+          {content.badge && <Badge className="mb-4">{content.badge}</Badge>}
           <h2 className="font-display text-[32px] font-bold leading-tight tracking-tight text-heading sm:text-[40px] md:text-[48px]">
             {content.title}
           </h2>

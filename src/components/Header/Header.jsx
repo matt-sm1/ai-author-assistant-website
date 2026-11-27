@@ -28,19 +28,19 @@ const links = [
     href: "/features",
     children: [
       { label: "Overview", href: "/features", icon: TbLayoutGrid },
-      { label: "Widget", href: "/features/widget", icon: TbMessageCircle },
-      { label: "Dedicated Support", href: "/features/support", icon: TbHeadset },
-      { label: "Analytics", href: "/features/analytics-feature", icon: TbChartLine },
-      { label: "Omnichannel Inbox", href: "/features/omnichannel-inbox-feature", icon: TbInbox },
-      { label: "CRM", href: "/features/crm-feature", icon: TbAddressBook },
-      { label: "Upload Book", href: "/features/upload-book-feature", icon: TbBook },
       { label: "AI Chat Bot", href: "/features/ai-chat-bot-feature", icon: TbRobot },
+      { label: "CRM", href: "/features/crm-feature", icon: TbAddressBook },
+      { label: "Omnichannel Inbox", href: "/features/omnichannel-inbox-feature", icon: TbInbox },
+      { label: "Widget", href: "/features/widget", icon: TbMessageCircle },
+      { label: "Analytics", href: "/features/analytics-feature", icon: TbChartLine },
+      { label: "Upload Book", href: "/features/upload-book-feature", icon: TbBook },
+      { label: "Dedicated Support", href: "/features/support", icon: TbHeadset },
     ],
   },
   { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Contact", href: "/contact" },
   { label: "Help", href: "/help" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Header() {

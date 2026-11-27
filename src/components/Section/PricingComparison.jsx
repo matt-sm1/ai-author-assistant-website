@@ -1,3 +1,4 @@
+import Badge from "@/components/ui/Badge/Badge.jsx";
 import { pricingContent } from "@/content/home/pricing";
 
 const rows = [
@@ -13,7 +14,10 @@ export default function PricingComparison() {
   return (
     <section className="section">
       <div className="container">
-        <div className="mx-auto max-w-[720px] text-center">
+        <div className="mx-auto flex max-w-[720px] flex-col items-center text-center">
+          {pricingContent.comparisonBadge && (
+            <Badge className="mb-4">{pricingContent.comparisonBadge}</Badge>
+          )}
           <h2 className="font-display text-[32px] font-bold leading-tight text-heading sm:text-[40px] md:text-[48px]">
             Compare Our Plans
           </h2>

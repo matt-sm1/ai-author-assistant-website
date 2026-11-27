@@ -32,7 +32,9 @@ export default function SupportCards({ content = supportCardsContent } = {}) {
                       key={card.id}
                       data-reveal
                       data-card-hover
-                      className="flex w-full items-start gap-4 rounded-[20px] p-[30px] sm:w-[318px]"
+                      className={`flex w-full items-start gap-4 rounded-[20px] p-[30px] ${
+                        rowId === 1 ? "sm:w-[360px]" : "sm:w-[318px]"
+                      }`}
                       style={{ background: card.background }}
                     >
                       <span className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[12px] bg-white text-[var(--theme-purple-brand)]">
