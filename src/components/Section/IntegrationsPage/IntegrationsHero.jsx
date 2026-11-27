@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { homeImages, integrationImages } from "@/content/media";
+import { integrationImages } from "@/content/media";
 import { integrationsHeroContent } from "@/content/integrations/hero";
 import { Button } from "@/components/ui";
 
@@ -9,7 +9,7 @@ export default function IntegrationsHero({
   return (
     <section
       id="integrations-hero"
-      className="relative overflow-hidden bg-[var(--theme-background-soft)]"
+      className="relative overflow-hidden bg-[var(--theme-background-soft)] border-b border-[var(--theme-border-subtle)]"
     >
       <Image
         src={integrationImages.heroBg}
@@ -22,7 +22,7 @@ export default function IntegrationsHero({
         className="pointer-events-none absolute inset-0 object-cover object-top"
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center border-x-[0.8px] border-white px-5 pb-20 pt-28 text-center sm:px-8 sm:pb-24 sm:pt-32 lg:px-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center border-x-[0.8px] border-white/40 px-5 pb-24 pt-32 text-center sm:px-8 sm:pb-28 sm:pt-40 lg:px-10 lg:pb-28 lg:pt-44">
         <div className="relative mx-auto w-full max-w-[900px]">
           <span
             data-reveal-step="badge"
@@ -30,6 +30,18 @@ export default function IntegrationsHero({
           >
             {content.badge}
           </span>
+
+          {content.robotImage ? (
+            <Image
+              src={content.robotImage}
+              alt={content.robotAlt || "AuthorBot robot icon"}
+              width={270}
+              height={270}
+              sizes="90px"
+              data-bounce
+              className="absolute -right-2 -top-2 hidden h-[90px] w-[90px] object-contain sm:-right-10 sm:block lg:-right-16"
+            />
+          ) : null}
 
           <h1
             data-reveal-step="heading"
@@ -77,16 +89,6 @@ export default function IntegrationsHero({
           </div>
         </div>
       </div>
-
-      <Image
-        src={homeImages.heroBottom}
-        alt=""
-        aria-hidden="true"
-        width={1920}
-        height={200}
-        sizes="100vw"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-auto w-full"
-      />
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import { TbPalette, TbBook, TbClock, TbUserPlus, TbCode } from "react-icons/tb";
 
 export const analyticsCardsContent = {
+  badge: "Analytics",
   heading: "Support For Every Step Of Your AuthorBot Journey",
   description:
     "Lorem ipsum dolor sit amet consectetur. Suscipit viverra donec scelerisque tellus in vulputate. Cursus tempus congue faucibus faucibus dui feugiat sit.",

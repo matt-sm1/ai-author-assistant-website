@@ -1,4 +1,5 @@
 import { Heading, Paragraph } from "@/components/ui";
+import Badge from "@/components/ui/Badge/Badge.jsx";
 import { omnichannelCardsContent } from "@/content/omnichannel/cards";
 
 export default function OmnichannelCards({ content = omnichannelCardsContent } = {}) {
@@ -9,6 +10,7 @@ export default function OmnichannelCards({ content = omnichannelCardsContent } =
     <section id="omnichannel-cards" className="section">
       <div className="container">
         <div className="mx-auto flex max-w-[900px] flex-col items-center gap-5 text-center">
+          {content.badge && <Badge>{content.badge}</Badge>}
           <Heading as="h2" className="max-w-[760px]">
             {content.heading}
           </Heading>

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { integrationImages, supportImages } from "@/content/media";
 import { Button } from "@/components/ui";
 
 const guides = [
@@ -106,28 +108,83 @@ function VideoPlaceholder({ title }) {
 export default function HelpPage() {
   return (
     <main id="main-content">
-      <section className="bg-[linear-gradient(180deg,#ffffff_0%,#eeeaff_45%,#fbe9f6_100%)] px-5 pb-16 pt-36 text-center sm:px-8 sm:pb-20 sm:pt-40">
-        <div className="mx-auto max-w-[1050px]">
-          <span className="mx-auto inline-flex items-center rounded-[30px] bg-gradient-to-b from-white from-[60%] to-[var(--theme-purple-wash)] px-3 py-3 font-sans text-base font-medium leading-[24.8px] text-[var(--theme-purple-brand)] shadow-[inset_-4px_-4px_4px_0_rgba(184,33,234,0.08),inset_4px_4px_9px_0_rgba(61,61,61,0.1)]">{"\u2728 Help"}</span>
-          <h1 className="mt-5 font-display text-4xl font-bold tracking-tight text-heading sm:text-5xl lg:text-[56px]">Learn AuthorBot, step by step</h1>
-          <p className="mx-auto mt-5 max-w-[620px] text-base leading-relaxed text-copy sm:text-lg">
-            Simple guides and video tutorials that take you from login to a live 24/7 AI sales assistant for your books.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button href="#getting-started">Start with the first guide</Button>
-           {/* <span className="rounded-lg border border-[var(--theme-border)] bg-white px-5 py-3 text-sm font-medium text-[var(--theme-text-muted)]">Overview video coming soon</span> */}
-          </div>
-          <div className="mx-auto mt-12 grid max-w-[900px] gap-3 text-left sm:grid-cols-3">
-            {[
-              ["01", "Step-by-step guides", "From login to live chatbot"],
-              ["02", "A video for every guide", "Tutorials coming soon"],
-              ["03", "Support when you need it", "Help with setup and questions"],
-            ].map(([number, title, description]) => (
-              <div key={number} className="flex items-center gap-3 rounded-xl border border-white bg-white/90 p-4 shadow-sm">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--theme-purple-wash)] text-sm font-semibold text-[var(--theme-purple-brand)]">{number}</span>
-                <div><p className="font-semibold text-heading">{title}</p><p className="mt-1 text-xs text-[var(--theme-text-muted)]">{description}</p></div>
+      <section
+        id="help-hero"
+        className="relative overflow-hidden bg-[var(--theme-background-soft)] border-b border-[var(--theme-border-subtle)]"
+      >
+        <Image
+          src={integrationImages.heroBg}
+          alt=""
+          aria-hidden="true"
+          fill
+          priority
+          quality={100}
+          sizes="100vw"
+          className="pointer-events-none absolute inset-0 object-cover object-top"
+        />
+        <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center border-x-[0.8px] border-white/40 px-5 pb-24 pt-32 text-center sm:px-8 sm:pb-28 sm:pt-40 lg:px-10 lg:pb-28 lg:pt-44">
+          <div className="relative mx-auto w-full max-w-[900px]">
+            <span
+              data-reveal-step="badge"
+              className="mx-auto inline-flex items-center rounded-[30px] bg-gradient-to-b from-white from-[60%] to-[var(--theme-purple-wash)] px-3 py-3 font-sans text-base font-medium leading-[24.8px] text-[var(--theme-purple-brand)] shadow-[inset_-4px_-4px_4px_0_rgba(184,33,234,0.08),inset_4px_4px_9px_0_rgba(61,61,61,0.1)]"
+            >
+              ✨ Help
+            </span>
+
+            <Image
+              src={supportImages.heroRobot}
+              alt="AuthorBot robot icon"
+              width={270}
+              height={270}
+              sizes="90px"
+              data-bounce
+              className="absolute -right-2 -top-2 hidden h-[90px] w-[90px] object-contain sm:-right-10 sm:block lg:-right-16"
+            />
+
+            <h1
+              data-reveal-step="heading"
+              className="mt-5 font-display text-[26px] font-bold leading-8 text-heading sm:text-4xl sm:leading-[46px] md:text-[56px] md:leading-[70px]"
+            >
+              <span className="block">Learn AuthorBot,</span>
+              <span className="block">step by step</span>
+            </h1>
+
+            <p
+              data-reveal-step="paragraph"
+              className="mx-auto mt-4 max-w-[672px] font-sans text-[14px] font-normal leading-[1.55] tracking-normal text-copy sm:text-[16px] sm:leading-[1.6]"
+            >
+              Simple guides and video tutorials that take you from login to a live 24/7 AI sales assistant for your books.
+            </p>
+
+            <div
+              data-reveal-step="action"
+              className="mt-8 flex flex-col items-center gap-8"
+            >
+              <Button href="#getting-started">Start with the first guide</Button>
+
+              <div className="flex items-center justify-center gap-3">
+                <div className="flex items-start" aria-hidden="true">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg
+                      key={i}
+                      width="18"
+                      height="17"
+                      viewBox="0 0 18 17"
+                      fill="none"
+                      className="h-[17px] w-[18px]"
+                    >
+                      <path
+                        d="M9.05972 13.0318L3.86081 16.2071L5.27419 10.2811L0.648438 6.3187L6.72029 5.83224L9.05972 0.207031L11.3992 5.83224L17.4719 6.3187L12.8453 10.2811L14.2586 16.2071L9.05972 13.0318Z"
+                        fill="#B821EA"
+                      />
+                    </svg>
+                  ))}
+                </div>
+                <p className="font-sans text-base font-medium leading-[24.8px] text-copy">
+                  Rated by 2k+ users
+                </p>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
@@ -146,7 +203,7 @@ export default function HelpPage() {
       </nav>
 
       {guides.map((guide, index) => (
-        <section key={guide.id} id={guide.id} className={index % 2 ? "bg-[var(--theme-background-soft)]" : "bg-white"}>
+        <section key={guide.id} id={guide.id} className="bg-white">
           <div className={`mx-auto grid max-w-[1200px] items-center gap-10 px-5 pb-16 sm:px-8 md:grid-cols-2 md:gap-16 md:pb-20 ${index === 0 ? "pt-12" : "pt-16 md:pt-20"}`}>
             <div className={index % 2 ? "md:order-2" : ""}>
               <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.12em] text-[var(--theme-purple-brand)]">

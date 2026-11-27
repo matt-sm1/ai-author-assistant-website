@@ -1,6 +1,7 @@
 import { widgetImages } from "@/content/media";
 
 export const widgetCardsContent = {
+  badge: "Widget",
   heading: "Everything You Need To Engage Readers Smarter",
   description:
     "Lorem ipsum dolor sit amet consectetur. Suscipit viverra donec scelerisque tellus in vulputate. Cursus tempus congue faucibus faucibus dui feugiat sit.",

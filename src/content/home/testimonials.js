@@ -49,7 +49,7 @@ export const testimonialsContent = {
         "Setup was straightforward, and AuthorBot already sounds like me. My bookstore partners noticed fewer confused pre-order questions.",
       name: "Elena Rossi",
       role: "Author",
-      image: null,
+      image: "/images/home/test_5.webp",
       bg: "bg-[var(--theme-blue-pale)]",
     },
   ],

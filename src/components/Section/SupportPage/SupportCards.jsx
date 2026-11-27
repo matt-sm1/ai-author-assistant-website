@@ -1,4 +1,5 @@
 import { Heading, Paragraph } from "@/components/ui";
+import Badge from "@/components/ui/Badge/Badge.jsx";
 import { supportCardsContent } from "@/content/support/cards";
 
 export default function SupportCards({ content = supportCardsContent } = {}) {
@@ -9,6 +10,7 @@ export default function SupportCards({ content = supportCardsContent } = {}) {
     <section id="support-cards" className="section">
       <div className="container">
         <div className="mx-auto flex max-w-[900px] flex-col items-center gap-5 text-center">
+          {content.badge && <Badge>{content.badge}</Badge>}
           <Heading as="h2" className="max-w-[760px]">
             {content.heading}
           </Heading>

@@ -5,7 +5,7 @@ import { Button, Heading, Paragraph } from "@/components/ui";
 
 export default function FeaturesCta({
   content = featuresCtaContent,
-  badgeClassName = "text-white",
+  badgeClassName = "text-black",
 } = {}) {
   return (
     <section id="contact" className="section">

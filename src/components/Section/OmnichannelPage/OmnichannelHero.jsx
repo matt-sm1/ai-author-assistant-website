@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { integrationImages } from "@/content/media";
 import { omnichannelHeroContent } from "@/content/omnichannel/hero";
 import { Button } from "@/components/ui";
 
@@ -6,13 +7,19 @@ export default function OmnichannelHero({ content = omnichannelHeroContent } = {
   return (
     <section
       id="omnichannel-hero"
-      className="relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, #ffffff 0%, #eeeaff 45%, #fbe9f6 80%, #f5f5f5 100%)",
-      }}
+      className="relative overflow-hidden bg-[var(--theme-background-soft)] border-b border-[var(--theme-border-subtle)]"
     >
-      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center gap-8 px-5 pb-10 pt-28 text-center sm:gap-10 sm:px-8 lg:px-10">
+      <Image
+        src={integrationImages.heroBg}
+        alt=""
+        aria-hidden="true"
+        fill
+        priority
+        quality={100}
+        sizes="100vw"
+        className="pointer-events-none absolute inset-0 object-cover object-top"
+      />
+      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center border-x-[0.8px] border-white/40 px-5 pb-24 pt-32 text-center sm:px-8 sm:pb-28 sm:pt-40 lg:px-10 lg:pb-28 lg:pt-44">
         <div className="relative mx-auto w-full max-w-[900px]">
           <span
             data-reveal-step="badge"
@@ -27,6 +34,7 @@ export default function OmnichannelHero({ content = omnichannelHeroContent } = {
             width={270}
             height={270}
             sizes="90px"
+            data-bounce
             className="absolute -right-2 -top-6 hidden h-[90px] w-[90px] object-contain sm:-right-10 sm:block lg:-right-24"
           />
 

@@ -1,24 +1,25 @@
 import Image from "next/image";
 import { contactHeroContent } from "@/content/contact/hero";
-import { featureImages } from "@/content/media";
+import { integrationImages } from "@/content/media";
 import { Button } from "@/components/ui";
 
 export default function ContactHero({ content = contactHeroContent } = {}) {
   return (
     <section
       id="contact-hero"
-      className="relative overflow-hidden bg-[var(--theme-background-soft)]"
+      className="relative overflow-hidden bg-[var(--theme-background-soft)] border-b border-[var(--theme-border-subtle)]"
     >
       <Image
-        src={featureImages.heroBg}
+        src={integrationImages.heroBg}
         alt=""
         aria-hidden="true"
         fill
         priority
+        quality={100}
         sizes="100vw"
         className="pointer-events-none absolute inset-0 object-cover object-top"
       />
-      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center gap-8 px-5 pb-10 pt-28 text-center sm:gap-10 sm:px-8 lg:px-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center border-x-[0.8px] border-white/40 px-5 pb-24 pt-32 text-center sm:px-8 sm:pb-28 sm:pt-40 lg:px-10 lg:pb-28 lg:pt-44">
         <div className="relative mx-auto w-full max-w-[900px]">
           <span
             data-reveal-step="badge"
@@ -33,6 +34,7 @@ export default function ContactHero({ content = contactHeroContent } = {}) {
             width={160}
             height={160}
             sizes="90px"
+            data-bounce
             className="absolute -right-2 -top-6 hidden h-[90px] w-[90px] object-contain sm:-right-10 sm:block lg:-right-24"
           />
 

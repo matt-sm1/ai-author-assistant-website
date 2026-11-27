@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Heading, Paragraph } from "@/components/ui";
+import Badge from "@/components/ui/Badge/Badge.jsx";
 import { widgetCardsContent } from "@/content/widget/cards";
 
 export default function WidgetFeatureCards({
@@ -12,6 +13,7 @@ export default function WidgetFeatureCards({
     <section id="widget-features" className="section">
       <div className="container">
         <div className="mx-auto flex max-w-[900px] flex-col items-center gap-5 text-center">
+          {content.badge && <Badge>{content.badge}</Badge>}
           <Heading as="h2" className="max-w-[760px]">
             {content.heading}
           </Heading>
@@ -22,7 +24,7 @@ export default function WidgetFeatureCards({
           {rowIds.map((rowId) => (
             <div
               key={rowId}
-              className="flex w-full flex-wrap justify-center gap-6"
+              className="flex w-full flex-wrap justify-center gap-6 md:gap-8"
             >
               {cards
                 .filter((card) => card.row === rowId)
@@ -31,7 +33,7 @@ export default function WidgetFeatureCards({
                     key={card.id}
                     data-reveal
                     data-card-hover
-                    className="flex w-full items-start gap-3 rounded-[20px] p-[30px] sm:w-[318px]"
+                    className="flex w-full items-start gap-4 rounded-[20px] p-[30px] sm:w-[318px]"
                     style={{ background: card.background }}
                   >
                     <Image

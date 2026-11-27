@@ -3,10 +3,10 @@ import { crmImages } from "@/content/media";
 export const crmAccordionContent = {
   heading: "Manage Every Reader Conversation From One Place",
   description:
-    "Customize how AuthorBot looks, welcomes visitors, and starts conversations to create a seamless experience on your author website.",
+    "Keep track of every reader, their preferences, and their journey — all in one organized place.",
   image: crmImages.accordionIllustration,
   imageAlt: "AuthorBot robot beside a chat widget on an author website",
-  defaultOpenId: "auto-open",
+  defaultOpenId: "reader-profile",
   items: [
     {
       id: "reader-profile",

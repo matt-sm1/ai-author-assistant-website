@@ -1,6 +1,6 @@
 "use client";
 
-import { FiPlus, FiMinus } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 export default function OmnichannelAccordionItem({
   id,
@@ -10,7 +10,7 @@ export default function OmnichannelAccordionItem({
   open,
   onToggle,
 }) {
-  const Icon = open ? FiMinus : FiPlus;
+  const Icon = open ? FiChevronUp : FiChevronDown;
 
   return (
     <div className="w-full border-b border-[#d9d9d9] last:border-b-0">

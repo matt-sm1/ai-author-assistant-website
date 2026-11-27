@@ -32,8 +32,8 @@ export default async function FeaturesArticles() {
   }
 
   return (
-    <section id="articles" className="section !border-b-0">
-      <div className="container !border-x-0 !py-3 sm:!py-4">
+    <section id="articles" className="section">
+      <div className="container !py-3 sm:!py-4">
         <FeaturesPanel>
           <SectionInfo
             badge={featuresArticlesContent.badge}

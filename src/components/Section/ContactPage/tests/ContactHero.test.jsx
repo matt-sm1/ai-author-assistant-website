@@ -2,7 +2,7 @@ import React from "react";
 import { describe, expect, it, afterEach } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import ContactHero from "../ContactHero";
-import { featureImages } from "@/content/media";
+import { integrationImages } from "@/content/media";
 
 const content = {
   badge: "Contact Us",
@@ -50,6 +50,6 @@ describe("ContactHero", () => {
 
   it("uses the existing decorative hero background", () => {
     const { container } = render(<ContactHero content={content} />);
-    expect(container.querySelector('img[alt=""]')).toHaveAttribute("src", featureImages.heroBg);
+    expect(container.querySelector('img[alt=""]')).toHaveAttribute("src", integrationImages.heroBg);
   });
 });

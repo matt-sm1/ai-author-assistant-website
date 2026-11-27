@@ -3,10 +3,10 @@ import { analyticsImages } from "@/content/media";
 export const analyticsAccordionContent = {
   heading: "See What Your AuthorBot Is Really Achieving",
   description:
-    "Customize how AuthorBot looks, welcomes visitors, and starts conversations to create a seamless experience on your author website.",
+    "Track reader engagement, monitor performance trends, and understand what drives your audience to take action.",
   image: analyticsImages.accordionIllustration,
   imageAlt: "AuthorBot robot beside a chat widget on an author website",
-  defaultOpenId: "engagement",
+  defaultOpenId: "performance",
   items: [
     {
       id: "performance",

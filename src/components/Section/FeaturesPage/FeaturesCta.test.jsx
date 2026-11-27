@@ -16,17 +16,17 @@ describe("FeaturesCta", () => {
     cleanup();
   });
 
-  it("keeps the badge white by default", () => {
+  it("keeps the badge black by default", () => {
     render(<FeaturesCta content={content} />);
 
-    expect(screen.getByText("Ready to grow?")).toHaveClass("text-white");
+    expect(screen.getByText("Ready to grow?")).toHaveClass("text-black");
   });
 
   it("applies a custom badge color when provided", () => {
-    render(<FeaturesCta content={content} badgeClassName="text-black" />);
+    render(<FeaturesCta content={content} badgeClassName="text-white" />);
 
     const badge = screen.getByText("Ready to grow?");
-    expect(badge).toHaveClass("text-black");
-    expect(badge).not.toHaveClass("text-white");
+    expect(badge).toHaveClass("text-white");
+    expect(badge).not.toHaveClass("text-black");
   });
 });

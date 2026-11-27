@@ -3,10 +3,10 @@ import { uploadBookImages } from "@/content/media";
 export const uploadBookAccordionContent = {
   heading: "Turn Every Book Into An AI-Powered Sales Assistant",
   description:
-    "Customize how AuthorBot looks, welcomes visitors, and starts conversations to create a seamless experience on your author website.",
+    "Add your titles, set where they sell, and let AuthorBot guide every reader toward the right book.",
   image: uploadBookImages.accordionIllustration,
   imageAlt: "AuthorBot robot beside a chat widget on an author website",
-  defaultOpenId: "book-availability",
+  defaultOpenId: "add-books",
   items: [
     {
       id: "add-books",

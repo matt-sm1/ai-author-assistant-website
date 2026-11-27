@@ -1,3 +1,5 @@
+import { supportImages } from "@/content/media";
+
 export const featuresHeroContent = {
   badge: "✨ Product Features",
   headingLine1: "Turn Your Books Into",
@@ -7,4 +9,6 @@ export const featuresHeroContent = {
   buttonLabel: "Get In Touch",
   buttonHref: "/#contact",
   ratingLabel: "Rated by 2k+ users",
+  robotImage: supportImages.heroRobot,
+  robotAlt: "AuthorBot robot icon",
 };

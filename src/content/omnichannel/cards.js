@@ -2,6 +2,7 @@ import { TbMessages, TbRobot, TbInbox, TbUsers, TbClock } from "react-icons/tb";
 
 export const omnichannelCardsContent = {
   // Heading and descriptions are placeholders copied from the analytics page until final copy is provided.
+  badge: "Omnichannel",
   heading: "Support For Every Step Of Your AuthorBot Journey",
   description:
     "Lorem ipsum dolor sit amet consectetur. Suscipit viverra donec scelerisque tellus in vulputate. Cursus tempus congue faucibus faucibus dui feugiat sit.",

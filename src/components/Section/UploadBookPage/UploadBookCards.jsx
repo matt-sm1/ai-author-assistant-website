@@ -1,4 +1,5 @@
 import { Heading, Paragraph } from "@/components/ui";
+import Badge from "@/components/ui/Badge/Badge.jsx";
 import { uploadBookCardsContent } from "@/content/upload-book/cards";
 
 export default function UploadBookCards({ content = uploadBookCardsContent } = {}) {
@@ -9,6 +10,7 @@ export default function UploadBookCards({ content = uploadBookCardsContent } = {
     <section id="upload-book-cards" className="section">
       <div className="container">
         <div className="mx-auto flex max-w-[900px] flex-col items-center gap-5 text-center">
+          {content.badge && <Badge>{content.badge}</Badge>}
           <Heading as="h2" className="max-w-[760px]">
             {content.heading}
           </Heading>
@@ -30,17 +32,17 @@ export default function UploadBookCards({ content = uploadBookCardsContent } = {
                       key={card.id}
                       data-reveal
                       data-card-hover
-                      className="flex w-full items-start gap-5 rounded-[20px] p-[30px] sm:w-[410px]"
+                      className="flex w-full items-start gap-4 rounded-[20px] p-[30px] sm:w-[318px]"
                       style={{ background: card.background }}
                     >
-                      <span className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-white text-[var(--theme-purple-brand)]">
-                        <Icon className="h-7 w-7" aria-hidden="true" />
+                      <span className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[12px] bg-white text-[var(--theme-purple-brand)]">
+                        <Icon className="h-6 w-6" aria-hidden="true" />
                       </span>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="font-display text-[20px] font-semibold leading-[28px] text-heading">
+                      <div className="flex flex-col gap-1">
+                        <h3 className="font-display text-[18px] font-semibold leading-[25px] text-heading">
                           {card.title}
                         </h3>
-                        <p className="font-sans text-[16px] leading-[24px] text-copy">
+                        <p className="font-sans text-[14px] leading-[21px] text-copy">
                           {card.description}
                         </p>
                       </div>

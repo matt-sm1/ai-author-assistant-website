@@ -1,6 +1,6 @@
 "use client";
 
-import { FiPlus, FiMinus } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 export default function WidgetAccordionItem({
   id,
@@ -9,7 +9,7 @@ export default function WidgetAccordionItem({
   open,
   onToggle,
 }) {
-  const Icon = open ? FiMinus : FiPlus;
+  const Icon = open ? FiChevronUp : FiChevronDown;
 
   return (
     <div data-reveal className="w-full overflow-hidden rounded-[12px] bg-white">

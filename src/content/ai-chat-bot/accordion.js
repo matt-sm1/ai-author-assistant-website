@@ -3,10 +3,10 @@ import { aiChatBotImages } from "@/content/media";
 export const aiChatBotAccordionContent = {
   heading: "Turn Every Website Visit Into A Helpful Conversation",
   description:
-    "Customize how AuthorBot looks, welcomes visitors, and starts conversations to create a seamless experience on your author website.",
+    "Customize how AuthorBot looks, welcomes visitors, and starts conversations to fit your brand and engage readers from the first message.",
   image: aiChatBotImages.accordionIllustration,
   imageAlt: "AuthorBot robot beside a chat widget on an author website",
-  defaultOpenId: "instant-guidance",
+  defaultOpenId: "truly-yours",
   items: [
     {
       id: "truly-yours",

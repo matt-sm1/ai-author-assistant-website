@@ -17,6 +17,47 @@ const utilityPages = [
   { label: "FAQ", href: "/#faq" },
 ];
 
+const socialLinks = [
+  {
+    label: "Facebook",
+    href: "https://facebook.com",
+    icon: (
+      <svg className="h-4 w-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.5 1.6-1.5H16.7V5c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1V11H7.7v3h2.6v8h3.2z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Instagram",
+    href: "https://instagram.com",
+    icon: (
+      <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect width="18" height="18" x="3" y="3" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    label: "Twitter",
+    href: "https://twitter.com",
+    icon: (
+      <svg className="h-4 w-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M22 5.9c-.7.3-1.5.5-2.4.6.9-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1-.8-.8-1.9-1.3-3.1-1.3-2.3 0-4.2 1.9-4.2 4.2 0 .3 0 .6.1 1-3.5-.2-6.6-1.9-8.6-4.4-.4.6-.6 1.3-.6 2.1 0 1.5.7 2.8 1.9 3.5-.7 0-1.3-.2-1.9-.5v.1c0 2 1.4 3.7 3.4 4.1-.3.1-.7.1-1.1.1-.3 0-.5 0-.8-.1.5 1.7 2.1 2.9 3.9 2.9-1.4 1.1-3.2 1.8-5.2 1.8-.3 0-.7 0-1-.1 1.9 1.2 4.1 1.9 6.5 1.9 7.8 0 12-6.4 12-12v-.5c.8-.6 1.5-1.4 2-2.3z" />
+      </svg>
+    ),
+  },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com",
+    icon: (
+      <svg className="h-4 w-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.3 18.3H5.7V10h2.6v8.3zM7 8.9c-.9 0-1.5-.6-1.5-1.5S6.1 6 7 6s1.5.6 1.5 1.5S7.9 8.9 7 8.9zm11.3 9.4h-2.6v-4.3c0-1-.4-1.8-1.4-1.8-.8 0-1.2.5-1.4 1-.1.2-.1.5-.1.7v4.4h-2.6V10h2.5v1.1c.4-.6 1.1-1.3 2.4-1.3 1.8 0 3.2 1.2 3.2 3.7v4.8z" />
+      </svg>
+    ),
+  },
+];
+
 export default function Footer() {
   return (
     <footer className="section white">
@@ -51,7 +92,7 @@ export default function Footer() {
             </form>
           </div>
 
-          <div className="grid w-full grid-cols-2 gap-10 sm:gap-16 lg:flex-1 lg:justify-between">
+          <div className="grid w-full grid-cols-2 gap-10 sm:grid-cols-3 sm:gap-12 lg:flex-1 lg:justify-between">
             <div>
               <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-heading)]">
                 Main Pages
@@ -89,6 +130,28 @@ export default function Footer() {
                 ))}
               </ul>
             </div>
+
+            <div>
+              <h4 className="font-sans text-base font-medium leading-[24.8px] text-[var(--theme-heading)]">
+                Follow us
+              </h4>
+
+              <ul className="mt-5 space-y-4">
+                {socialLinks.map((s) => (
+                  <li key={s.label}>
+                    <a
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 font-sans text-base leading-[24.8px] text-[var(--theme-heading)] transition hover:opacity-75"
+                    >
+                      {s.icon}
+                      <span>{s.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -99,17 +162,17 @@ export default function Footer() {
 
           <div className="flex flex-wrap gap-6">
             <Link
-              href="#faq"
+              href="/privacy-policy"
               className="font-sans text-[14px] leading-[21.7px] text-[var(--theme-copy)] transition hover:text-[var(--theme-heading)]"
             >
-              FAQ
+              Privacy Policy
             </Link>
 
             <Link
-              href="#contact"
+              href="/terms-of-service"
               className="font-sans text-[14px] leading-[21.7px] text-[var(--theme-copy)] transition hover:text-[var(--theme-heading)]"
             >
-              Contact
+              Terms of Service
             </Link>
           </div>
         </div>

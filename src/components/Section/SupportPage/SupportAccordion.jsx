@@ -9,9 +9,9 @@ import { supportAccordionContent } from "@/content/support/accordion";
 export default function SupportAccordion({
   content = supportAccordionContent,
 } = {}) {
-  const [openId, setOpenId] = useState(content.defaultOpenId);
   const items = Array.isArray(content.items) ? content.items : [];
-  const activeItem = items.find((item) => item.id === openId);
+  const [openId, setOpenId] = useState(content.defaultOpenId ?? items[0]?.id);
+  const activeItem = items.find((item) => item.id === openId) ?? items[0];
   const activeImage = activeItem?.image || content.image;
   const activeImageAlt = activeItem?.imageAlt || content.imageAlt;
 
@@ -31,8 +31,13 @@ export default function SupportAccordion({
           </div>
 
           <div className="flex flex-col gap-6">
-            <Heading as="h2">{content.heading}</Heading>
-            <Paragraph>{content.description}</Paragraph>
+            <Heading
+              as="h2"
+              className="!mx-0 !text-left !text-[26px] !leading-[34px] sm:!text-[32px] sm:!leading-[40px] md:!text-[40px] md:!leading-[48px]"
+            >
+              {content.heading}
+            </Heading>
+            <Paragraph className="!mx-0 !text-left">{content.description}</Paragraph>
 
             <div className="mt-2 flex flex-col">
               {items.map((item, index) => (
@@ -43,9 +48,7 @@ export default function SupportAccordion({
                   title={item.title}
                   description={item.description}
                   open={openId === item.id}
-                  onToggle={() =>
-                    setOpenId(openId === item.id ? null : item.id)
-                  }
+                  onToggle={() => setOpenId(item.id)}
                 />
               ))}
             </div>

@@ -1,6 +1,7 @@
 import { TbBook, TbClock, TbCode, TbPalette, TbUserPlus } from "react-icons/tb";
 
 export const aiChatBotCardsContent = {
+  badge: "AI Chatbot",
   heading: "Everything You Need To Turn Conversations Into Book Sales",
   // Placeholder: the mockup shows lorem ipsum here, so this copy is provisional.
   description:

@@ -110,7 +110,7 @@ export default function Header() {
   return (
     <header
       data-enter="navbar"
-      className={`sticky top-0 z-50 h-24 w-full transition-[background-color,box-shadow] duration-300 ${
+      className={`sticky top-0 z-50 h-24 w-full border-b-[0.8px] border-[var(--theme-border)] transition-[background-color,box-shadow] duration-300 ${
         overlayHero ? "-mb-24" : ""
       } ${
         scrolled || menuOpen || !overlayHero

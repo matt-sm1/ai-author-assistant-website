@@ -3,10 +3,10 @@ import { supportImages } from "@/content/media";
 export const supportAccordionContent = {
   heading: "Expert Support For Every Step Of Your AuthorBot Journey",
   description:
-    "Customize how AuthorBot looks, welcomes visitors, and starts conversations to create a seamless experience on your author website.",
+    "Get reliable help at every stage — from initial setup to billing, integrations, and beyond.",
   image: supportImages.accordionIllustration,
   imageAlt: "AuthorBot robot beside a chat widget on an author website",
-  defaultOpenId: "setup",
+  defaultOpenId: "help",
   items: [
     {
       id: "help",

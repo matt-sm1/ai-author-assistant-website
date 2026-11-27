@@ -3,10 +3,10 @@ import { omnichannelImages } from "@/content/media";
 export const omnichannelAccordionContent = {
   heading: "Manage Every Reader Conversation From One Place",
   description:
-    "Customize how AuthorBot looks, welcomes visitors, and starts conversations to create a seamless experience on your author website.",
+    "Connect every messaging channel to one hub so no reader conversation ever slips through the cracks.",
   image: omnichannelImages.accordionIllustration,
   imageAlt: "AuthorBot robot beside a chat widget on an author website",
-  defaultOpenId: "one-ai",
+  defaultOpenId: "one-inbox",
   items: [
     {
       id: "one-inbox",

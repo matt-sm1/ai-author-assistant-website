@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { featureImages } from "@/content/media";
+import { integrationImages } from "@/content/media";
 import { widgetHeroContent } from "@/content/widget/hero";
 import { Button } from "@/components/ui";
 
@@ -7,10 +7,10 @@ export default function WidgetHero({ content = widgetHeroContent } = {}) {
   return (
     <section
       id="widget-hero"
-      className="relative overflow-hidden bg-[var(--theme-background-soft)]"
+      className="relative overflow-hidden bg-[var(--theme-background-soft)] border-b border-[var(--theme-border-subtle)]"
     >
       <Image
-        src={featureImages.heroBg}
+        src={integrationImages.heroBg}
         alt=""
         aria-hidden="true"
         fill
@@ -20,7 +20,7 @@ export default function WidgetHero({ content = widgetHeroContent } = {}) {
         className="pointer-events-none absolute inset-0 object-cover object-top"
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center gap-8 px-5 pb-10 pt-28 text-center sm:gap-10 sm:px-8 lg:px-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1344px] flex-col items-center border-x-[0.8px] border-white/40 px-5 pb-24 pt-32 text-center sm:px-8 sm:pb-28 sm:pt-40 lg:px-10 lg:pb-28 lg:pt-44">
         <div className="relative mx-auto w-full max-w-[900px]">
           <span
             data-reveal-step="badge"
@@ -28,6 +28,18 @@ export default function WidgetHero({ content = widgetHeroContent } = {}) {
           >
             {content.badge}
           </span>
+
+          {content.robotImage ? (
+            <Image
+              src={content.robotImage}
+              alt={content.robotAlt || "AuthorBot robot icon"}
+              width={270}
+              height={270}
+              sizes="90px"
+              data-bounce
+              className="absolute -right-2 -top-6 hidden h-[90px] w-[90px] object-contain sm:-right-10 sm:block lg:-right-24"
+            />
+          ) : null}
 
           <h1
             data-reveal-step="heading"
