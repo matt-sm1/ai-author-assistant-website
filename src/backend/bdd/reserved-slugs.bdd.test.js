@@ -30,6 +30,63 @@ describe("Feature: Reserved post slugs", () => {
     });
   });
 
+  describe("Scenario: resolvePostSlug honors manual slugs", () => {
+    it("Given an explicit unique slug, When resolvePostSlug, Then that slug is used", async () => {
+      const findBySlug = vi.fn().mockResolvedValue(null);
+      const service = new PostService({ findBySlug }, {}, {}, {});
+
+      const slug = await service.resolvePostSlug(
+        { requestedSlug: "my-custom-slug", title: "Other Title" },
+        {},
+      );
+
+      expect(slug).toBe("my-custom-slug");
+      expect(findBySlug).toHaveBeenCalledWith("my-custom-slug", {});
+    });
+
+    it("Given a slug taken by another post, When resolvePostSlug, Then conflict", async () => {
+      const findBySlug = vi
+        .fn()
+        .mockResolvedValue({ id: "other-post" });
+      const service = new PostService({ findBySlug }, {}, {}, {});
+
+      await expect(
+        service.resolvePostSlug(
+          { requestedSlug: "taken-slug", title: "Title" },
+          {},
+        ),
+      ).rejects.toMatchObject({ message: "This URL slug is already in use" });
+    });
+
+    it("Given empty slug, When resolvePostSlug, Then unique slug from title", async () => {
+      const findBySlug = vi.fn().mockResolvedValue(null);
+      const service = new PostService({ findBySlug }, {}, {}, {});
+
+      const slug = await service.resolvePostSlug(
+        { requestedSlug: "", title: "Hello World" },
+        {},
+      );
+
+      expect(slug).toBe("hello-world");
+    });
+
+    it("Given freed slug and excludeId, When resolvePostSlug, Then slug is reusable", async () => {
+      const findBySlug = vi.fn().mockResolvedValue({ id: "same-post" });
+      const service = new PostService({ findBySlug }, {}, {}, {});
+
+      const slug = await service.resolvePostSlug(
+        {
+          requestedSlug: "reclaimed-slug",
+          title: "Title",
+          excludeId: "same-post",
+        },
+        {},
+      );
+
+      expect(slug).toBe("reclaimed-slug");
+    });
+  });
+
   describe("Scenario: Unique slug generation skips reserved bases", () => {
     it("Given title Admin, When getUniqueSlug, Then admin-2 is chosen", async () => {
       const findBySlug = vi.fn().mockResolvedValue(null);

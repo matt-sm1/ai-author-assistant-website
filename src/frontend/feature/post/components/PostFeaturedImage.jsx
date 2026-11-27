@@ -1,15 +1,33 @@
 import MediaImage from "@/frontend/components/ui/MediaImage";
+import { cn } from "@/frontend/lib/utils";
 
-export default function PostFeaturedImage({ src, title }) {
+function featuredIsVideo(src) {
+  return /\/video\/upload\/|\.(?:mp4|m4v|mov|ogv|ogg|webm|m3u8)(?:[?#]|$)/i.test(
+    src,
+  );
+}
+
+export default function PostFeaturedImage({
+  src,
+  title,
+  alt,
+  variant = "hero",
+}) {
   if (!src) return null;
 
-  const isVideo =
-    /\/video\/upload\/|\.(?:mp4|m4v|mov|ogv|ogg|webm|m3u8)(?:[?#]|$)/i.test(
-      src,
-    );
+  const isVideo = featuredIsVideo(src);
+  const imageAlt = alt?.trim() || (title ? `Featured image for ${title}` : "");
+  const isInline = variant === "inline";
 
   return (
-    <div className="relative aspect-[16/8] w-full overflow-hidden bg-muted">
+    <div
+      className={cn(
+        "relative w-full overflow-hidden bg-muted",
+        isInline
+          ? "mx-auto aspect-[16/9] max-h-[28rem] rounded-xl"
+          : "aspect-[16/8]",
+      )}
+    >
       {isVideo ? (
         <video
           className="h-full w-full object-cover"
@@ -24,10 +42,14 @@ export default function PostFeaturedImage({ src, title }) {
       ) : (
         <MediaImage
           src={src}
-          alt={title ? `Featured image for ${title}` : ""}
+          alt={imageAlt}
           fill
-          priority
-          sizes="(max-width: 1024px) 100vw, 1024px"
+          priority={!isInline}
+          sizes={
+            isInline
+              ? "(max-width: 1024px) 100vw, 1344px"
+              : "(max-width: 1024px) 100vw, 1024px"
+          }
           className="object-cover"
         />
       )}

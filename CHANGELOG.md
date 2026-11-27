@@ -5,6 +5,10 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## [Unreleased]
 
+### Public blog article layout + editable URL slug
+- **`BlogArticle` / `PostArticle`**: full container width; order is title → author/date → divider → moderate inline featured image (`PostFeaturedImage` `variant="inline"`) → body. Reverses 2026-10-29 rule that hid featured media on article pages (product choice: always show when set).
+- **Post editor**: URL slug is editable in the sidebar; save/autosave send `slug`; title no longer overwrites slug after manual edit. Server `resolvePostSlug` honors explicit unique slugs so reclaimed slugs work after delete (no silent `-2` when slug is set and free).
+
 ### Featured image upload metadata (blog admin)
 - `MediaPicker` (post featured image and in-article insert): after a new upload finishes, opens the same **Media Details** dialog as the media library (optional image title, alt text, caption, description). Cancel or Save skips or persists metadata; user still confirms **Select** to apply the file.
 - Migration `013_media_title.sql` adds optional `media.title`; PATCH `/api/media/:id`, repository, and `MediaDetailsDialog` accept the same fields as library edits.
@@ -150,9 +154,8 @@ Newest entries first. Agents must read this before implementing, and append afte
 
 ## 2026-10-29
 
-### Post page layout (locked)
-- Public post page (`BlogArticle`): **title → byline (author + date) → body**. Do **not** render `featured_image` as a hero above content — it duplicates assets already in HTML and was removed again in `91ad152`.
-- `featured_image` remains for listing cards, home/features article cards, and OG/Twitter meta only.
+### Post page layout (superseded 2026-11-28)
+- Former rule: no featured image on article body. **Superseded:** title → byline → divider → inline featured image → body (see `[Unreleased]`).
 
 ### Durable Hostinger media boundary (ADR 0003) — verified on production
 - **Status (29 Oct evening):** `/blogs/temp` and CDN media with `?v=20261029` load correctly on `authoraiassistant.com` after `9d82ffd` + layout fix `91ad152`.

@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { generateSlug, isReservedSlug } from "@/shared/slug";
 
 const nullableText = (max) =>
   yup.string().trim().max(max).nullable().default(null);
@@ -31,6 +32,24 @@ export const postSchema = yup.object({
   }),
 
   excerpt: nullableText(2000),
+
+  slug: yup
+    .string()
+    .trim()
+    .transform((value) => generateSlug(value))
+    .max(200, "URL slug cannot exceed 200 characters.")
+    .test(
+      "slug-characters",
+      "URL slug must contain letters or numbers.",
+      (value) => !value || value.length >= 1,
+    )
+    .test(
+      "slug-reserved",
+      "This URL slug is reserved.",
+      (value) => !value || !isReservedSlug(value),
+    )
+    .optional(),
+
   featuredImage: nullableText(2048),
 
   featuredMediaId: yup

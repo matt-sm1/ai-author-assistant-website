@@ -7,8 +7,10 @@ import PostContentRenderer from "@/frontend/feature/post/components/PostContentR
 import PostFeaturedImage from "@/frontend/feature/post/components/PostFeaturedImage";
 
 export default function PostArticle({ post }) {
+  const tags = Array.isArray(post.tags) ? post.tags : [];
+
   return (
-    <article className="mx-auto w-full max-w-5xl space-y-6">
+    <article className="mx-auto w-full space-y-6">
       <div className="flex items-center justify-between gap-3">
         <Button asChild variant="ghost" className="rounded-xl">
           <Link href="/admin/post">
@@ -20,9 +22,7 @@ export default function PostArticle({ post }) {
       </div>
 
       <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-        <PostFeaturedImage src={post.featured_image} title={post.title} />
-
-        <div className="mx-auto  space-y-6 px-5 py-8 sm:px-10 sm:py-12">
+        <div className="space-y-6 px-5 py-8 sm:px-10 sm:py-12">
           <header className="space-y-4">
             {post.category_name && (
               <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -40,7 +40,7 @@ export default function PostArticle({ post }) {
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b pb-5 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
               {post.author?.name && <span>By {post.author.name}</span>}
               {post.published_at && (
                 <span className="inline-flex items-center gap-1.5">
@@ -51,15 +51,23 @@ export default function PostArticle({ post }) {
             </div>
           </header>
 
+          <hr className="border-0 border-t" />
+
+          <PostFeaturedImage
+            src={post.featured_image}
+            title={post.title}
+            variant="inline"
+          />
+
           <PostContentRenderer content={post.content} />
 
-          {post.tags.length > 0 && (
+          {tags.length > 0 && (
             <footer className="flex flex-wrap items-center gap-2 border-t pt-5">
               <Tag
                 aria-hidden="true"
                 className="mr-1 h-4 w-4 text-muted-foreground"
               />
-              {post.tags.map((tag) => (
+              {tags.map((tag) => (
                 <span
                   key={tag.id}
                   className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"

@@ -59,8 +59,9 @@ URLs. Nested requests against a flat disk 404 — media disappeared on the site.
   `.htaccess.bak-redirect-fix` — **do not restore it**.
 - Happy-path construction of `/media/media/...` in `publicUrlForKey` or UI helpers.
 - Duplicating Hostinger URL rewrite logic outside `src/shared/hostinger-media-url.js`.
-- Re-adding a featured-image hero on `BlogArticle` without an explicit product
-  change (causes double images when the asset is also in post HTML).
+- Full-bleed featured heroes above the title on `BlogArticle` (use inline
+  variant below byline only; duplicating in-content assets is an accepted
+  product tradeoff when both are set).
 - Leaving third-party or `data:` image URLs in saved/published post HTML.
 - Auto-applying MediaPicker uploads without an explicit Select confirm.
 

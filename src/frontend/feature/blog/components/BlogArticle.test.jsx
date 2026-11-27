@@ -46,4 +46,39 @@ describe("BlogArticle", () => {
       screen.getByRole("heading", { name: "Related content" }),
     );
   });
+
+  it("renders featured image after title and before body content", () => {
+    const { container } = render(
+      <BlogArticle
+        post={{
+          title: "Featured layout",
+          author: { name: "Jane Author" },
+          published_at: "2026-01-15T12:00:00.000Z",
+          featured_image: "https://cdn.example.com/hero.webp",
+          content: "<p>Body paragraph</p>",
+        }}
+      />,
+    );
+
+    const heading = screen.getByRole("heading", { name: "Featured layout" });
+    const image = screen.getByRole("img", {
+      name: "Featured image for Featured layout",
+    });
+    const body = screen.getByText("Body paragraph");
+
+    const documentPositions = [
+      heading.compareDocumentPosition(image) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      image.compareDocumentPosition(body) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ];
+
+    expect(documentPositions).toEqual([
+      Node.DOCUMENT_POSITION_FOLLOWING,
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    ]);
+    expect(container.querySelector("article")).toHaveClass("w-full");
+    expect(container.querySelector("article")?.className).not.toMatch(
+      /max-w-3xl/,
+    );
+  });
 });

@@ -1,3 +1,5 @@
+import { slugify } from "@/frontend/lib/format";
+
 /**
  * Draft lifecycle helpers for the post editor.
  * Draft = posts row with status 'draft' (no separate drafts table).
@@ -48,8 +50,12 @@ export function buildDraftAutosavePayload(formData) {
     ? formData.title.trim()
     : UNTITLED_DRAFT_TITLE;
 
+  const slug =
+    slugify(formData.slug) || slugify(formData.title) || slugify(title);
+
   return {
     title,
+    slug: slug || undefined,
     content: formData.content || null,
     excerpt: formData.excerpt || null,
     featuredImage: formData.featuredImage || null,

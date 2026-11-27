@@ -1,5 +1,6 @@
 import * as yup from "yup";
 
+import { generateSlug, isReservedSlug } from "@/backend/utils/slug.util";
 import { AppError } from "@/backend/errors/app-error";
 import { HTTP_STATUS } from "@/backend/constants/http-status";
 import { ERROR_CODES } from "@/backend/constants/error-codes";
@@ -124,8 +125,23 @@ const createPostSchema = yup
 
     excerpt: nullableText(2000),
 
-
-    
+    slug: yup
+      .string()
+      .trim()
+      .transform((value) => generateSlug(value))
+      .max(200, "URL slug cannot exceed 200 characters")
+      .test(
+        "slug-characters",
+        "URL slug must contain letters or numbers",
+        (value) => !value || value.length >= 1,
+      )
+      .test(
+        "slug-reserved",
+        "This URL slug is reserved",
+        (value) => !value || !isReservedSlug(value),
+      )
+      .optional()
+      .default(""),
 
     featuredMediaId: yup
       .string()

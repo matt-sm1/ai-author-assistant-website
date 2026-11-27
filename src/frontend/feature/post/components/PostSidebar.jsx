@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Image as ImageIcon, X } from "lucide-react";
+import { slugify } from "@/frontend/lib/format";
 import MediaImage from "@/frontend/components/ui/MediaImage";
 
 import useCategories from "@/frontend/feature/category/hooks/useCategories";
@@ -528,14 +530,34 @@ export default function PostSidebar({
           <Input
             id="post-slug"
             value={post.slug ?? ""}
-            readOnly
-            className="mt-1 rounded-lg bg-muted"
+            onChange={(event) =>
+              onFieldChange?.("slug", event.target.value)
+            }
+            onBlur={(event) =>
+              onFieldChange?.("slug", slugify(event.target.value))
+            }
+            className="mt-1 rounded-lg"
             placeholder="Generated from title"
+            spellCheck={false}
+            autoComplete="off"
           />
 
           <p className="mt-1 text-xs text-muted-foreground">
-            Automatically generated from the post title.
+            Used in the public URL. Must be unique; edit to reclaim a slug after
+            deleting another post.
           </p>
+          {post.slug ? (
+            <p className="mt-1 text-xs">
+              <Link
+                href={`/blogs/${post.slug}`}
+                className="text-primary underline-offset-2 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Preview /blogs/{post.slug}
+              </Link>
+            </p>
+          ) : null}
         </div>
       </PostSection>
     </aside>

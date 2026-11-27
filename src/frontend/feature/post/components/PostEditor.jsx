@@ -238,6 +238,7 @@ function PostEditorForm({
   const submitLock = useRef(createSubmitLock()).current;
   const recoveryTimer = useRef(null);
   const mountedRef = useRef(true);
+  const slugTouchedRef = useRef(false);
 
   const { createPost, updatePost, deletePost, isCreating, isUpdating } =
     usePostMutations();
@@ -322,6 +323,12 @@ function PostEditorForm({
       formData.featuredImage?.trim(),
   );
 
+  useEffect(() => {
+    if (isEditMode && existingPost?.slug) {
+      slugTouchedRef.current = true;
+    }
+  }, [isEditMode, existingPost?.slug]);
+
   const updateField = (field, value) => {
     setFormData((previous) => ({
       ...previous,
@@ -329,11 +336,20 @@ function PostEditorForm({
     }));
   };
 
+  const handleFieldChange = (field, value) => {
+    if (field === "slug") {
+      slugTouchedRef.current = true;
+      updateField("slug", slugify(value));
+      return;
+    }
+    updateField(field, value);
+  };
+
   const handleTitleChange = (value) => {
     setFormData((previous) => ({
       ...previous,
       title: value,
-      slug: slugify(value),
+      ...(slugTouchedRef.current ? {} : { slug: slugify(value) }),
     }));
   };
 
@@ -427,6 +443,7 @@ function PostEditorForm({
 
       const payload = {
         title: formData.title,
+        slug: slugify(formData.slug) || slugify(formData.title) || undefined,
         content: formData.content || null,
         excerpt: formData.excerpt || null,
         featuredImage: formData.featuredImage || null,
@@ -689,7 +706,7 @@ function PostEditorForm({
           onCategoryChange={(value) => updateField("category", value)}
           onAuthorChange={(value) => updateField("authorId", value)}
           onTagsChange={(value) => updateField("tags", value)}
-          onFieldChange={updateField}
+          onFieldChange={handleFieldChange}
           onOpenMediaPicker={() => setMediaPickerOpen(true)}
           onFeaturedImageRemove={() => {
             setFormData((previous) => ({

@@ -2,6 +2,7 @@ import { CalendarDays, Tag } from "lucide-react";
 
 import { fmtArticleDate } from "@/frontend/lib/format";
 import PostContentRenderer from "@/frontend/feature/post/components/PostContentRenderer";
+import PostFeaturedImage from "@/frontend/feature/post/components/PostFeaturedImage";
 
 export default function BlogArticle({ post }) {
   const tags = Array.isArray(post.tags) ? post.tags : [];
@@ -9,9 +10,9 @@ export default function BlogArticle({ post }) {
   return (
     <section className="section">
       <div className="container">
-        <article data-no-reveal className="mx-auto w-full max-w-3xl">
+        <article data-no-reveal className="w-full">
           <div className="overflow-hidden rounded-xl bg-white p-1.5 shadow-[var(--shadow-card-sm)]">
-              <div className="space-y-6 px-5 py-8 sm:px-10 sm:py-12">
+            <div className="space-y-6 px-5 py-8 sm:px-10 sm:py-12">
               <header className="space-y-4">
                 {post.category_name && (
                   <span className="inline-flex rounded-full bg-[var(--theme-purple-wash,#f6e6ff)] px-3 py-1 text-xs font-semibold text-[var(--theme-accent)]">
@@ -23,7 +24,7 @@ export default function BlogArticle({ post }) {
                   {post.title || "Untitled post"}
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-[var(--line)] pb-5 text-sm text-copy">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-copy">
                   {post.author?.name && <span>By {post.author.name}</span>}
                   {post.published_at && (
                     <span className="inline-flex items-center gap-1.5">
@@ -33,6 +34,14 @@ export default function BlogArticle({ post }) {
                   )}
                 </div>
               </header>
+
+              <hr className="border-0 border-t border-[var(--line)]" />
+
+              <PostFeaturedImage
+                src={post.featured_image}
+                title={post.title}
+                variant="inline"
+              />
 
               <PostContentRenderer content={post.content} />
 

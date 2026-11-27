@@ -82,6 +82,28 @@ export class PostService {
     throw this.conflict("Unable to generate a unique post slug");
   }
 
+  /**
+   * Honor an explicit client slug when unique; otherwise derive from title.
+   */
+  async resolvePostSlug({ requestedSlug, title, excludeId = null }, db) {
+    const normalized = generateSlug(requestedSlug ?? "");
+
+    if (normalized) {
+      if (isReservedSlug(normalized)) {
+        throw this.badRequest("This URL slug is reserved");
+      }
+
+      const existing = await this.postRepository.findBySlug(normalized, db);
+      if (existing && existing.id !== excludeId) {
+        throw this.conflict("This URL slug is already in use");
+      }
+
+      return normalized;
+    }
+
+    return this.getUniqueSlug(title, db, excludeId);
+  }
+
   // ============================================
   // VALIDATE CATEGORY
   // ============================================
@@ -210,7 +232,10 @@ export class PostService {
         await this.validateCategory(data.categoryId, db);
         await this.validateFeaturedMedia(data.featuredMediaId, db);
 
-        const slug = await this.getUniqueSlug(data.title, db);
+        const slug = await this.resolvePostSlug(
+          { requestedSlug: data.slug, title: data.title },
+          db,
+        );
 
         const post = await this.postRepository.create(
           {
@@ -384,11 +409,14 @@ async getPosts({
         await this.validateCategory(data.categoryId, db);
         await this.validateFeaturedMedia(data.featuredMediaId, db);
 
-        let slug = existing.slug;
-
-        if (data.title !== existing.title) {
-          slug = await this.getUniqueSlug(data.title, db, id);
-        }
+        const slug = await this.resolvePostSlug(
+          {
+            requestedSlug: data.slug ?? existing.slug,
+            title: data.title,
+            excludeId: id,
+          },
+          db,
+        );
 
         await this.postRepository.update(
           id,
