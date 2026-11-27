@@ -14,6 +14,7 @@ import {
   Loader2,
   Save,
   Trash2,
+  TextCursor,
   Type,
   X,
 } from "lucide-react";
@@ -90,6 +91,7 @@ export default function MediaDetailsDialog({
   // The parent should render this component with key={item.id}
   // so metadata resets when selecting another file.
   const [form, setForm] = useState(() => ({
+    title: item?.title || "",
     alt_text: item?.alt_text || "",
     caption: item?.caption || "",
     description: item?.description || "",
@@ -149,7 +151,7 @@ export default function MediaDetailsDialog({
             ) : (
               <MediaImage
                 src={item.url}
-                alt={form.alt_text || item.filename}
+                alt={form.alt_text || form.title || item.filename}
                 width={640}
                 height={320}
                 sizes="(max-width: 768px) 100vw, 640px"
@@ -205,6 +207,23 @@ export default function MediaDetailsDialog({
                 <Copy className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+
+          {/* TITLE */}
+          <div className="space-y-2">
+            <FieldLabel htmlFor="media-title" icon={TextCursor}>
+              Image Title
+            </FieldLabel>
+
+            <Input
+              id="media-title"
+              value={form.title}
+              onChange={(event) => updateField("title", event.target.value)}
+              disabled={busy}
+              placeholder="Optional title"
+            />
+
+            <FieldError message={errors.title} />
           </div>
 
           {/* ALT TEXT */}

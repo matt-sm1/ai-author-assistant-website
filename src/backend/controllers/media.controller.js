@@ -215,7 +215,7 @@ export async function updateMediaController(request, userId, context) {
 
     const metadata = {};
 
-    for (const field of ["alt_text", "caption", "description"]) {
+    for (const field of ["title", "alt_text", "caption", "description"]) {
       if (Object.hasOwn(body ?? {}, field)) {
         if (typeof body[field] !== "string") {
           throw badRequest(`${field} must be a string`);

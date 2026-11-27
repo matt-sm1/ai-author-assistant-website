@@ -40,6 +40,11 @@ export const mediaUploadSchema = yup.object({
 // ============================================
 
 export const mediaMetadataSchema = yup.object({
+  title: yup
+    .string()
+    .trim()
+    .max(255, "Title cannot exceed 255 characters."),
+
   alt_text: yup
     .string()
     .trim()

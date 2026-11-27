@@ -6,7 +6,8 @@ Newest entries first. Agents must read this before implementing, and append afte
 ## [Unreleased]
 
 ### Featured image upload metadata (blog admin)
-- `MediaPicker` (post featured image and in-article insert): after a new upload finishes, opens the same **Media Details** dialog as the media library (optional alt text, caption, description). Cancel or Save skips or persists metadata; user still confirms **Select** to apply the file.
+- `MediaPicker` (post featured image and in-article insert): after a new upload finishes, opens the same **Media Details** dialog as the media library (optional image title, alt text, caption, description). Cancel or Save skips or persists metadata; user still confirms **Select** to apply the file.
+- Migration `013_media_title.sql` adds optional `media.title`; PATCH `/api/media/:id`, repository, and `MediaDetailsDialog` accept the same fields as library edits.
 
 ### Home hero badge
 - Matched the home hero sparkle to the yellow emoji used on other page badges.

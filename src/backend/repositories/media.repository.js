@@ -17,6 +17,7 @@ const MEDIA_COLUMNS = `
   size_bytes,
   width,
   height,
+  title,
   alt_text,
   caption,
   description,
@@ -103,6 +104,7 @@ export class MediaRepository {
       WHERE
         status = 'ready'
         AND (filename ILIKE $3 ESCAPE '\\'
+         OR COALESCE(title, '') ILIKE $3 ESCAPE '\\'
          OR COALESCE(alt_text, '') ILIKE $3 ESCAPE '\\')
         AND ($4 = '' OR resource_type = $4)
       ORDER BY created_at DESC, id DESC
@@ -125,6 +127,7 @@ export class MediaRepository {
       WHERE
         status = 'ready'
         AND (filename ILIKE $1 ESCAPE '\\'
+         OR COALESCE(title, '') ILIKE $1 ESCAPE '\\'
          OR COALESCE(alt_text, '') ILIKE $1 ESCAPE '\\')
         AND ($2 = '' OR resource_type = $2)
       `,
@@ -148,20 +151,21 @@ export class MediaRepository {
     return result.rows[0] ?? null;
   }
 
-  async update(id, { alt_text, caption, description }) {
+  async update(id, { title, alt_text, caption, description }) {
     const result = await this.db.query(
       `
       UPDATE media
       SET
-        alt_text = COALESCE($1, alt_text),
-        caption = COALESCE($2, caption),
-        description = COALESCE($3, description),
+        title = COALESCE($1, title),
+        alt_text = COALESCE($2, alt_text),
+        caption = COALESCE($3, caption),
+        description = COALESCE($4, description),
         updated_at = NOW()
-      WHERE id = $4
+      WHERE id = $5
         AND status = 'ready'
       RETURNING ${MEDIA_COLUMNS}
       `,
-      [alt_text, caption, description, id],
+      [title, alt_text, caption, description, id],
     );
 
     return result.rows[0] ?? null;
