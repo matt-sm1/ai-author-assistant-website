@@ -34,6 +34,7 @@ import { Input } from "@/frontend/components/ui/Input";
 import { Label } from "@/frontend/components/ui/Label";
 import { Textarea } from "@/frontend/components/ui/Textarea";
 import { fmtDate } from "@/frontend/lib/format";
+import { cn } from "@/frontend/lib/utils";
 
 function formatBytes(value) {
   const bytes = Number(value);
@@ -266,21 +267,28 @@ export default function MediaDetailsDialog({
         </div>
 
         {/* ACTIONS (always visible, body scrolls above it) */}
-        <DialogFooter className="flex-col gap-2 border-t bg-muted/30 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:space-x-0">
-          <Button
-            type="button"
-            variant="ghost"
-            disabled={busy}
-            onClick={() => onDelete?.(item)}
-            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-          >
-            {deleting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Trash2 className="mr-2 h-4 w-4" />
-            )}
-            Delete
-          </Button>
+        <DialogFooter
+          className={cn(
+            "flex-col gap-2 border-t bg-muted/30 px-6 py-4 sm:flex-row sm:items-center sm:space-x-0",
+            onDelete ? "sm:justify-between" : "sm:justify-end",
+          )}
+        >
+          {onDelete ? (
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={busy}
+              onClick={() => onDelete(item)}
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            >
+              {deleting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
+              Delete
+            </Button>
+          ) : null}
 
           <div className="flex gap-2">
             <Button

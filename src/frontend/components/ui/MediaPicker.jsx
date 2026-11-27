@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { ValidationError } from "yup";
 import { toast } from "sonner";
 import MediaImage from "@/frontend/components/ui/MediaImage";
 
@@ -17,6 +18,8 @@ import {
 import useMedia from "@/frontend/feature/media/hooks/useMedia";
 import useMediaMutations from "@/frontend/feature/media/hooks/useMediaMutations";
 import MediaUpload from "@/frontend/feature/media/components/MediaUpload";
+import MediaDetailsDialog from "@/frontend/feature/media/components/MediaDetailsDialog";
+import { mediaMetadataSchema } from "@/frontend/feature/media/schema/media.schema";
 import { mediaApi } from "@/frontend/feature/media/api/media.api";
 import { EmptyState, FilterTabs } from "@/frontend/components/shared/ui-bits";
 import { cn } from "@/frontend/lib/utils";
@@ -104,6 +107,13 @@ function mediaPickerReducer(state, action) {
         pendingId: action.pendingId ?? uploaded?.id ?? null,
       };
     }
+    case "patchItem":
+      return {
+        ...state,
+        loadedMedia: state.loadedMedia.map((item) =>
+          item.id === action.id ? { ...item, ...action.patch } : item,
+        ),
+      };
     case "closed":
       return initialState;
     default:
@@ -265,6 +275,8 @@ export default function MediaPicker({
   const [state, dispatch] = useReducer(mediaPickerReducer, initialState);
   const { mode, resourceType, page, loadedMedia, pendingId } = state;
   const [uploadError, setUploadError] = useState("");
+  const [uploadMetadataItem, setUploadMetadataItem] = useState(null);
+  const [metadataErrors, setMetadataErrors] = useState({});
 
   const { media, pagination, isLoading, isFetching, error, refetch } = useMedia(
     {
@@ -275,7 +287,8 @@ export default function MediaPicker({
     },
   );
 
-  const { uploadMedia, isUploading, uploadProgress } = useMediaMutations();
+  const { uploadMedia, isUploading, uploadProgress, updateMedia, isUpdating } =
+    useMediaMutations();
 
   useEffect(() => {
     if (mode !== "browse" || isFetching || isLoading || error) return;
@@ -339,10 +352,60 @@ export default function MediaPicker({
 
     if (!nextOpen) {
       setUploadError("");
+      setUploadMetadataItem(null);
+      setMetadataErrors({});
       dispatch({ type: "closed" });
       clearUiBodyLockSoon();
     }
   };
+
+  const handleCloseUploadMetadata = (open) => {
+    if (open || isUpdating) return;
+    setUploadMetadataItem(null);
+    setMetadataErrors({});
+    clearUiBodyLockSoon();
+  };
+
+  async function handleSaveUploadMetadata(form) {
+    if (!uploadMetadataItem?.id || isUpdating) return;
+
+    setMetadataErrors({});
+
+    let validated;
+    try {
+      validated = await mediaMetadataSchema.validate(form, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+    } catch (validationError) {
+      if (validationError instanceof ValidationError) {
+        const errors = {};
+        for (const issue of validationError.inner) {
+          if (issue.path && !errors[issue.path]) {
+            errors[issue.path] = issue.message;
+          }
+        }
+        setMetadataErrors(errors);
+      } else {
+        toast.error("Unable to validate media details.");
+      }
+      return;
+    }
+
+    try {
+      await updateMedia(uploadMetadataItem.id, validated);
+      dispatch({
+        type: "patchItem",
+        id: uploadMetadataItem.id,
+        patch: validated,
+      });
+      toast.success("Media details saved. Click Select to use this file.");
+      setUploadMetadataItem(null);
+      setMetadataErrors({});
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Failed to update media details."));
+    }
+  }
 
   const handleFilterChange = (nextType) => {
     if (nextType === tabValue) return;
@@ -364,7 +427,6 @@ export default function MediaPicker({
         throw new Error("Upload succeeded without a media id");
       }
 
-      toast.success("Media uploaded. Confirm Select to use it.");
       // Keep uploaded row visible immediately; never refetch a skipped query (RTK #38)
       dispatch({
         type: "afterUpload",
@@ -372,6 +434,8 @@ export default function MediaPicker({
         resourceType: "",
         media: uploaded,
       });
+      setMetadataErrors({});
+      setUploadMetadataItem(uploaded);
       reduxDispatch(
         mediaApi.endpoints.getMedia.initiate(
           {
@@ -392,8 +456,26 @@ export default function MediaPicker({
 
   const gridItems = useMemo(() => loadedMedia, [loadedMedia]);
 
+  const metadataDialogItem =
+    uploadMetadataItem &&
+    (loadedMedia.find((item) => item.id === uploadMetadataItem.id) ??
+      uploadMetadataItem);
+
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <>
+      {metadataDialogItem && (
+        <MediaDetailsDialog
+          key={metadataDialogItem.id}
+          item={metadataDialogItem}
+          open={Boolean(uploadMetadataItem)}
+          onOpenChange={handleCloseUploadMetadata}
+          onSave={handleSaveUploadMetadata}
+          saving={isUpdating}
+          errors={metadataErrors}
+        />
+      )}
+
+      <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="w-[calc(100%-2rem)] max-w-3xl overflow-hidden rounded-2xl">
         <DialogHeader className="flex-row items-center justify-between space-y-0 pr-8">
           <DialogTitle>Media Library</DialogTitle>
@@ -526,5 +608,6 @@ export default function MediaPicker({
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
