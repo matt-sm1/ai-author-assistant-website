@@ -138,7 +138,7 @@ export default function HelpPage() {
               height={270}
               sizes="90px"
               data-bounce
-              className="absolute -right-2 -top-2 hidden h-[90px] w-[90px] object-contain sm:-right-10 sm:block lg:-right-16"
+              className="absolute -right-2 -top-6 hidden h-[90px] w-[90px] object-contain sm:-right-10 sm:block lg:-right-24"
             />
 
             <h1

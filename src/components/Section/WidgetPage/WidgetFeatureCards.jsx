@@ -33,9 +33,7 @@ export default function WidgetFeatureCards({
                     key={card.id}
                     data-reveal
                     data-card-hover
-                    className={`flex w-full items-start gap-4 rounded-[20px] p-[30px] ${
-                      rowId === 1 ? "sm:w-[360px]" : "sm:w-[318px]"
-                    }`}
+                    className="flex w-full items-center gap-4 rounded-[20px] px-8 py-6 sm:w-[392px]"
                     style={{ background: card.background }}
                   >
                     <Image
@@ -47,11 +45,14 @@ export default function WidgetFeatureCards({
                       sizes="50px"
                       className="h-[50px] w-[50px] shrink-0 object-contain"
                     />
-                    <div className="flex flex-col gap-1">
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
                       <h3 className="font-display text-[18px] font-semibold leading-[25px] text-heading">
                         {card.title}
                       </h3>
-                      <p className="font-sans text-[14px] leading-[21px] text-copy">
+                      <p
+                        lang="en"
+                        className="min-h-[42px] hyphens-auto font-sans text-[14px] leading-[21px] text-copy"
+                      >
                         {card.description}
                       </p>
                     </div>

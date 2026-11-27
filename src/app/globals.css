@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "AmpersandFallback";
+  src: local("Inter"), local("Segoe UI"), local("Helvetica Neue"), local("Arial");
+  font-weight: 100 500;
+  unicode-range: U+0026;
+}
+
+@font-face {
+  font-family: "AmpersandFallback";
+  src: local("Inter SemiBold"), local("Inter Bold"), local("Segoe UI Semibold"), local("Segoe UI Bold"), local("Helvetica Neue Bold"), local("Arial Bold"), local("Arial");
+  font-weight: 600 900;
+  unicode-range: U+0026;
+}
+
 @theme inline {
   --color-heading: var(--theme-heading);
   --color-copy: var(--theme-copy);
@@ -9,7 +23,7 @@
   --color-black: var(--theme-black);
 
   --font-sans: var(--font-inter), sans-serif;
-  --font-display: var(--font-host-grotesk), sans-serif;
+  --font-display: "AmpersandFallback", var(--font-host-grotesk), sans-serif;
 }
 
 :root {

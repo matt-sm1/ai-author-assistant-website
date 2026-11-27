@@ -17,7 +17,7 @@ export const widgetCardsContent = {
     {
       id: "books",
       title: "Book Suggestions",
-      description: "Help readers discover books that match their interests.",
+      description: "Help readers discover titles and stories matching their interests.",
       icon: widgetImages.iconBooks,
       background: "#eef3ff",
       row: 1,
@@ -25,7 +25,7 @@ export const widgetCardsContent = {
     {
       id: "support",
       title: "24/7 AI Support",
-      description: "Answer questions and guide readers anytime.",
+      description: "Answer reader questions and guide book discovery anytime.",
       icon: widgetImages.iconSupport,
       background: "#f0ecff",
       row: 2,
@@ -33,7 +33,7 @@ export const widgetCardsContent = {
     {
       id: "leads",
       title: "Reader Lead Capture",
-      description: "Collect visitor names and emails effortlessly.",
+      description: "Collect visitor names, preferences, and emails effortlessly.",
       icon: widgetImages.iconLeads,
       background: "#fbeefc",
       row: 2,
@@ -41,7 +41,7 @@ export const widgetCardsContent = {
     {
       id: "integration",
       title: "Easy Website Integration",
-      description: "Add AuthorBot to your website with a simple code.",
+      description: "Add AuthorBot to your website using a single embed code.",
       icon: widgetImages.iconIntegration,
       background: "#eaefff",
       row: 2,

@@ -48,7 +48,7 @@ export default function ContactHero({ content = contactHeroContent } = {}) {
 
           <p
             data-reveal-step="paragraph"
-            className="mx-auto mt-4 max-w-[672px] font-sans text-[14px] leading-[1.55] text-copy sm:text-[16px] sm:leading-[1.6]"
+            className="mx-auto mt-4 min-h-[3.1em] max-w-[672px] font-sans text-[14px] leading-[1.55] text-copy sm:min-h-[3.2em] sm:text-[16px] sm:leading-[1.6]"
           >
             {content.description}
           </p>

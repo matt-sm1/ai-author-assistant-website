@@ -10,7 +10,7 @@ export const omnichannelCardsContent = {
     {
       id: "connect-channels",
       title: "Connect Every Channel",
-      description: "Bring messages from your social and email channels together.",
+      description: "Bring messages from all your social and email channels together.",
       Icon: TbMessages,
       background: "#fff0f4",
       row: 1,
@@ -18,7 +18,7 @@ export const omnichannelCardsContent = {
     {
       id: "one-ai",
       title: "One AI Everywhere",
-      description: "Give readers the same helpful answers on every platform.",
+      description: "Give readers the same helpful book answers across every channel.",
       Icon: TbRobot,
       background: "#eef3ff",
       row: 1,
@@ -26,7 +26,7 @@ export const omnichannelCardsContent = {
     {
       id: "centralized-inbox",
       title: "Centralized Inbox",
-      description: "Manage every reader conversation from a single view.",
+      description: "Manage every reader conversation from a single unified inbox.",
       Icon: TbInbox,
       background: "#f0ecff",
       row: 2,
@@ -34,7 +34,7 @@ export const omnichannelCardsContent = {
     {
       id: "human-handoff",
       title: "AI & Human Handoff",
-      description: "Pass conversations to your team whenever a reader needs it.",
+      description: "Pass conversations to your team whenever a reader requests help.",
       Icon: TbUsers,
       background: "#fbeefc",
       row: 2,

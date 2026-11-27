@@ -17,7 +17,7 @@ export const crmCardsContent = {
     {
       id: "detailed-reader-profiles",
       title: "Detailed Reader Profiles",
-      description: "Help readers discover books that match their interests.",
+      description: "Help readers discover titles and stories matching their interests.",
       Icon: TbBook,
       background: "#eef3ff",
       row: 1,
@@ -25,7 +25,7 @@ export const crmCardsContent = {
     {
       id: "conversation-history",
       title: "Conversation History",
-      description: "Answer questions and guide readers anytime.",
+      description: "Answer reader questions and guide book discovery anytime.",
       Icon: TbClock,
       background: "#f0ecff",
       row: 2,
@@ -33,7 +33,7 @@ export const crmCardsContent = {
     {
       id: "returning-reader-insights",
       title: "Returning Reader Insights",
-      description: "Collect visitor names and emails effortlessly.",
+      description: "Collect visitor names, preferences, and emails effortlessly.",
       Icon: TbUserPlus,
       background: "#fbeefc",
       row: 2,
@@ -41,7 +41,7 @@ export const crmCardsContent = {
     {
       id: "follow-up-management",
       title: "Follow-Up Management",
-      description: "Add AuthorBot to your website with a simple code.",
+      description: "Add AuthorBot to your website using a single embed code.",
       Icon: TbCode,
       background: "#eaefff",
       row: 2,
